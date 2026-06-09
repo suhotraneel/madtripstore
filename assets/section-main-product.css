@@ -232,7 +232,7 @@ product-info {
 }
 
 .product__description {
-  font-size: 14px;
+  font-size: 16px;
   color: hsla(0, 0%, 100%, 0.8);
 }
 
@@ -313,10 +313,6 @@ a.product__text {
 
 .product__description-title {
   font-weight: 600;
-}
-
-.product__description {
-  font-size: 16px;
 }
 
 .product--no-media .product__title,
