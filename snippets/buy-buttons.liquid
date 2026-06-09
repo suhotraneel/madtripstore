@@ -207,4 +207,68 @@
 
     <script src="{{ 'pickup-availability.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
+
+  {%- if block.settings.mobile_sticky_button and block.settings.mobile_sticky_button != 'none' -%}
+    <style>
+      .mobile-sticky-button-container {
+        display: none;
+      }
+      @media screen and (max-width: 749px) {
+        .mobile-sticky-button-container {
+          display: block;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background-color: #000000;
+          padding: 1.5rem;
+          z-index: 100;
+          box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+      }
+    </style>
+    <div class="mobile-sticky-button-container" id="MobileStickyButtonContainer-{{ section_id }}">
+      {%- assign sticky_id = 'MobileStickyButton-' | append: section_id -%}
+      {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
+        {% render 'button-component',
+          is_button: true,
+          type: 'button',
+          custom_class: 'mobile-sticky-btn',
+          label: add_to_cart_label,
+          variant: 'primary',
+          full_width: true,
+          id: sticky_id
+        %}
+      {%- elsif block.settings.mobile_sticky_button == 'buy_now' -%}
+        {%- assign sticky_buy_now_label = 'Buy Now' -%}
+        {% render 'button-component',
+          is_button: true,
+          type: 'button',
+          custom_class: 'mobile-sticky-btn',
+          label: sticky_buy_now_label,
+          variant: 'primary',
+          full_width: true,
+          id: sticky_id
+        %}
+      {%- endif -%}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const stickyBtn = document.getElementById('MobileStickyButton-{{ section_id }}');
+        if (stickyBtn) {
+          stickyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
+              const targetBtn = document.getElementById('ProductSubmitButton-{{ section_id }}');
+            {%- elsif block.settings.mobile_sticky_button == 'buy_now' -%}
+              const targetBtn = document.querySelector('#dynamic-checkout-{{ section_id }} .custom-buy-it-now') || document.querySelector('.shopify-payment-button__button--unbranded, .shopify-payment-button__button');
+            {%- endif -%}
+            if (targetBtn) {
+              targetBtn.click();
+            }
+          });
+        }
+      });
+    </script>
+  {%- endif -%}
 </div>
