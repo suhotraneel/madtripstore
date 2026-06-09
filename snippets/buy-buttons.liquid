@@ -79,7 +79,18 @@
             endif
           -%}
           {%- if show_dynamic_checkout -%}
-            <div id="dynamic-checkout-{{ section_id }}" class="dynamic-checkout-buttons-container" style="position: relative; margin-bottom: 2rem;">
+            <style>
+              .dynamic-checkout-buttons-container {
+                position: relative;
+                margin-bottom: 2rem;
+              }
+              @media screen and (max-width: 749px) {
+                .dynamic-checkout-buttons-container {
+                  margin-bottom: 1rem;
+                }
+              }
+            </style>
+            <div id="dynamic-checkout-{{ section_id }}" class="dynamic-checkout-buttons-container">
               <div class="shopify-payment-button-wrapper" style="position: absolute; opacity: 0.01; pointer-events: none; z-index: -1;">
                 {{ form | payment_button }}
               </div>
