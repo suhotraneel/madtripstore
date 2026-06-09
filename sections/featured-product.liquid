@@ -111,13 +111,19 @@
                     {%- endif -%}
                   </h2>
                 {%- when 'price' -%}
-                  <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
-                    {%- render 'price',
-                      product: product,
-                      use_variant: true,
-                      show_badges: true,
-                      price_class: 'price--large'
-                    -%}
+                  <div class="price-and-share-wrapper" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
+                      {%- render 'price',
+                        product: product,
+                        use_variant: true,
+                        show_badges: true,
+                        price_class: 'price--large'
+                      -%}
+                    </div>
+                    <div style="flex: 0 0 auto;">
+                      {%- assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin -%}
+                      {%- render 'share-button', block: block, share_link: share_url -%}
+                    </div>
                   </div>
                   {%- if product.quantity_price_breaks_configured? -%}
                     <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
@@ -367,10 +373,7 @@
                     {%- endif -%}
                   </div>
                 {%- when 'share' -%}
-                  {% liquid
-                    assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
-                    render 'share-button', block: block, share_link: share_url
-                  %}
+                  {%- comment -%} Share is now rendered inside the price block {%- endcomment -%}
                 {%- when 'variant_picker' -%}
                   {% render 'product-variant-picker',
                     product: product,
@@ -561,7 +564,15 @@
     {
       "type": "price",
       "name": "t:sections.featured-product.blocks.price.name",
-      "limit": 1
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "share_label",
+          "label": "t:sections.featured-product.blocks.share.settings.text.label",
+          "default": "Share"
+        }
+      ]
     },
     {
       "type": "sku",
