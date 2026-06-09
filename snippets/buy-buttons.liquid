@@ -106,7 +106,7 @@
             label: add_to_cart_label,
             suffix_html: add_to_cart_suffix,
             variant: 'secondary',
-            size: block.settings.button_size | default: 'medium',
+            size: block.settings.button_size | default: 'small',
             full_width: true
           %}
           {%- if show_dynamic_checkout -%}
@@ -120,7 +120,7 @@
               custom_class: 'custom-buy-it-now',
               label: buy_now_label,
               variant: 'primary',
-              size: block.settings.button_size | default: 'medium',
+              size: block.settings.button_size | default: 'small',
               full_width: true
             %}
             <script>
@@ -154,7 +154,7 @@
           disabled: true,
           label: fallback_label,
           variant: 'secondary',
-          size: block.settings.button_size | default: 'medium',
+          size: block.settings.button_size | default: 'small',
           full_width: true
         %}
       </div>

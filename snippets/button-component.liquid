@@ -31,12 +31,15 @@
   }
 
   button.button-component {
-    background: transparent !important;
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
     appearance: none !important;
     box-shadow: none !important;
+  }
+
+  button.button-component:not(.button-component--secondary) {
+    background: transparent !important;
   }
 
   button.button-component::before,
