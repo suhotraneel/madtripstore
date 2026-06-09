@@ -46,6 +46,28 @@
   transform: rotate(180deg);
 }
 
+.accordion .custom-accordion-icons {
+  display: flex;
+  align-items: center;
+}
+
+.accordion .custom-accordion-icons .icon-accordion-up {
+  display: none;
+}
+
+.accordion details[open] > summary .custom-accordion-icons .icon-accordion-down {
+  display: none;
+}
+
+.accordion details[open] > summary .custom-accordion-icons .icon-accordion-up {
+  display: block;
+}
+
+.accordion .custom-accordion-icons svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .accordion__content {
   margin-bottom: 1.5rem;
   word-break: break-word;
