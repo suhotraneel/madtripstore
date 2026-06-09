@@ -1495,6 +1495,7 @@ a.product__text {
   .recipient-form>input[type='checkbox']:checked+label .icon-checkmark {
     border: none;
   }
+}
 
 /* Responsive Accordions */
 @media screen and (min-width: 750px) {
