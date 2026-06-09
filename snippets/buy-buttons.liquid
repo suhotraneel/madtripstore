@@ -78,39 +78,8 @@
               assign quantity_rule_soldout = true
             endif
           -%}
-          {%- capture add_to_cart_label -%}
-            {%- if product.selected_or_first_available_variant == nil -%}
-              {{ 'products.product.unavailable' | t }}
-            {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
-              {{ 'products.product.sold_out' | t }}
-            {%- else -%}
-              {{ 'products.product.add_to_cart' | t }}
-            {%- endif -%}
-          {%- endcapture -%}
-          {%- capture add_to_cart_suffix -%}
-            {%- render 'loading-spinner' -%}
-          {%- endcapture -%}
-          {%- liquid
-            assign is_disabled = false
-            if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == nil
-              assign is_disabled = true
-            endif
-          -%}
-          {% render 'button-component',
-            is_button: true,
-            type: 'submit',
-            name: 'add',
-            id: 'ProductSubmitButton-' | append: section_id,
-            custom_class: 'product-form__submit',
-            disabled: is_disabled,
-            label: add_to_cart_label,
-            suffix_html: add_to_cart_suffix,
-            variant: 'secondary',
-            size: block.settings.button_size | default: 'small',
-            full_width: true
-          %}
           {%- if show_dynamic_checkout -%}
-            <div id="dynamic-checkout-{{ section_id }}" class="dynamic-checkout-buttons-container" style="position: relative;">
+            <div id="dynamic-checkout-{{ section_id }}" class="dynamic-checkout-buttons-container" style="position: relative; margin-bottom: 1rem;">
               <div class="shopify-payment-button-wrapper" style="position: absolute; opacity: 0.01; pointer-events: none; z-index: -1;">
                 {{ form | payment_button }}
               </div>
@@ -142,6 +111,37 @@
               </script>
             </div>
           {%- endif -%}
+          {%- capture add_to_cart_label -%}
+            {%- if product.selected_or_first_available_variant == nil -%}
+              {{ 'products.product.unavailable' | t }}
+            {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- else -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- endif -%}
+          {%- endcapture -%}
+          {%- capture add_to_cart_suffix -%}
+            {%- render 'loading-spinner' -%}
+          {%- endcapture -%}
+          {%- liquid
+            assign is_disabled = false
+            if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == nil
+              assign is_disabled = true
+            endif
+          -%}
+          {% render 'button-component',
+            is_button: true,
+            type: 'submit',
+            name: 'add',
+            id: 'ProductSubmitButton-' | append: section_id,
+            custom_class: 'product-form__submit',
+            disabled: is_disabled,
+            label: add_to_cart_label,
+            suffix_html: add_to_cart_suffix,
+            variant: 'secondary',
+            size: block.settings.button_size | default: 'small',
+            full_width: true
+          %}
         </div>
       {%- endform -%}
     </product-form>
