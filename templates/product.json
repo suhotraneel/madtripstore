@@ -47,7 +47,7 @@
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "button_size": "large",
+            "button_size": "small",
             "show_dynamic_checkout": true,
             "show_gift_card_recipient": true,
             "mobile_sticky_button": "buy_now"
