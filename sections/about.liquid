@@ -1,0 +1,775 @@
+{%- style -%}
+  .snap-scroll-wrapper-{{ section.id }} {
+    width: 100%;
+    position: relative;
+    /* Native page scrolling - it flows naturally with the rest of the site */
+  }
+
+  .snap-panel {
+    /* If header height isn't calculated yet, fallback to standard viewport space */
+    height: 100vh;
+    height: 100dvh;
+    /* Dynamically adjust height to accommodate the navbar without extending beneath screen */
+    height: calc(100svh - var(--madtrip-header-height, 0px));
+    height: calc(100dvh - var(--madtrip-header-height, 0px));
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always; /* Prevents skipping past panels during fast scroll */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Intro Panel */
+  .panel-intro {
+    background-color: var(--color-bg, #111);
+    background-size: cover;
+    background-position: center;
+    align-items: flex-end; /* Bring the blob to the bottom */
+  }
+  .panel-intro-blob {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px; /* Slightly wider to look better at the bottom */
+    height: auto;
+    aspect-ratio: 4 / 3; /* You may adjust this if the blob gets cut off */
+    z-index: 2;
+    margin-bottom: 0; /* Keep securely above bottom screen bounds */
+  }
+  .panel-intro-blob .blob-img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: contain;
+    object-position: bottom;
+    z-index: -1;
+  }
+  .panel-intro-text {
+    text-align: center;
+    color: var(--intro-text-color, #111111);
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 5%;
+  }
+  .panel-intro-text h2 {
+    font-size: clamp(4.5rem, 12vw, 12rem);
+    margin: 0;
+    line-height: 1;
+    font-weight: 800;
+    font-family: 'krugat', sans-serif;
+    color: var(--intro-text-color, #111111);
+  }
+  .panel-intro-text h1 {
+    font-size: clamp(3rem, 8vw, 8rem);
+    margin: 0;
+    line-height: 0.9;
+    font-family: 'krugat', sans-serif;
+    color: var(--intro-text-color, #111111);
+  }
+
+  /* Image + Text Panel */
+  .panel-image-text {
+    background-color: var(--color-bg, #e1c416);
+  }
+  .panel-image-text-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0 50px;
+    box-sizing: border-box;
+    max-width: 1400px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 767px) {
+    .panel-image-text-content {
+      display: grid !important;
+      grid-template-rows: 30svh 1fr !important;
+      height: 100% !important;
+      padding: 40px 24px 24px !important;
+      box-sizing: border-box !important;
+      gap: 24px !important;
+    }
+    .panel-image-wrapper {
+      justify-self: center !important;
+      align-self: start !important;
+      align-items: flex-start !important;
+      height: 100% !important;
+      max-height: 30svh !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding-right: 0 !important;
+      min-width: 0 !important;
+    }
+    .panel-main-img {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 30svh !important;
+      object-fit: contain !important;
+      object-position: top !important;
+      max-width: 100% !important;
+    }
+    .panel-text-wrapper {
+      width: 100% !important;
+      height: 100% !important;
+      display: block !important;
+      padding: 0px !important;
+      box-sizing: border-box !important;
+      text-align: center !important;
+      overflow-y: auto;
+    }
+  }
+  .panel-image-wrapper {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    container-type: inline-size;
+  }
+  @media (min-width: 768px) {
+    .panel-image-wrapper {
+      flex: 1 1 50% !important;
+      width: 50% !important;
+      max-width: 50% !important;
+      padding-right: 50px;
+      box-sizing: border-box;
+    }
+    
+  }
+  .panel-main-img {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: contain;
+    z-index: 2;
+  }
+  
+  .panel-text-wrapper {
+    flex: 1;
+    min-width: 300px;
+    color: #111;
+    font-size: clamp(18px, 14px + 1vw, 28px);
+    line-height: 1.4;
+  }
+  @media (min-width: 768px) {
+    .panel-text-wrapper {
+      flex: 1 1 50% !important;
+      width: 50% !important;
+      max-width: 50% !important;
+      box-sizing: border-box;
+    }
+  }
+
+  /* Image Text Grouped Transitions */
+  .panel-image-text-group {
+    position: relative;
+    background-color: transparent; 
+  }
+  .panel-image-text.slide-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    background-color: transparent;
+  }
+  .panel-image-text.slide-item.active {
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  /* We use the group wrapper to smoothly blend background colors */
+  .sticky-pin {
+    transition: background-color 0s;
+    background-color: var(--current-bg-color, transparent);
+  }
+
+  /* Indicators */
+  .slide-indicators {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+  }
+  .slide-indicators .indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease;
+  }
+  .slide-indicators .indicator.active {
+    background-color: rgba(0,0,0,0.8);
+  }
+
+  /* CTA Panel */
+  .panel-cta {
+    background-color: var(--color-bg, #e1c416);
+    flex-direction: column;
+    gap: 50px;
+    text-align: center;
+  }
+  .panel-cta h2 {
+    font-size: clamp(40px, 32px + 2vw, 60px) !important;
+    font-family: 'krugat', sans-serif !important;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
+    max-width: none;
+    line-height: 1.1;
+    text-align: center !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+  .cta-heading-parts {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+  @media (max-width: 767px) {
+    .cta-heading-parts {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .panel-cta h2 {
+      white-space: normal !important; /* Allow normal wrap on mobile if the word gets too long */
+    }
+  }
+  .panel-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--btn-color, #00aeef);
+    color: #111;
+    font-weight: bold;
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    padding: 15px 50px;
+    border-radius: 999px;
+    text-decoration: none;
+    position: relative;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+  .panel-cta-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+  .panel-cta-btn::before, .panel-cta-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 18px;
+    background-image: 
+      radial-gradient(circle at center, #e1c416 3px, transparent 3.5px),
+      radial-gradient(circle at center, #e1c416 3px, transparent 3.5px);
+    background-size: 6px 6px;
+    background-position: top, bottom;
+    background-repeat: no-repeat;
+  }
+  .panel-cta-btn::before { left: 15px; }
+  .panel-cta-btn::after { right: 15px; }
+
+  @media screen and (max-width: 768px) {
+    .panel-image-text-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 30px;
+    }
+    
+  }
+{%- endstyle -%}
+
+<div class="snap-scroll-wrapper-{{ section.id }}" style="background-color: var(--current-bg-color, {{ section.settings.buffer_color | default: 'transparent' }}); transition: background-color 0s; --current-bg-color: {{ section.blocks[0].settings.bg_color }};"
+  data-start-d="{{ section.settings.text_start_desktop }}"
+  data-rest-d="{{ section.settings.text_rest_desktop }}"
+  data-end-d="{{ section.settings.text_end_desktop }}"
+  data-start-m="{{ section.settings.text_start_mobile }}"
+  data-rest-m="{{ section.settings.text_rest_mobile }}"
+  data-end-m="{{ section.settings.text_end_mobile }}">
+  {% assign scroll_dist = section.settings.scroll_distance | default: 100 %}
+  {% assign scroll_dist_mobile = section.settings.scroll_distance_mobile | default: 100 %}
+  <style>
+    .panel-image-text-group-{{ section.id }} {
+      --scroll-dist: {{ scroll_dist }}vh;
+    }
+    @media (max-width: 767px) {
+      .panel-image-text-group-{{ section.id }} {
+        --scroll-dist: {{ scroll_dist_mobile }}vh;
+      }
+    }
+  </style>
+  <div class="panel-image-text-group panel-image-text-group-{{ section.id }}" style="height: calc(var(--scroll-dist) * {{ section.blocks.size }}); position: relative; width: 100%;">
+    <div class="sticky-pin" style="position: sticky; top: calc(var(--madtrip-header-height, 0px) - 2px); width: 100%; height: calc(100svh - var(--madtrip-header-height, 0px) + 2px); overflow: hidden; z-index: 1; --current-bg-color: {{ section.blocks[0].settings.bg_color }};">
+      
+      {% for block in section.blocks %}
+        <div class="panel-image-text slide-item {% if forloop.index == 1 %}active{% endif %}" data-bg-color="{{ block.settings.bg_color }}" {{ block.shopify_attributes }}>
+        
+        {% case block.type %}
+          {% when 'intro' %}
+            <div class="panel-text-wrapper" style="width: 100% !important; max-width: 100% !important; flex: 1 1 100% !important; height: 100% !important; display: flex !important;">
+              <div class="panel-intro" style="--color-bg: transparent; --intro-text-color: {{ block.settings.text_color | default: '#111111' }}; {% if block.settings.bg_image %}background-image: url('{{ block.settings.bg_image | image_url: width: 2000 }}');{% endif %}; width: 100%; height: 100%; display: flex; justify-content: center; overflow: hidden;">
+                <div class="panel-intro-blob">
+                  {% if block.settings.blob_image %}
+                    <img src="{{ block.settings.blob_image | image_url: width: 800 }}" alt="Intro background blob" class="blob-img" loading="lazy">
+                  {% else %}
+                    <div class="blob-img" style="background-color: #e1c416; border-radius: 50% 40% 60% 30%;"></div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+          {% when 'image_text' %}
+            <div class="panel-image-text-content" style="width: 100%; height: 100%; justify-content: center; align-items: center; position: relative; z-index: 2;">
+              <div class="panel-image-wrapper">
+                {% if block.settings.image or block.settings.image_mobile %}
+                  <picture style="display: contents;">
+                    {% if block.settings.image_mobile %}
+                      <source media="(max-width: 767px)" srcset="{{ block.settings.image_mobile | image_url: width: 800 }}">
+                    {% endif %}
+                    {% if block.settings.image %}
+                      <img src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.image.alt | default: 'Madtrip Image' }}" class="panel-main-img" loading="lazy">
+                    {% else %}
+                      <img src="{{ block.settings.image_mobile | image_url: width: 800 }}" alt="{{ block.settings.image_mobile.alt }}" class="panel-main-img" loading="lazy">
+                    {% endif %}
+                  </picture>
+                {% else %}
+                  {{ 'image' | placeholder_svg_tag: 'panel-main-img placeholder-svg' }}
+                {% endif %}
+                
+
+              </div>
+              
+              <div class="panel-text-wrapper" style="overflow: hidden; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                <div class="panel-text-inner" style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px 0;">
+                  {{ block.settings.text }}
+                </div>
+              </div>
+            </div>
+
+          {% when 'cta' %}
+            <div class="panel-cta-wrapper" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px; box-sizing: border-box;">
+              <div class="panel-cta panel-text-inner" style="--color-bg: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; text-align: center; width: 100%; max-width: 1400px; margin: 0 auto;">
+                
+                <div class="cta-heading-parts">
+                  {% if block.settings.heading != blank %}
+                    <h2 class="cta-headline">{{ block.settings.heading }}</h2>
+                  {% endif %}
+                  {% if block.settings.heading_2 != blank %}
+                    <h2 class="cta-headline">{{ block.settings.heading_2 }}</h2>
+                  {% endif %}
+                </div>
+                
+                {% if block.settings.btn_text != blank %}
+                  <a href="{{ block.settings.btn_link | default: '#' }}" class="panel-cta-btn" style="--btn-color: {{ block.settings.btn_color }};">
+                    {{ block.settings.btn_text }}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+        {% endcase %}
+        
+        </div>
+      {% endfor %}
+      
+      <div class="slide-indicators">
+        {% for block in section.blocks %}
+          <div class="indicator {% if forloop.index == 1 %}active{% endif %}"></div>
+        {% endfor %}
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const groups = document.querySelectorAll('.panel-image-text-group');
+  let scrubScrollTimeout = null;
+  
+  function getHeaderHeight() {
+    const header = document.querySelector('header') || document.querySelector('.header-wrapper') || document.querySelector('#shopify-section-header');
+    return header ? header.getBoundingClientRect().height : 0;
+  }
+
+  // CACHE viewport metrics to completely destroy mobile toolbar-collapse janky recalculation loops
+  let cachedClientWidth = window.innerWidth;
+  let fixedViewportHeight = window.innerHeight;
+  let cachedHeaderHeight = getHeaderHeight();
+  document.documentElement.style.setProperty('--madtrip-header-height', cachedHeaderHeight + 'px');
+
+  function updateViewportMetrics() {
+    // Only update vertical height bindings if screen orientation (WIDTH) changes or major resize.
+    // This perfectly ignores all mobile Safari URL bar collapsing events which trigger tiny resize jumps!
+    if (Math.abs(window.innerWidth - cachedClientWidth) > 50) {
+      cachedClientWidth = window.innerWidth;
+      fixedViewportHeight = window.innerHeight;
+      cachedHeaderHeight = getHeaderHeight();
+      document.documentElement.style.setProperty('--madtrip-header-height', cachedHeaderHeight + 'px');
+    }
+  }
+
+  function updateSlides() {
+    const headerHeight = cachedHeaderHeight;
+
+    groups.forEach(group => {
+      const rect = group.getBoundingClientRect();
+      const stickyPin = group.querySelector('.sticky-pin');
+      const slides = group.querySelectorAll('.slide-item');
+      const indicators = group.querySelectorAll('.indicator');
+      const totalSlides = slides.length;
+      if (totalSlides === 0) return;
+      
+      let scrollProgress = 0;
+      const adjustedTop = rect.top - headerHeight;
+      const availableHeight = fixedViewportHeight - headerHeight;
+      
+      const scrollableDistance = rect.height - availableHeight;
+      
+      if (adjustedTop > 0) {
+        scrollProgress = 0;
+      } else if (rect.bottom < fixedViewportHeight) {
+        scrollProgress = totalSlides - 1;
+      } else {
+        const scrolledIntoGroup = -adjustedTop;
+        const pxPerSlide = scrollableDistance / Math.max(1, totalSlides - 1);
+        scrollProgress = scrolledIntoGroup / pxPerSlide;
+      }
+      
+      // Determine dominant active index for pointer events overriding
+      let activeIndex = Math.floor(scrollProgress + 0.5);
+      if (activeIndex < 0) activeIndex = 0;
+      if (activeIndex >= totalSlides) activeIndex = totalSlides - 1;
+
+      // Update background directly on stickyPin so colors don't overlap and look dirty
+      const targetBgColor = slides[activeIndex].getAttribute('data-bg-color');
+      if (targetBgColor) {
+        stickyPin.style.setProperty('--current-bg-color', targetBgColor);
+        const wrapperEl = group.closest('[class^="snap-scroll-wrapper"]');
+        if (wrapperEl) wrapperEl.style.setProperty('--current-bg-color', targetBgColor);
+      }
+      
+      // Fully continuous hardware-accelerated scroll rendering mapping 1:1 natively
+      slides.forEach((s, idx) => {
+        const imgWrap = s.querySelector('.panel-image-wrapper');
+        const mainImg = s.querySelector('.panel-main-img');
+        const textWrap = s.querySelector('.panel-intro-text') || s.querySelector('.panel-cta') || s.querySelector('.panel-text-wrapper');
+        
+        let distance = scrollProgress - idx;
+        let absDistance = Math.abs(distance);
+        
+        if (absDistance >= 1) {
+          s.classList.remove('active');
+          s.setAttribute('data-state', distance < 0 ? 'next' : 'prev');
+          s.style.pointerEvents = 'none';
+          
+          if (imgWrap) imgWrap.style.opacity = 0;
+          if (mainImg) mainImg.style.opacity = 0;
+          if (textWrap) textWrap.style.opacity = 0;
+        } else {
+          if (absDistance < 0.5) {
+            s.classList.add('active');
+            s.setAttribute('data-state', 'active');
+            s.style.pointerEvents = 'auto';
+          } else {
+            s.classList.remove('active');
+            s.setAttribute('data-state', distance < 0 ? 'next' : 'prev');
+            s.style.pointerEvents = 'none';
+          }
+          
+          // Calculate Transition Phase for text logic
+          let transitionPhase = 0;
+          if (absDistance > 0.8) {
+             transitionPhase = 1;
+          } else if (absDistance > 0.2) {
+             transitionPhase = (absDistance - 0.2) / 0.6;
+          }
+          
+          // Image Opacity: Next slide begins fading in much earlier (from 1.0 to 0.2 directly)
+          let imgOpacity;
+          if (distance > 0) {
+             imgOpacity = 1 - transitionPhase; // Leaving slide fades out between 0.2 and 0.8
+          } else {
+             // Entering slide begins fading early immediately upon hitting scroll bounds
+             imgOpacity = absDistance > 0.2 ? (1.0 - absDistance) / 0.8 : 1.0; 
+          }
+          
+          // Text Opacity: Fade out completely by 50% transitionPhase
+          let textOpacity = Math.max(0, 1 - (transitionPhase * 2));
+          // Text Translate: Universal Configurable Path Mapping
+          const wrapperEl = group.closest('[class^="snap-scroll-wrapper"]');
+          const startD = parseInt(wrapperEl.getAttribute('data-start-d') || 80);
+          const restD = parseInt(wrapperEl.getAttribute('data-rest-d') || 0);
+          const endD = parseInt(wrapperEl.getAttribute('data-end-d') || -80);
+          const startM = parseInt(wrapperEl.getAttribute('data-start-m') || 96); // 128 minus 32px
+          const restM = parseInt(wrapperEl.getAttribute('data-rest-m') || 16); // 48 minus 32px
+          const endM = parseInt(wrapperEl.getAttribute('data-end-m') || -64); // -32 minus 32px
+          
+          let isMobile = window.innerWidth < 768;
+          let startP = isMobile ? startM : startD; 
+          let restP = isMobile ? restM : restD;    
+          let endP = isMobile ? endM : endD;       
+          
+          let transformY = restP; 
+          
+          if (distance > 0) { // Leaving
+              if (distance <= 0.2) {
+                  transformY = restP + (distance / 0.2) * (endP - restP) * 0.15;
+              } else {
+                  let drift = (endP - restP) * 0.15;
+                  let remainder = (endP - restP) * 0.85;
+                  transformY = restP + drift + (transitionPhase * remainder);
+              }
+          } else if (distance < 0) { // Entering
+              if (absDistance <= 0.2) {
+                  transformY = restP + (absDistance / 0.2) * (startP - restP) * 0.15;
+              } else {
+                  let drift = (startP - restP) * 0.15;
+                  let remainder = (startP - restP) * 0.85;
+                  transformY = restP + drift + (transitionPhase * remainder);
+              }
+          }
+          
+          if (imgWrap) imgWrap.style.opacity = imgOpacity;
+          if (mainImg) mainImg.style.opacity = imgOpacity;
+          
+          if (textWrap) {
+             textWrap.style.opacity = textOpacity;
+             if (idx !== 0) { 
+                let textInner = textWrap.querySelector('.panel-text-inner') || textWrap;
+                textInner.style.transform = `translateY(${transformY}px)`;
+             }
+          }
+        }
+      });
+      
+      indicators.forEach((i, idx) => {
+        if (idx === activeIndex) {
+          i.classList.add('active');
+        } else {
+          i.classList.remove('active');
+        }
+      });
+    });
+  }
+
+  // Hook into native scroll loop
+  window.addEventListener('scroll', updateSlides, { passive: true });
+  window.addEventListener('resize', () => { updateViewportMetrics(); updateSlides(); }, { passive: true });
+  
+  // Trigger once on load
+  updateSlides();
+});
+</script>
+
+{% schema %}
+{
+  "name": "Snap Scroll Sections",
+  "settings": [
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "min": 20,
+      "max": 200,
+      "step": 10,
+      "unit": "vh",
+      "label": "Scroll Distance Desktop",
+      "info": "Sensitivity on Desktop. Lower values mean slides transition with less scrolling.",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance_mobile",
+      "min": 20,
+      "max": 200,
+      "step": 10,
+      "unit": "vh",
+      "label": "Scroll Distance Mobile",
+      "info": "Sensitivity on Mobile. Lower values mean slides transition with less scrolling.",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "buffer_color",
+      "label": "Mobile Buffer Pad Color",
+      "default": "#111111",
+      "info": "Fills the space securely natively behind the slide when the mobile browser hides toolbars."
+    },
+    {
+      "type": "header",
+      "content": "Desktop Text Animation"
+    },
+    {
+      "type": "range",
+      "id": "text_start_desktop",
+      "min": -300, "max": 300, "step": 6, "unit": "px",
+      "label": "Start Position", "default": 84
+    },
+    {
+      "type": "range",
+      "id": "text_rest_desktop",
+      "min": -300, "max": 300, "step": 6, "unit": "px",
+      "label": "Resting Position", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_end_desktop",
+      "min": -300, "max": 300, "step": 6, "unit": "px",
+      "label": "End Position", "default": -84
+    },
+    {
+      "type": "header",
+      "content": "Mobile Text Animation"
+    },
+    {
+      "type": "range",
+      "id": "text_start_mobile",
+      "min": -300, "max": 300, "step": 6, "unit": "px",
+      "label": "Start Position", "default": 96
+    },
+    {
+      "type": "range",
+      "id": "text_rest_mobile",
+      "min": -300, "max": 300, "step": 6, "unit": "px",
+      "label": "Resting Position", "default": 18
+    },
+    {
+      "type": "range",
+      "id": "text_end_mobile",
+      "min": -300, "max": 300, "step": 6, "unit": "px",
+      "label": "End Position", "default": -60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "intro",
+      "name": "Intro Slide",
+      "settings": [
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "#111111"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "blob_image",
+          "label": "Blob Overlay Image"
+        }
+      ]
+    },
+    {
+      "type": "image_text",
+      "name": "Image with Text (Slides)",
+      "settings": [
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "#e1c416"
+        },
+        
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile Image (Optional)"
+        },
+
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Manas Kunder is a multidisciplinary artist, educator, graphic designer, muralist, and illustrator from Mumbai, India, and the mind behind “MadTrip”.</p>"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "name": "Call to Action",
+      "settings": [
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "#e1c416"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading Part 1",
+          "default": "Have a"
+        },
+        {
+          "type": "text",
+          "id": "heading_2",
+          "label": "Heading Part 2",
+          "default": "Sukhad Pagal Yatra!"
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "btn_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "color",
+          "id": "btn_color",
+          "label": "Button Color",
+          "default": "#00aeef"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Snap Scroll Sections",
+      "blocks": [
+        { "type": "intro" },
+        { "type": "image_text" },
+        { "type": "image_text" },
+        { "type": "image_text" },
+        { "type": "cta" }
+      ]
+    }
+  ]
+}
+{% endschema %}

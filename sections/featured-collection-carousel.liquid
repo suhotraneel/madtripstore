@@ -1,0 +1,742 @@
+{% comment %}
+  featured-collection-carousel.liquid
+  ---
+  A full-width autoplay product carousel that pulls products from a Shopify
+  collection chosen in the Theme Editor. Each slide shows the product image
+  inside a customisable SVG blob/mask shape (different shapes for desktop
+  and mobile, breakpoint 768 px). Navigation chevrons and the "Buy Now"
+  button use the brand yellow (#FFDE17) palette with a teal/cyan accent
+  matching the provided design reference.
+{% endcomment %}
+
+<style>
+  /* =========================================================
+     ROOT TOKENS — all sizing / colour decisions live here
+  ========================================================= */
+
+  #fcc-{{ section.id }} {
+    {%- if section.settings.enable_top_clip -%}
+      margin-top: 0;
+    {%- endif -%}
+    --fcc-bg:            {{ section.settings.background_color | default: '#FFDE17' }};
+    --fcc-accent:        #29C4D4;
+    --fcc-btn-radius:    9999px;
+    --fcc-transition:    0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    --fcc-chevron-size:  44px;
+    --svg-cut-height-top: calc(100vw * 56 / 2463);
+    --svg-cut-height-bottom: calc(100vw * 56 / 2463);
+
+    position: relative;
+    width: 100%;
+    /* height hugs content */
+    background-color: var(--fcc-bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: calc(48px + {% if section.settings.enable_top_clip %}var(--svg-cut-height-top){% else %}0px{% endif %}) 0 calc(56px + {% if section.settings.enable_bottom_clip %}var(--svg-cut-height-bottom){% else %}0px{% endif %});
+    box-sizing: border-box;
+    z-index: 1;
+
+    {%- if section.settings.enable_top_clip or section.settings.enable_bottom_clip -%}
+      {%- capture top_svg -%}<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='black' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.4420 1013.03 55.9064 960.023 51.7954C918.165 48.5540 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123 L 0 56 L 2463 56 Z'/></svg>{%- endcapture -%}
+      {%- capture bottom_svg -%}<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='black' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.4420 1013.03 55.9064 960.023 51.7954C918.165 48.5540 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123 L 0 0 L 2463 0 Z'/></svg>{%- endcapture -%}
+      {%- capture stroke_svg -%}<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='none' stroke='black' stroke-width='6' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.442 1013.03 55.9064 960.023 51.7954C918.165 48.554 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123'/></svg>{%- endcapture -%}
+
+      -webkit-mask-image: 
+        {% if section.settings.enable_top_clip %}url("data:image/svg+xml;utf8,{{ top_svg }}"),{% endif %}
+        {% if section.settings.enable_bottom_clip %}url("data:image/svg+xml;utf8,{{ bottom_svg }}"),{% endif %}
+        linear-gradient(black, black);
+      -webkit-mask-size: 
+        {% if section.settings.enable_top_clip %}100% var(--svg-cut-height-top),{% endif %}
+        {% if section.settings.enable_bottom_clip %}100% var(--svg-cut-height-bottom),{% endif %}
+        100% calc(100% - {% if section.settings.enable_top_clip %}var(--svg-cut-height-top){% else %}0px{% endif %} - {% if section.settings.enable_bottom_clip %}var(--svg-cut-height-bottom){% else %}0px{% endif %} + 2px);
+      -webkit-mask-position: 
+        {% if section.settings.enable_top_clip %}top center,{% endif %}
+        {% if section.settings.enable_bottom_clip %}bottom center,{% endif %}
+        0 {% if section.settings.enable_top_clip %}calc(var(--svg-cut-height-top) - 1px){% else %}0px{% endif %};
+      -webkit-mask-repeat: no-repeat;
+      
+      mask-image: 
+        {% if section.settings.enable_top_clip %}url("data:image/svg+xml;utf8,{{ top_svg }}"),{% endif %}
+        {% if section.settings.enable_bottom_clip %}url("data:image/svg+xml;utf8,{{ bottom_svg }}"),{% endif %}
+        linear-gradient(black, black);
+      mask-size: 
+        {% if section.settings.enable_top_clip %}100% var(--svg-cut-height-top),{% endif %}
+        {% if section.settings.enable_bottom_clip %}100% var(--svg-cut-height-bottom),{% endif %}
+        100% calc(100% - {% if section.settings.enable_top_clip %}var(--svg-cut-height-top){% else %}0px{% endif %} - {% if section.settings.enable_bottom_clip %}var(--svg-cut-height-bottom){% else %}0px{% endif %} + 2px);
+      mask-position: 
+        {% if section.settings.enable_top_clip %}top center,{% endif %}
+        {% if section.settings.enable_bottom_clip %}bottom center,{% endif %}
+        0 {% if section.settings.enable_top_clip %}calc(var(--svg-cut-height-top) - 1px){% else %}0px{% endif %};
+      mask-repeat: no-repeat;
+    {%- endif -%}
+  }
+
+  #fcc-{{ section.id }}::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--svg-cut-height-top);
+      display: {% if section.settings.enable_top_clip %}block{% else %}none{% endif %};
+      pointer-events: none;
+      z-index: 5;
+      background-image: url("data:image/svg+xml;utf8,{{ stroke_svg }}");
+      background-size: 100% var(--svg-cut-height-top);
+      background-position: top center;
+      background-repeat: no-repeat;
+  }
+
+  #fcc-{{ section.id }}::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: var(--svg-cut-height-bottom);
+      display: {% if section.settings.enable_bottom_clip %}block{% else %}none{% endif %};
+      pointer-events: none;
+      z-index: 5;
+      background-image: url("data:image/svg+xml;utf8,{{ stroke_svg }}");
+      background-size: 100% var(--svg-cut-height-bottom);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+  }
+
+  /* =========================================================
+     MASK STAGE — the blob that clips the product image
+  ========================================================= */
+  .fcc-mask-stage {
+    position: relative;
+    width: min(80vw, 640px);
+    /* height auto so the SVG mask scales proportionally */
+    margin-bottom: 16px;
+  }
+  .fcc-header {
+    font-family: 'Krugat', system-ui, sans-serif;
+    font-size: 40px;
+    line-height: 1.2;
+    color: #111111;
+    text-align: center;
+    margin-bottom: 56px;
+    margin-top: 0;
+    word-wrap: break-word;
+  }
+  .fcc-product-copy {
+    font-family: 'Krugat', system-ui, sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
+    color: #111111;
+    text-align: center;
+    max-width: min(80vw, 640px);
+    margin: 16px 0 32px;
+    word-wrap: break-word;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {    .fcc-header {
+      font-size: 32px;
+      margin-bottom: 48px;
+    }
+    .fcc-product-copy {
+      font-size: 20px;
+      margin: 8px 0 24px;
+    }
+  }
+
+  /* Mask overlay imgs — invisible; kept in normal flow only to give
+     the stage its natural height. The actual visual clipping is done
+     by the CSS mask-image applied directly to each .fcc-slide. */
+  .fcc-mask-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    visibility: hidden; /* takes up space but is not rendered */
+    pointer-events: none;
+    position: relative;
+    z-index: 0;
+  }
+
+  /* Desktop mask visible, mobile mask hidden by default (≥ 769 px) */
+  .fcc-mask-mobile-svg { display: none; }
+  .fcc-mask-desktop-svg { display: block; }
+
+  /* Swap at the mobile breakpoint (≤ 768 px) */
+  @media (max-width: 768px) {
+    .fcc-mask-desktop-svg { display: none; }
+    .fcc-mask-mobile-svg  { display: block; }
+  }
+
+  /* =========================================================
+     SLIDES — each slide is absolutely stacked inside the stage.
+     All slides start off-screen right; the active one lives at
+     center (translateX(0)). Overflow on the stage clips the
+     off-screen slides so they don’t bleed outside the blob.
+  ========================================================= */
+
+  /* Stage does NOT clip — slides travel beyond it all the way to the
+     page edge. The section wrapper (full viewport width) does the clipping. */
+
+  .fcc-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    /* Park off-screen using viewport units so slides start at the page edge */
+    transform: translateX(100vw);
+    transition: transform var(--fcc-transition);
+    z-index: 1;
+    /* CSS mask clips the slide to the blob shape on desktop */
+    -webkit-mask-image: var(--fcc-mask-desktop);
+    mask-image: var(--fcc-mask-desktop);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  @media (max-width: 768px) {
+    .fcc-slide {
+      -webkit-mask-image: var(--fcc-mask-mobile);
+      mask-image: var(--fcc-mask-mobile);
+    }
+  }
+
+  /* Active slide sits at the center */
+  .fcc-slide.is-active {
+    transform: translateX(0);
+    z-index: 2;
+  }
+
+  .fcc-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* fill the blob — no letterboxing */
+    display: block;
+  }
+
+  /* =========================================================
+     NAVIGATION ROW — chevrons + dots
+  ========================================================= */
+  .fcc-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 0px;
+    z-index: 2;
+  }
+
+  .fcc-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #111111;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 0;
+  }
+
+  .fcc-nav-btn .chevron-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    background-color: #FFDE17;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  
+  .fcc-nav-btn .chevron-left {
+    -webkit-mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_left.svg?v=1769011900");
+    mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_left.svg?v=1769011900");
+  }
+  
+  .fcc-nav-btn .chevron-right {
+    -webkit-mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_right.svg?v=1769011900");
+    mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_right.svg?v=1769011900");
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .fcc-nav-btn:hover {
+      background: #111111;
+    }
+  }
+
+  .fcc-nav-btn:active {
+    background: #111111;
+  }
+
+  .fcc-dots {
+    display: flex;
+    gap: 10px;
+  }
+
+  .fcc-dots button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .fcc-dots img {
+    opacity: 0.7;
+    transition: opacity 1s ease;
+    filter: invert(1) brightness(0.067);
+  }
+
+  .fcc-dots img.active {
+    opacity: 1;
+    transition: opacity 1s ease;
+  }
+
+  /* =========================================================
+     RESPONSIVE TWEAKS
+  ========================================================= */
+  @media (max-width: 768px) {
+    #fcc-{{ section.id }} {
+      padding: clamp(48px, calc(48px + 2vw), 64px) 0;
+      --fcc-chevron-size: 36px;
+    }
+
+    .fcc-mask-stage {
+      width: min(90vw, 480px);
+      margin-bottom: 24px;
+    }
+
+    .fcc-controls {
+      gap: 14px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .fcc-mask-stage {
+      width: 92vw;
+    }
+  }
+</style>
+
+{%- liquid
+  assign col    = section.settings.collection
+  assign products = col.products
+  assign product_count = products.size
+-%}
+
+<section
+  id="fcc-{{ section.id }}"
+  aria-label="{{ section.settings.section_aria_label | default: 'Featured products carousel' }}"
+>
+
+  {%- liquid
+    assign col           = section.settings.collection
+    assign products      = col.products
+    assign product_count = products.size
+    assign mask_desktop_url = section.settings.mask_desktop | image_url: width: 1200
+    assign mask_mobile_url  = section.settings.mask_mobile  | image_url: width: 800
+  -%}
+
+  {%- comment -%} CSS vars for mask-image are set on the stage so .fcc-slide inherits them {%- endcomment -%}
+
+  {% if product_count > 0 %}
+
+    {%- if section.settings.section_header != blank -%}
+      <h2 class="fcc-header">{{ section.settings.section_header | escape }}</h2>
+    {%- endif -%}
+
+    {%- comment -%} ── MASK + SLIDES ── {%- endcomment -%}
+    <div
+      class="fcc-mask-stage"
+      id="fccMaskStage-{{ section.id }}"
+      style="
+        --fcc-mask-desktop: {{ mask_desktop_url | prepend: 'url(' | append: ')' }};
+        --fcc-mask-mobile:  {{ mask_mobile_url  | prepend: 'url(' | append: ')' }};
+      "
+    >
+
+      {%- comment -%}
+        Mask imgs — visibility:hidden so they don't render visually
+        but stay in normal flow to give the stage its natural height.
+        The CSS mask-image on each .fcc-slide does the actual clipping.
+      {%- endcomment -%}
+
+      {%- comment -%} Desktop height-driver (shown ≥ 769 px) {%- endcomment -%}
+      {%- if section.settings.mask_desktop != blank -%}
+        <img
+          class="fcc-mask-svg fcc-mask-desktop-svg"
+          src="{{ section.settings.mask_desktop | image_url: width: 1200 }}"
+          alt="" aria-hidden="true" loading="eager"
+        >
+      {%- else -%}
+        {%- comment -%} Fallback spacer keeps stage height on desktop {%- endcomment -%}
+        <svg class="fcc-mask-svg fcc-mask-desktop-svg" xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 760 480" aria-hidden="true"><rect width="760" height="480" fill="none"/></svg>
+      {%- endif -%}
+
+      {%- comment -%} Mobile height-driver (shown ≤ 768 px) {%- endcomment -%}
+      {%- if section.settings.mask_mobile != blank -%}
+        <img
+          class="fcc-mask-svg fcc-mask-mobile-svg"
+          src="{{ section.settings.mask_mobile | image_url: width: 800 }}"
+          alt="" aria-hidden="true" loading="eager"
+        >
+      {%- else -%}
+        {%- comment -%} Fallback spacer keeps stage height on mobile {%- endcomment -%}
+        <svg class="fcc-mask-svg fcc-mask-mobile-svg" xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 480 380" aria-hidden="true"><rect width="480" height="380" fill="none"/></svg>
+      {%- endif -%}
+
+      {%- comment -%}
+        Slides — each sits absolutely over the stage and carries its own
+        CSS mask-image (set via custom properties on the stage element)
+        so the entire masked blob unit crossfades as one piece.
+      {%- endcomment -%}
+      {%- for product in products -%}
+        <div class="fcc-slide{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
+          <a href="{{ product.url }}" style="display: block; width: 100%; height: 100%;">
+            <img
+              src="{{ product.featured_image | image_url: width: 800 }}"
+              alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+              loading="{{ forloop.first | iif: 'eager', 'lazy' }}"
+              width="800"
+              height="800"
+            >
+          </a>
+        </div>
+      {%- endfor -%}
+
+    </div><!-- /.fcc-mask-stage -->
+
+    <div class="fcc-product-copy" id="fccProductCopy-{{ section.id }}">{{ products.first.title | escape }}</div>
+
+    {%- comment -%} ── CONTROLS ── {%- endcomment -%}
+    <div class="fcc-controls">
+      <button class="fcc-nav-btn" id="fccPrev-{{ section.id }}" aria-label="Previous product">
+        <div class="chevron-icon chevron-left"></div>
+      </button>
+
+      <div class="fcc-dots" id="fccDots-{{ section.id }}" aria-hidden="true">
+        {%- for product in products -%}
+          <button data-index="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}">
+            <img src="{% if forloop.first %}https://cdn.shopify.com/s/files/1/0655/0667/2825/files/active_carousel.svg?v=1769011901{% else %}https://cdn.shopify.com/s/files/1/0655/0667/2825/files/inactive_carousel.svg?v=1769011901{% endif %}" class="{% if forloop.first %}active{% endif %}" alt="Dot">
+          </button>
+        {%- endfor -%}
+      </div>
+
+      <button class="fcc-nav-btn" id="fccNext-{{ section.id }}" aria-label="Next product">
+        <div class="chevron-icon chevron-right"></div>
+      </button>
+    </div>
+
+  {% else %}
+
+    {%- comment -%} Editor placeholder when no collection is picked {%- endcomment -%}
+    {%- if request.design_mode -%}
+      <div style="padding:60px 24px; text-align:center; opacity:0.5; font-family:sans-serif;">
+        <p style="font-size:18px; margin:0 0 8px;">Featured Collection Carousel</p>
+        <p style="font-size:14px; margin:0;">Select a collection in the section settings to display products here.</p>
+      </div>
+    {%- endif -%}
+
+  {% endif %}
+
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── configuration ──────────────────────────────────────── */
+  const SECTION_ID      = '{{ section.id }}';
+  const AUTOPLAY_DELAY  = {{ section.settings.autoplay_delay | default: 3000 }};  /* ms */
+  const AUTOPLAY_ACTIVE = {{ section.settings.autoplay | default: true }};
+  const PRODUCT_URLS    = [
+    {%- for product in products -%}
+      "{{ product.url }}"{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ];
+
+  /* ── element refs ───────────────────────────────────────── */
+  const stage       = document.getElementById('fccMaskStage-' + SECTION_ID);
+  const prevBtn     = document.getElementById('fccPrev-'      + SECTION_ID);
+  const nextBtn     = document.getElementById('fccNext-'      + SECTION_ID);
+  const dotsEl      = document.getElementById('fccDots-'      + SECTION_ID);
+  const productCopy = document.getElementById('fccProductCopy-' + SECTION_ID);
+  const PRODUCT_TITLES = [
+    {%- for product in products -%}
+      "{{ product.title | escape }}"{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ];
+
+  if (!stage || PRODUCT_URLS.length === 0) return;
+
+  const slides = Array.from(stage.querySelectorAll('.fcc-slide'));
+  if (slides.length === 0) return;
+
+  /* ── state ──────────────────────────────────────────────── */
+  let current   = 0;
+  let autoTimer = null;
+  const total   = slides.length;
+
+  /* ── render ─────────────────────────────────────────────── */
+  var isAnimating = false;
+
+  function goTo(index, userInitiated) {
+    var newIndex = ((index % total) + total) % total;
+    if (newIndex === current || isAnimating) return;
+
+    /* Determine slide direction:
+       forward  → current exits LEFT,  new enters from RIGHT
+       backward → current exits RIGHT, new enters from LEFT   */
+    var goingForward = (
+      (newIndex > current) ||
+      (current === total - 1 && newIndex === 0)
+    );
+    var incomingStart = goingForward ? 'translateX(100vw)'  : 'translateX(-100vw)';
+    var outgoingEnd   = goingForward ? 'translateX(-100vw)' : 'translateX(100vw)';
+
+    var outSlide = slides[current];
+    var inSlide  = slides[newIndex];
+    current = newIndex;
+    isAnimating = true;
+
+    /* ── PHASE 1: slide current blob OFF-SCREEN (200 ms) ───── */
+    var EXIT_MS  = 200;
+    var ENTER_MS = 300;
+
+    outSlide.style.transition = 'transform ' + EXIT_MS + 'ms cubic-bezier(0.55,0,1,0.45)';
+    outSlide.style.transform  = outgoingEnd;
+
+    setTimeout(function () {
+      /* ── silently reset outgoing off the right edge ──────── */
+      outSlide.style.transition = 'none';
+      outSlide.classList.remove('is-active');
+      outSlide.style.transform  = 'translateX(100vw)';
+
+      /* ── PHASE 2: snap incoming to far edge, then slide IN ── */
+      inSlide.style.transition = 'none';
+      inSlide.style.transform  = incomingStart;
+      inSlide.getBoundingClientRect();          /* force reflow */
+
+      inSlide.style.transition = 'transform ' + ENTER_MS + 'ms cubic-bezier(0,0.55,0.45,1)';
+      inSlide.style.transform  = 'translateX(0)';
+      inSlide.classList.add('is-active');
+
+      /* ── PHASE 3: tidy up inline overrides after enter ────── */
+      setTimeout(function () {
+        inSlide.style.transition  = '';
+        inSlide.style.transform   = '';
+        outSlide.style.transition = '';
+        isAnimating = false;
+      }, ENTER_MS);
+
+    }, EXIT_MS);
+
+    /* update dots */
+    if (dotsEl) {
+      dotsEl.querySelectorAll('button img').forEach(function (img, i) {
+        var isActive = (i === current);
+        img.classList.toggle('active', isActive);
+        img.src = isActive
+          ? "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/active_carousel.svg?v=1769011901"
+          : "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/inactive_carousel.svg?v=1769011901";
+      });
+    }
+
+    if (productCopy) {
+      productCopy.textContent = PRODUCT_TITLES[current] || '';
+    }
+
+    /* reset autoplay timer on manual interaction */
+    if (userInitiated && AUTOPLAY_ACTIVE) {
+      clearInterval(autoTimer);
+      startAutoplay();
+    }
+  }
+
+  /* ── autoplay ───────────────────────────────────────────── */
+  function startAutoplay() {
+    if (!AUTOPLAY_ACTIVE || total <= 1) return;
+    autoTimer = setInterval(function () {
+      goTo(current + 1, false);
+    }, AUTOPLAY_DELAY);
+  }
+
+  function stopAutoplay() {
+    clearInterval(autoTimer);
+    autoTimer = null;
+  }
+
+  /* Pause autoplay when the user hovers over the section */
+  var sectionEl = document.getElementById('fcc-' + SECTION_ID);
+  if (sectionEl) {
+    sectionEl.addEventListener('mouseenter', stopAutoplay);
+    sectionEl.addEventListener('mouseleave', startAutoplay);
+    sectionEl.addEventListener('focusin',    stopAutoplay);
+    sectionEl.addEventListener('focusout',   startAutoplay);
+  }
+
+  /* ── chevron clicks ─────────────────────────────────────── */
+  if (prevBtn) prevBtn.addEventListener('click', function () { goTo(current - 1, true); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { goTo(current + 1, true); });
+
+  /* ── dot clicks ─────────────────────────────────────────── */
+  if (dotsEl) {
+    dotsEl.querySelectorAll('button').forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        goTo(parseInt(dot.dataset.index, 10), true);
+      });
+    });
+  }
+
+  /* ── touch / swipe (on the stage element) ───────────────── */
+  var touchStartX = null;
+  stage.addEventListener('touchstart', function (e) {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+
+  stage.addEventListener('touchend', function (e) {
+    if (touchStartX === null) return;
+    var delta = e.changedTouches[0].clientX - touchStartX;
+    touchStartX = null;
+    if (Math.abs(delta) > 40) {
+      goTo(delta < 0 ? current + 1 : current - 1, true);
+    }
+  }, { passive: true });
+
+  /* ── keyboard ───────────────────────────────────────────── */
+  document.addEventListener('keydown', function (e) {
+    if (!sectionEl) return;
+    var rect = sectionEl.getBoundingClientRect();
+    var inView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (!inView) return;
+    if (e.key === 'ArrowLeft')  { goTo(current - 1, true); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { goTo(current + 1, true); e.preventDefault(); }
+  });
+
+  /* ── init ───────────────────────────────────────────────── */
+  goTo(0, false);
+  startAutoplay();
+
+})();
+</script>
+
+{% comment %}
+  ================================================================
+  SECTION SCHEMA
+  ================================================================
+{% endcomment %}
+{% schema %}
+{
+  "name": "Featured Carousel",
+  "tag": "section",
+  "class": "featured-collection-carousel-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection to display"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "text",
+      "id": "section_header",
+      "label": "Section header text",
+      "info": "Displays above the carousel in Krugat font (40px on desktop, 28px on mobile)"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background colour",
+      "default": "#FFDE17"
+    },
+    {
+      "type": "header",
+      "content": "SVG Masks"
+    },
+    {
+      "type": "image_picker",
+      "id": "mask_desktop",
+      "label": "Desktop mask SVG (≥ 769 px)",
+      "info": "Upload the blob-shape SVG used on desktop. Leave blank for the built-in default."
+    },
+    {
+      "type": "image_picker",
+      "id": "mask_mobile",
+      "label": "Mobile mask SVG (≤ 768 px)",
+      "info": "Upload the blob-shape SVG used on mobile. Leave blank for the built-in default."
+    },
+    {
+      "type": "header",
+      "content": "Section Masks"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_top_clip",
+      "label": "Enable Top Wave Clip",
+      "info": "Clips the top of this section to interlock with a wavy section above it.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_bottom_clip",
+      "label": "Enable Bottom Wave Clip",
+      "info": "Clips the bottom of this section using the provided SVG.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "label": "Autoplay interval (ms)",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 3000,
+      "unit": "ms"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "section_aria_label",
+      "label": "Section ARIA label",
+      "default": "Featured products carousel"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection Carousel"
+    }
+  ]
+}
+{% endschema %}

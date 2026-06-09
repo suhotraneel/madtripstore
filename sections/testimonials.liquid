@@ -1,0 +1,814 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    {%- if section.settings.enable_top_clip -%}
+       margin-top: calc((100vw * -56 / 2463) - {{ section.settings.vertical_offset | default: 0 }}px) !important;
+    {%- endif -%}
+  }
+
+  .carousel-{{ section.id }} {
+    --svg-cut-height-top: calc(100vw * 56 / 2463);
+    --svg-cut-height-bottom: calc(100vw * 56 / 2463);
+
+    width: 100%;
+    display: block;
+    position: relative;
+    font-family: inherit;
+    background-color: {{ section.settings.bg_color }};
+    overflow: visible;
+    z-index: 1;
+
+    /* Dynamic Height: Fluid scaling based on Shopify Settings */
+    {%- comment -%} Image Dimension Assignments {%- endcomment -%}
+    {%- assign img_w360 = section.settings.img_w_360 -%}
+    {%- assign img_w767 = section.settings.img_w_767 -%}
+    {%- assign img_h768 = section.settings.img_h_768 -%}
+    {%- assign img_h1400 = section.settings.img_h_1400 -%}
+
+    {%- comment -%} Slope Calculations {%- endcomment -%}
+    {%- assign h360 = section.settings.height_360 -%}
+    {%- assign h767 = section.settings.height_767 -%}
+    {%- assign h768 = section.settings.height_768 -%}
+    {%- assign h1400 = section.settings.height_1400 -%}
+
+    {%- assign slope_h_mobile = h767 | minus: h360 | times: 1.0 | divided_by: 407 -%}
+    {%- assign slope_h_desktop = h1400 | minus: h768 | times: 1.0 | divided_by: 632 -%}
+
+    {%- assign slope_img_w_mobile = img_w767 | minus: img_w360 | times: 1.0 | divided_by: 407 -%}
+    {%- assign slope_img_h_desktop = img_h1400 | minus: img_h768 | times: 1.0 | divided_by: 632 -%}
+
+
+    height: {{ h360 }}px;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+
+    @media screen and (min-width: 360px) {
+      height: calc({{ h360 }}px + (100vw - 360px) * {{ slope_h_mobile }});
+    }
+    @media screen and (min-width: 767px) {
+      height: {{ h767 }}px;
+    }
+    @media screen and (min-width: 768px) {
+      height: calc({{ h768 }}px + (100vw - 768px) * {{ slope_h_desktop }});
+    }
+    @media screen and (min-width: 1400px) {
+      height: {{ h1400 }}px;
+    }
+
+    {%- if section.settings.enable_top_clip or section.settings.enable_bottom_clip -%}
+      {%- capture top_svg -%}<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='black' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.4420 1013.03 55.9064 960.023 51.7954C918.165 48.5540 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123 L 0 56 L 2463 56 Z'/></svg>{%- endcapture -%}
+      {%- capture bottom_svg -%}<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='black' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.4420 1013.03 55.9064 960.023 51.7954C918.165 48.5540 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123 L 0 0 L 2463 0 Z'/></svg>{%- endcapture -%}
+      {%- capture stroke_svg -%}<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='none' stroke='black' stroke-width='6' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.442 1013.03 55.9064 960.023 51.7954C918.165 48.554 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123'/></svg>{%- endcapture -%}
+
+      -webkit-mask-image: 
+        {% if section.settings.enable_top_clip %}url("data:image/svg+xml;utf8,{{ top_svg }}"),{% endif %}
+        {% if section.settings.enable_bottom_clip %}url("data:image/svg+xml;utf8,{{ bottom_svg }}"),{% endif %}
+        linear-gradient(black, black);
+      -webkit-mask-size: 
+        {% if section.settings.enable_top_clip %}100% var(--svg-cut-height-top),{% endif %}
+        {% if section.settings.enable_bottom_clip %}100% var(--svg-cut-height-bottom),{% endif %}
+        100% calc(100% - {% if section.settings.enable_top_clip %}var(--svg-cut-height-top){% else %}0px{% endif %} - {% if section.settings.enable_bottom_clip %}var(--svg-cut-height-bottom){% else %}0px{% endif %} + 2px);
+      -webkit-mask-position: 
+        {% if section.settings.enable_top_clip %}top center,{% endif %}
+        {% if section.settings.enable_bottom_clip %}bottom center,{% endif %}
+        0 {% if section.settings.enable_top_clip %}calc(var(--svg-cut-height-top) - 1px){% else %}0px{% endif %};
+      -webkit-mask-repeat: no-repeat;
+      
+      mask-image: 
+        {% if section.settings.enable_top_clip %}url("data:image/svg+xml;utf8,{{ top_svg }}"),{% endif %}
+        {% if section.settings.enable_bottom_clip %}url("data:image/svg+xml;utf8,{{ bottom_svg }}"),{% endif %}
+        linear-gradient(black, black);
+      mask-size: 
+        {% if section.settings.enable_top_clip %}100% var(--svg-cut-height-top),{% endif %}
+        {% if section.settings.enable_bottom_clip %}100% var(--svg-cut-height-bottom),{% endif %}
+        100% calc(100% - {% if section.settings.enable_top_clip %}var(--svg-cut-height-top){% else %}0px{% endif %} - {% if section.settings.enable_bottom_clip %}var(--svg-cut-height-bottom){% else %}0px{% endif %} + 2px);
+      mask-position: 
+        {% if section.settings.enable_top_clip %}top center,{% endif %}
+        {% if section.settings.enable_bottom_clip %}bottom center,{% endif %}
+        0 {% if section.settings.enable_top_clip %}calc(var(--svg-cut-height-top) - 1px){% else %}0px{% endif %};
+      mask-repeat: no-repeat;
+    {%- endif -%}
+  }
+
+  .carousel-{{ section.id }}::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: var(--svg-cut-height-bottom);
+      display: {% if section.settings.enable_bottom_clip %}block{% else %}none{% endif %};
+      pointer-events: none;
+      z-index: 5;
+      background-image: url("data:image/svg+xml;utf8,{{ stroke_svg }}");
+      background-size: 100% var(--svg-cut-height-bottom);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+  }
+
+  .carousel-{{ section.id }} .carousel-container {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between; /* Image at top, Text neatly below */
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 56px 20px 0 20px;
+    gap: 8px;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .carousel-container {
+      flex-direction: row;
+      align-items: center; /* Center horizontally and vertically align columns */
+      justify-content: space-between;
+      padding: {{ section.settings.desktop_padding_top | default: 0 }}px 50px {{ section.settings.desktop_padding_bottom | default: 0 }}px 50px;
+      gap: 48px;
+    }
+  }
+
+  /* ===== LEFT SIDE: TEXT ===== */
+  .carousel-{{ section.id }} .carousel-left {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* Mobile: center horizontally */
+    justify-content: flex-end; /* Mobile: bottom align */
+    text-align: center;
+    gap: 32px;
+    z-index: 2;
+    padding-bottom: calc(var(--svg-cut-height-bottom) + 32px);
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .carousel-left {
+      flex: 1;
+      min-width: 0; /* Prevents overflow in flexbox */
+      max-width: none;
+      margin: 0;
+      height: 100%;
+      align-items: flex-start; /* Desktop: left */
+      justify-content: space-between; /* Desktop: span full vertical space */
+      text-align: left;
+      padding-bottom: clamp(76px, calc(0.1835 * 100vw - 65px), 192px);
+    }
+  }
+
+  .carousel-{{ section.id }} .carousel-text {
+    color: inherit;
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .carousel-text {
+      gap: 24px;
+      flex-grow: 1;
+    }
+  }
+
+  .carousel-{{ section.id }} .carousel-quote {
+    font-size: 16px;
+    font-weight: 700;
+    max-width: 100%;
+    margin: 0;
+    color: {{ section.settings.quote_color }};
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .carousel-quote {
+      font-size: calc(16px + (100vw - 768px) * 8 / 632);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .carousel-{{ section.id }} .carousel-quote {
+      font-size: 24px;
+    }
+  }
+
+  .carousel-{{ section.id }} .carousel-author {
+    font-size: 12.8px;
+    font-weight: 400;
+    margin: 0;
+    color: {{ section.settings.author_color }};
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .carousel-author {
+      font-size: calc(0.8 * (16px + (100vw - 768px) * 8 / 632));
+      margin-top: auto;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .carousel-{{ section.id }} .carousel-author {
+      font-size: 19.2px;
+    }
+  }
+
+  .carousel-{{ section.id }} .fade-slide {
+    opacity: 0;
+    transition: opacity 0.1s ease;
+  }
+
+  .carousel-{{ section.id }} .fade-slide.show {
+    opacity: 1;
+    transition: opacity 1s ease;
+  }
+
+  /* ===== CONTROLS ===== */
+  .carousel-{{ section.id }} .carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;   /* Mobile */
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .carousel-controls {
+      justify-content: flex-start; /* Desktop */
+    }
+  }
+
+  .carousel-{{ section.id }} .nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #111111;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 0;
+  }
+
+  .carousel-{{ section.id }} .nav-btn .chevron-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    background-color: #00AEEF;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  
+  .carousel-{{ section.id }} .nav-btn .chevron-left {
+    -webkit-mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_left.svg?v=1769011900");
+    mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_left.svg?v=1769011900");
+  }
+  
+  .carousel-{{ section.id }} .nav-btn .chevron-right {
+    -webkit-mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_right.svg?v=1769011900");
+    mask-image: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/chevron_right.svg?v=1769011900");
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .carousel-{{ section.id }} .nav-btn:hover {
+      background: #111111;
+    }
+  }
+
+  .carousel-{{ section.id }} .nav-btn:active {
+    background: #111111;
+  }
+
+  .carousel-{{ section.id }} .dots {
+    display: flex;
+    gap: 10px;
+  }
+
+  .carousel-{{ section.id }} .dots button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .carousel-{{ section.id }} .dots img {
+    opacity: 0.8;
+    transition: opacity 1s ease;
+  }
+
+  .carousel-{{ section.id }} .dots img.active {
+    opacity: 1;
+    transition: opacity 1s ease;
+  }
+
+  /* ===== RIGHT SIDE: IMAGE ===== */
+  .carousel-{{ section.id }} .carousel-right {
+    margin: 0 auto;
+    aspect-ratio: {{ section.settings.image_aspect_ratio | default: '1/1' }};
+    width: {{ img_w360 }}px;
+    height: auto;
+    
+    @media (min-width: 360px) {
+      width: calc({{ img_w360 }}px + (100vw - 360px) * {{ slope_img_w_mobile }});
+    }
+
+    @media (min-width: 767px) {
+      width: {{ img_w767 }}px;
+    }
+
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    {%- if section.settings.svg_code != blank -%}
+      /* Use inline SVG code if provided by using base64 data URI trick or inline SVG wrap */
+      {%- assign svg_data = section.settings.svg_code | replace: '"', "'" | replace: '<svg', '<svg xmlns="http://www.w3.org/2000/svg"' | strip_newlines -%}
+      -webkit-mask-image: url("data:image/svg+xml,{{ svg_data | url_encode }}");
+      mask-image: url("data:image/svg+xml,{{ svg_data | url_encode }}");
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+    {%- elsif section.settings.svg_mask != blank -%}
+      /* Fallback to Image Picker */
+      -webkit-mask-image: url('{{ section.settings.svg_mask | image_url }}');
+      mask-image: url('{{ section.settings.svg_mask | image_url }}');
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+    {%- endif -%}
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .carousel-right {
+      margin: 0;
+      height: calc({{ img_h768 }}px + (100vw - 768px) * {{ slope_img_h_desktop }});
+      width: auto;
+      min-height: unset;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .carousel-{{ section.id }} .carousel-right {
+      height: {{ img_h1400 }}px;
+    }
+  }
+
+  .carousel-{{ section.id }} .carousel-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 1s ease;
+  }
+  
+  /* Additional helper to prevent broken image icons when there's no img src initially */
+  .carousel-{{ section.id }} img.carousel-bg { color: transparent; }
+  
+  /* Required for custom element to behave like block */
+  testimonial-carousel.carousel-{{ section.id }} {
+    display: block;
+  }
+{%- endstyle -%}
+
+<testimonial-carousel class="carousel carousel-{{ section.id }}" data-autoplay="{{ section.settings.autoplay }}" data-delay="{{ section.settings.autoplay_delay | times: 1000 }}" data-section-id="{{ section.id }}">
+  <div class="carousel-container">
+    
+    <!-- LEFT SIDE: Text and Controls -->
+    <div class="carousel-left">
+      <div class="carousel-text">
+        <p id="quote-{{ section.id }}" class="carousel-quote fade-slide show"></p>
+        <p id="author-{{ section.id }}" class="carousel-author fade-slide show"></p>
+      </div>
+
+      <div class="carousel-controls">
+        <button id="prev-{{ section.id }}" class="nav-btn" aria-label="Previous slide">
+          <div class="chevron-icon chevron-left"></div>
+        </button>
+
+        <div id="dots-{{ section.id }}" class="dots"></div>
+
+        <button id="next-{{ section.id }}" class="nav-btn" aria-label="Next slide">
+          <div class="chevron-icon chevron-right"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE: Masked Image -->
+    <div class="carousel-right">
+      <img id="bg1-{{ section.id }}" class="carousel-bg" src="" alt="" />
+      <img id="bg2-{{ section.id }}" class="carousel-bg" src="" alt="" style="opacity: 0;" />
+    </div>
+
+  </div>
+
+  <script type="application/json" id="slidesData-{{ section.id }}">
+    [
+      {% for block in section.blocks %}
+        {
+          "quote": {{ block.settings.quote | json }},
+          "author": {{ block.settings.author | json }},
+          "img": {% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 | json }}{% else %}"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80"{% endif %}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  </script>
+</testimonial-carousel>
+
+{%- unless custom_element_defined -%}
+<script>
+  if (!customElements.get('testimonial-carousel')) {
+    class TestimonialCarousel extends HTMLElement {
+      constructor() {
+        super();
+        this.sectionId = this.dataset.sectionId;
+        this.isAutoplay = this.dataset.autoplay === 'true';
+        this.autoPlayDelay = parseInt(this.dataset.delay, 10) || 4000;
+        
+        this.bg1 = this.querySelector(`#bg1-${this.sectionId}`);
+        this.bg2 = this.querySelector(`#bg2-${this.sectionId}`);
+        this.activeBg = 1;
+
+        this.quote = this.querySelector(`#quote-${this.sectionId}`);
+        this.author = this.querySelector(`#author-${this.sectionId}`);
+        this.dots = this.querySelector(`#dots-${this.sectionId}`);
+        this.prevBtn = this.querySelector(`#prev-${this.sectionId}`);
+        this.nextBtn = this.querySelector(`#next-${this.sectionId}`);
+
+        this.index = 0;
+        this.autoPlayTimer = null;
+        this.dotImgs = [];
+        
+        try {
+          const slidesData = this.querySelector(`#slidesData-${this.sectionId}`).textContent;
+          this.slides = JSON.parse(slidesData);
+        } catch (e) {
+          this.slides = [];
+        }
+      }
+
+      connectedCallback() {
+        if (this.slides.length === 0) return;
+        this.createDots();
+        this.render();
+        if (this.isAutoplay) this.startAutoPlay();
+
+        if (this.nextBtn) {
+          this.nextBtn.addEventListener('click', () => {
+            this.stopAutoPlay();
+            this.index = (this.index + 1) % this.slides.length;
+            this.render();
+            if (this.isAutoplay) this.startAutoPlay();
+          });
+        }
+
+        if (this.prevBtn) {
+          this.prevBtn.addEventListener('click', () => {
+            this.stopAutoPlay();
+            this.index = (this.index - 1 + this.slides.length) % this.slides.length;
+            this.render();
+            if (this.isAutoplay) this.startAutoPlay();
+          });
+        }
+      }
+
+      disconnectedCallback() {
+        this.stopAutoPlay();
+      }
+
+      createDots() {
+        if (!this.dots) return;
+        this.dots.innerHTML = "";
+        this.dotImgs.length = 0;
+
+        this.slides.forEach((_, i) => {
+          const btn = document.createElement("button");
+          btn.setAttribute("aria-label", `Go to slide ${i + 1}`);
+          const img = document.createElement("img");
+          img.src = "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/inactive_carousel.svg?v=1769011901";
+          
+          btn.appendChild(img);
+          btn.onclick = () => {
+            this.stopAutoPlay();
+            this.index = i;
+            this.render();
+            if (this.isAutoplay) this.startAutoPlay();
+          };
+
+          this.dots.appendChild(btn);
+          this.dotImgs.push(img);
+        });
+      }
+
+      updateDots() {
+        this.dotImgs.forEach((img, i) => {
+          const isActive = (i === this.index);
+          img.src = isActive
+            ? "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/active_carousel.svg?v=1769011901"
+            : "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/inactive_carousel.svg?v=1769011901";
+          img.classList.toggle("active", isActive);
+        });
+      }
+
+      render() {
+        if (this.slides.length === 0) return;
+        const slide = this.slides[this.index];
+
+        // Background crossfade
+        if (this.activeBg === 1) {
+          if (this.bg2) {
+            this.bg2.src = slide.img || '';
+            this.bg2.style.opacity = "1";
+          }
+          if (this.bg1) this.bg1.style.opacity = "0";
+          this.activeBg = 2;
+        } else {
+          if (this.bg1) {
+            this.bg1.src = slide.img || '';
+            this.bg1.style.opacity = "1";
+          }
+          if (this.bg2) this.bg2.style.opacity = "0";
+          this.activeBg = 1;
+        }
+
+        // Text animation (fade out)
+        if (this.quote) this.quote.classList.remove("show");
+        if (this.author) this.author.classList.remove("show");
+
+        setTimeout(() => {
+          if (this.quote) {
+            this.quote.textContent = slide.quote;
+            this.quote.classList.add("show");
+          }
+          if (this.author) {
+            this.author.textContent = slide.author;
+            this.author.classList.add("show");
+          }
+        }, 100);
+
+        this.updateDots();
+      }
+
+      startAutoPlay() {
+        this.stopAutoPlay();
+        this.autoPlayTimer = setInterval(() => {
+          this.index = (this.index + 1) % this.slides.length;
+          this.render();
+        }, this.autoPlayDelay);
+      }
+
+      stopAutoPlay() {
+        if (this.autoPlayTimer) {
+          clearInterval(this.autoPlayTimer);
+          this.autoPlayTimer = null;
+        }
+      }
+    }
+
+    customElements.define('testimonial-carousel', TestimonialCarousel);
+  }
+</script>
+{%- assign custom_element_defined = true -%}
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Testimonial Carousel",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_top_clip",
+      "label": "Enable Top Wave Clip",
+      "info": "Clips the top of this section to interlock with a wavy section above it.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Desktop Section Spacing"
+    },
+    {
+      "type": "header",
+      "content": "Image Size (Dynamic Scaling)"
+    },
+    {
+       "type": "text",
+       "id": "image_aspect_ratio",
+       "label": "Image Aspect Ratio (W/H)",
+       "info": "Example: 1 / 1 (Square), 4 / 3 (Landscape). Controls the automatic dimension.",
+       "default": "1 / 1"
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile: Width px (360px - 767px)"
+    },
+    {
+      "type": "range",
+      "id": "img_w_360",
+      "label": "Width px at 360px",
+      "min": 100,
+      "max": 360,
+      "step": 5,
+      "unit": "px",
+      "default": 360
+    },
+    {
+      "type": "range",
+      "id": "img_w_767",
+      "label": "Width px at 767px",
+      "min": 167,
+      "max": 767,
+      "step": 10,
+      "unit": "px",
+      "default": 767
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop: Height px (768px - 1400px)"
+    },
+    {
+      "type": "range",
+      "id": "img_h_768",
+      "label": "Height px at 768px",
+      "min": 100,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "img_h_1400",
+      "label": "Height px at 1400px",
+      "min": 200,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Section Height"
+    },
+    {
+      "type": "range",
+      "id": "height_360",
+      "label": "Height at 360px (Mobile)",
+      "min": 400,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 640
+    },
+    {
+      "type": "range",
+      "id": "height_767",
+      "label": "Height at 767px (Large Mobile)",
+      "min": 300,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "height_768",
+      "label": "Height at 768px (Tablet)",
+      "min": 300,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "height_1400",
+      "label": "Height at 1400px (Desktop)",
+      "min": 300,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "vertical_offset",
+      "label": "Vertical Interlock Offset",
+      "info": "Fine-tune the upward shift to eliminate gaps (in pixels).",
+      "min": -20,
+      "max": 20,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_bottom_clip",
+      "label": "Enable Bottom Wave Clip",
+      "info": "Clips the bottom of this section using the provided SVG.",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#00AEEF"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote Text Color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "author_color",
+      "label": "Author Text Color",
+      "default": "#414141"
+    },
+    {
+      "type": "html",
+      "id": "svg_code",
+      "label": "SVG Mask Code",
+      "info": "Paste the raw <svg>...</svg> code here to use an inline SVG as the mask."
+    },
+    {
+      "type": "image_picker",
+      "id": "svg_mask",
+      "label": "SVG Mask (Fallback)",
+      "info": "Upload an SVG file to use as a mask shape if you don't have the raw code."
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Auto-play",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Auto-play delay",
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background Image"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "\"The attention to detail is remarkable. This is fashion done right!\""
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "M. from Berlin"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial Carousel",
+      "blocks": [
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    }
+  ]
+}
+{% endschema %}

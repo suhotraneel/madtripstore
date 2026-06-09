@@ -1,0 +1,280 @@
+{%- liquid
+  assign button_variant = variant | default: 'primary'
+  assign button_size = size | default: 'large'
+  assign button_mobile_size = mobile_size | default: button_size
+  assign button_label = label | strip
+-%}
+
+<style>
+  .button-component {
+    display: inline-flex;
+    align-items: stretch;
+    justify-content: center;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    width: auto;
+    max-width: 100%;
+    transform-origin: center;
+    transition: transform 0.2s ease;
+    will-change: transform;
+    --button-left-clip-width: 3.4rem;
+    --button-mask-left-solid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='72' viewBox='0 0 34 72' fill='none'%3E%3Cpath fill='white' d='M33.5 0.000476982C26.6794 -0.0384721 19.4541 2.30629 12.5378 7.64229C-11.4191 29.4424 0.81115 71.4935 33.5 72V0.000476982Z'/%3E%3C/svg%3E");
+    --button-mask-right-solid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='72' viewBox='0 0 34 72' fill='none'%3E%3Cpath fill='white' d='M0 0.000476982C6.82065 -0.0384721 14.0459 2.30629 20.9622 7.64229C44.9191 29.4424 32.6889 71.4935 0 72V0.000476982Z'/%3E%3C/svg%3E");
+    --button-mask-left: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='72' viewBox='0 0 34 72' fill='none'%3E%3Cpath fill='white' fill-rule='evenodd' clip-rule='evenodd' d='M33.5 0.000476982C26.6794 -0.0384721 19.4541 2.30629 12.5378 7.64229C-11.4191 29.4424 0.81115 71.4935 33.5 72V0.000476982ZM17.2207 50.2808C18.1455 46.1579 20.9193 46.2526 22.0752 46.6621C24.8478 47.8983 24.3869 50.3932 24.1548 51.7097C24.1541 52.7682 21.551 54.8434 19.7072 54.298L19.5317 54.2375C18.2551 54.2375 16.9897 52.7532 17.2207 50.2808ZM11.372 38.6608C11.7419 37.0122 12.8509 37.0496 13.3134 37.2133C14.4222 37.7078 14.2387 38.7055 14.1458 39.2322C14.1449 39.642 13.1698 40.4322 12.4388 40.2851L12.2966 40.2431C11.7861 40.2431 11.2799 39.6494 11.372 38.6608ZM18.009 18.2856C24.6489 18.2238 24.2887 28.9209 17.8727 30.0794C10.0449 31.4907 10.2658 18.7687 17.6521 18.2983L18.009 18.2856ZM23.4371 11.4818C25.8942 11.3752 26.2046 15.4591 23.6332 15.7148L23.3753 15.7275C20.7205 15.7206 20.9876 11.5923 23.4371 11.4818Z'/%3E%3C/svg%3E");
+    --button-mask-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='72' viewBox='0 0 34 72' fill='none'%3E%3Cpath fill='white' fill-rule='evenodd' clip-rule='evenodd' d='M0 0.000476982C6.82065 -0.0384721 14.0459 2.30629 20.9622 7.64229C44.9191 29.4424 32.6889 71.4935 0 72V0.000476982ZM16.2793 50.2808C15.3545 46.1579 12.5807 46.2526 11.4248 46.6621C8.65224 47.8983 9.11309 50.3932 9.34519 51.7097C9.34592 52.7682 11.949 54.8434 13.7928 54.298L13.9683 54.2375C15.2449 54.2375 16.5103 52.7532 16.2793 50.2808ZM22.128 38.6608C21.7581 37.0122 20.6491 37.0496 20.1866 37.2133C19.0778 37.7078 19.2613 38.7055 19.3542 39.2322C19.3551 39.642 20.3302 40.4322 21.0612 40.2851L21.2034 40.2431C21.7139 40.2431 22.2201 39.6494 22.128 38.6608ZM15.491 18.2856C8.8511 18.2238 9.21131 28.9209 15.6273 30.0794C23.4551 31.4907 23.2342 18.7687 15.8479 18.2983L15.491 18.2856ZM10.0629 11.4818C7.60581 11.3752 7.29542 15.4591 9.86682 15.7148L10.1247 15.7275C12.7795 15.7206 12.5124 11.5923 10.0629 11.4818Z'/%3E%3C/svg%3E");
+  }
+
+  .button-component:focus-visible {
+    outline: 0.2rem solid currentColor;
+    outline-offset: 0.3rem;
+  }
+
+  .button-component__body {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    isolation: isolate;
+    text-align: center;
+    font-weight: 400;
+    text-transform: capitalize;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .button-component__label {
+    position: relative;
+    z-index: 1;
+  }
+
+  .button-component__body {
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    border-radius: 0;
+    padding-left: calc(4rem + var(--button-left-clip-width));
+    padding-right: calc(4rem + var(--button-left-clip-width));
+    -webkit-mask-image:
+      var(--button-mask-left),
+      var(--button-mask-right),
+      linear-gradient(#fff 0 0);
+    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
+    -webkit-mask-size:
+      var(--button-left-clip-width) 100%,
+      var(--button-left-clip-width) 100%,
+      calc(100% - (var(--button-left-clip-width) * 2) + 0.2rem) 100%;
+    -webkit-mask-position:
+      left center,
+      right center,
+      center;
+    mask-image:
+      var(--button-mask-left),
+      var(--button-mask-right),
+      linear-gradient(#fff 0 0);
+    mask-repeat: no-repeat, no-repeat, no-repeat;
+    mask-size:
+      var(--button-left-clip-width) 100%,
+      var(--button-left-clip-width) 100%,
+      calc(100% - (var(--button-left-clip-width) * 2) + 0.2rem) 100%;
+    mask-position:
+      left center,
+      right center,
+      center;
+  }
+
+  .button-component--large .button-component__body {
+    min-height: 7.2rem;
+    font-size: 2.4rem;
+    line-height: 3.2rem;
+  }
+
+  .button-component--small {
+    --button-left-clip-width: 2.833rem;
+  }
+
+  .button-component--small .button-component__body {
+    min-height: 6rem;
+  }
+
+  .button-component--small.button-component--primary .button-component__body {
+    font-size: 2rem;
+    line-height: 2.8rem;
+  }
+
+  .button-component--small.button-component--secondary .button-component__body {
+    min-height: 5.6rem;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+  }
+
+  .button-component--small.button-component--secondary {
+    --button-left-clip-width: 2.644rem;
+  }
+
+  .button-component--xsmall {
+    --button-left-clip-width: 2.267rem;
+  }
+
+  .button-component--xsmall .button-component__body {
+    min-height: 4.8rem;
+    padding-left: calc(2.4rem + var(--button-left-clip-width));
+    padding-right: calc(2.4rem + var(--button-left-clip-width));
+  }
+
+  .button-component--xsmall.button-component--primary .button-component__body {
+    font-size: 1.6rem;
+    line-height: 2.2rem;
+  }
+
+  .button-component--xsmall.button-component--secondary {
+    --button-left-clip-width: 2.089rem;
+  }
+
+  .button-component--xsmall.button-component--secondary .button-component__body {
+    min-height: 4.4rem;
+    font-size: 1.4rem;
+    line-height: 2rem;
+  }
+
+  .button-component--primary {
+    color: #111111;
+  }
+
+  .button-component--primary .button-component__body {
+    background: #00adee;
+  }
+
+  .button-component--secondary {
+    color: #ffffff;
+    background-color: #ffffff;
+    border-radius: 100px;
+  }
+
+  .button-component--secondary .button-component__body {
+    background: transparent;
+  }
+
+  .button-component--secondary .button-component__body::before,
+  .button-component--secondary .button-component__body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    -webkit-mask-image:
+      var(--button-mask-left-solid),
+      var(--button-mask-right-solid),
+      linear-gradient(#fff 0 0);
+    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
+    -webkit-mask-size:
+      var(--button-left-clip-width) 100%,
+      var(--button-left-clip-width) 100%,
+      calc(100% - (var(--button-left-clip-width) * 2) + 0.2rem) 100%;
+    -webkit-mask-position:
+      left center,
+      right center,
+      center;
+    mask-image:
+      var(--button-mask-left-solid),
+      var(--button-mask-right-solid),
+      linear-gradient(#fff 0 0);
+    mask-repeat: no-repeat, no-repeat, no-repeat;
+    mask-size:
+      var(--button-left-clip-width) 100%,
+      var(--button-left-clip-width) 100%,
+      calc(100% - (var(--button-left-clip-width) * 2) + 0.2rem) 100%;
+    mask-position:
+      left center,
+      right center,
+      center;
+  }
+
+  .button-component--secondary .button-component__body::before {
+    background: #ffffff;
+    filter:
+      drop-shadow(1px 0 0 #ffffff)
+      drop-shadow(-1px 0 0 #ffffff)
+      drop-shadow(0 1px 0 #ffffff)
+      drop-shadow(0 -1px 0 #ffffff);
+  }
+
+  .button-component--secondary .button-component__body::after {
+    background: #111111;
+    inset: 1px;
+  }
+
+  .button-component:hover,
+  .button-component:focus-visible {
+    transform: scale(1.1);
+  }
+
+  @media screen and (max-width: 749px) {
+    .button-component--mobile-large {
+      --button-left-clip-width: 2.833rem;
+    }
+
+    .button-component--mobile-large .button-component__body {
+      min-height: 6rem;
+      font-size: 2rem;
+      line-height: 2.6rem;
+    }
+
+    .button-component--mobile-small {
+      --button-left-clip-width: 2.833rem;
+    }
+
+    .button-component--mobile-small .button-component__body {
+      min-height: 6rem;
+      font-size: 2rem;
+      line-height: 2.8rem;
+    }
+
+    .button-component--mobile-small.button-component--secondary {
+      --button-left-clip-width: 2.644rem;
+    }
+
+    .button-component--mobile-small.button-component--secondary .button-component__body {
+      min-height: 5.6rem;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
+    }
+
+    .button-component--mobile-xsmall {
+      --button-left-clip-width: 2.267rem;
+    }
+
+    .button-component--mobile-xsmall .button-component__body {
+      min-height: 4.8rem;
+      padding-left: calc(2.4rem + var(--button-left-clip-width));
+      padding-right: calc(2.4rem + var(--button-left-clip-width));
+    }
+
+    .button-component--mobile-xsmall.button-component--primary .button-component__body {
+      font-size: 1.6rem;
+      line-height: 2.2rem;
+    }
+
+    .button-component--mobile-xsmall.button-component--secondary {
+      --button-left-clip-width: 2.089rem;
+    }
+
+    .button-component--mobile-xsmall.button-component--secondary .button-component__body {
+      min-height: 4.4rem;
+      font-size: 1.4rem;
+      line-height: 2rem;
+    }
+  }
+</style>
+
+<a
+  href="{{ url }}"
+  class="button-component button-component--{{ button_variant }} button-component--{{ button_size }} button-component--mobile-{{ button_mobile_size }}"
+  {% if aria_label != blank %}
+    aria-label="{{ aria_label }}"
+  {% endif %}
+>
+  <span class="button-component__body">
+    <span class="button-component__label">{{ button_label }}</span>
+  </span>
+</a>

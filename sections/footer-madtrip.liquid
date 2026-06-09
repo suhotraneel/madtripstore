@@ -1,0 +1,927 @@
+{% schema %}
+{
+  "name": "Madtrip Footer",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#111111"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 400,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo Width",
+      "default": 280
+    },
+    {
+      "type": "link_list",
+      "id": "menu_below_logo",
+      "label": "Menu Below Logo"
+    },
+    {
+      "type": "html",
+      "id": "accordion_icon",
+      "label": "Accordion Arrow Icon (SVG)",
+      "info": "Paste SVG code here. Leave blank to use default."
+    },
+    {
+      "type": "image_picker",
+      "id": "fly_image_1",
+      "label": "Fly Animation Frame 1 (SVG/Image)"
+    },
+    {
+      "type": "image_picker",
+      "id": "fly_image_2",
+      "label": "Fly Animation Frame 2 (SVG/Image)"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_products",
+      "label": "Products Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_support",
+      "label": "Support Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_about",
+      "label": "About Menu"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright Text",
+      "default": "©2025 Madtrip, All rights reserved."
+    },
+    {
+      "type": "header",
+      "content": "Social Media Links"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "social_twitter",
+      "label": "Twitter"
+    },
+    {
+      "type": "url",
+      "id": "social_pinterest",
+      "label": "Pinterest"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Madtrip Footer"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  @font-face {
+    font-family: "Krugat";
+    src: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/Krugat.ttf?v=1761338417") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: "PallyVariable";
+    src: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/PallyVariable.ttf?v=1732101857") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  /* Fallback for Pally if not available, using system sans-serif which is cleaner */
+  
+  .footer-madtrip {
+    position: relative;
+    background-color: {{ section.settings.bg_color }};
+    color: #eaeaea;
+    overflow: hidden;
+    width: 100%;
+    font-family: "PallyVariable";
+  }
+
+  .footer-madtrip__container {
+    width: 100%;
+    max-width: 1400px; /* From desktop design node */
+    margin: 0 auto;
+    padding: 48px 24px 24px; /* Mobile padding base */
+    display: flex;
+    flex-direction: column;
+    gap: 84px;
+  }
+
+  /* TOP SECTION */
+  .footer-madtrip__top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+  }
+  
+  .footer-madtrip__brand-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center on mobile */
+    gap: 40px;
+    max-width: 100%;
+    width: 100%;
+    text-align: center; /* Center text on mobile */
+  }
+
+  .footer-madtrip__logo-link {
+    display: block;
+    width: 100%;
+    max-width: {{ section.settings.logo_width }}px;
+    margin: 0 auto;
+  }
+
+  .footer-madtrip__logo {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  
+  .footer-madtrip__logo-placeholder {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd700;
+    letter-spacing: 1px;
+    padding: 10px 0;
+  }
+
+  .footer-madtrip__logo-menu {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between !important;
+    gap: 64px;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: {{ section.settings.logo_width }}px;
+  }
+
+  .footer-madtrip__logo-menu.footer-madtrip__logo-menu--center {
+    justify-content: center !important;
+  }
+
+  .footer-madtrip__logo-menu-link {
+    font-family: "Krugat", sans-serif !important;
+    font-weight: normal;
+    font-size: 16px;
+    color: #eaeaea;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+  }
+  
+  .footer-madtrip__logo-menu-link:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+  }
+
+  .footer-madtrip__nav-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .footer-madtrip__menu-col {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .footer-madtrip__menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .footer-madtrip__menu-title {
+    font-family: 'Krugat';
+    font-size: 20px;
+    font-weight: 400;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .footer-madtrip__menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: #ffffff;
+  }
+
+  .footer-madtrip__accordion-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .footer-madtrip__accordion-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .footer-madtrip__menu-col.is-active .footer-madtrip__accordion-icon {
+    transform: rotate(180deg);
+  }
+
+  .footer-madtrip__menu-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    padding-bottom: 0;
+    transition: grid-template-rows 0.3s ease-out, padding-bottom 0.3s ease-out;
+  }
+
+  .footer-madtrip__menu-content > * {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .footer-madtrip__menu-col.is-active .footer-madtrip__menu-content {
+    grid-template-rows: 1fr;
+    padding-bottom: 16px;
+  }
+
+  .footer-madtrip__menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-madtrip__menu-link {
+    font-size: 14px;
+    color: #eaeaea;
+    text-decoration: none;
+    display: inline-block; /* Required for transform scale to work properly */
+    transform-origin: left center;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .footer-madtrip__menu-link:hover {
+    color: #ffffff;
+    text-decoration: none;
+    transform: scale(1.2);
+  }
+
+  /* BOTTOM BAR */
+  .footer-madtrip__bottom-bar {
+    position: relative;
+    width: 100%;
+    border-radius: 1000px;
+    padding: 20px 32px;
+    background-color: #00ADEE;
+    display: flex;
+    flex-direction: column; /* Stacked on mobile */
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .footer-madtrip__copyright {
+    font-size: 12px;
+    color: #111111;
+    line-height: 16px;
+    margin: 0;
+  }
+
+  .footer-madtrip__social-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .footer-madtrip__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: #111111;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .footer-madtrip__social-link:hover {
+    color: #000000;
+    transform: scale(1.1);
+  }
+  
+  .footer-madtrip__social-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    fill: currentColor;
+  }
+
+  .footer-madtrip__fly {
+    position: absolute;
+    bottom: 100%;
+    z-index: 10;
+    transition: left 0.3s ease-in-out;
+    transform: translateX(-50%) translateY(0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-madtrip__fly-img {
+    width: 48px;
+    height: 48px;
+    padding: 15px; /* Invisibly increases the touch target size for mobile */
+    margin-bottom: -15px; /* Offsets the bottom padding so visual placement is unchanged */
+    box-sizing: content-box;
+    object-fit: cover;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .footer-madtrip__fly-text {
+    font-family: "PallyVariable";
+    font-size: 14px;
+    line-height: 20px;
+    color: #111111;
+    background-color: #ffd700;
+    padding: 4px 10px;
+    border-radius: 14px 14px 14px 0px;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 100%;
+    left: 50%; /* Aligns the left edge of the text to the center of the fly */
+    margin-bottom: -5px; /* Just above the fly */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .footer-madtrip__fly-text.is-visible {
+    opacity: 1;
+  }
+
+  .footer-madtrip__fly-text--right {
+    left: auto;
+    right: 50%; /* Aligns the right edge of the text to the center of the fly */
+    border-radius: 14px 14px 0px 14px;
+  }
+
+  /* RESPONSIVE: Tablet (>= 480px) */
+  @media (min-width: 480px) {
+    .footer-madtrip__container {
+      padding: 48px 32px 32px;
+      gap: 96px; /* Reduced gap */
+    }
+
+    .footer-madtrip__fly-img {
+      width: 64px;
+      height: 64px;
+    }
+
+    .footer-madtrip__nav-row {
+      flex-direction: row;
+      width: 100%;
+      max-width: 560px;
+      justify-content: space-between;
+      gap: 24px; /* Minimum gap fallback */
+    }
+    
+    .footer-madtrip__menu-col {
+      width: auto;
+      min-width: 0;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .footer-madtrip__menu-header {
+      padding: 0 0 16px 0;
+      cursor: default;
+    }
+
+    .footer-madtrip__menu-icon {
+      display: none;
+    }
+
+    .footer-madtrip__menu-content {
+      display: block;
+      padding-bottom: 0;
+    }
+
+    .footer-madtrip__menu-content > * {
+      overflow: visible;
+    }
+
+    .footer-madtrip__menu-list {
+      padding: 0;
+    }
+
+    .footer-madtrip__bottom-bar {
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 20px 24px;
+    }
+    
+    .footer-madtrip__copyright {
+      order: 1; /* Left */
+    }
+    
+    .footer-madtrip__social-list {
+      order: 2; /* Right */
+    }
+  }
+
+  /* RESPONSIVE: Desktop (>= 1028px) */
+  @media (min-width: 1028px) {
+    .footer-madtrip__container {
+      padding: 48px 50px 50px;
+    }
+
+    .footer-madtrip__top {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 64px;
+    }
+
+    .footer-madtrip__brand-col {
+      align-items: flex-start;
+      text-align: left;
+      max-width: 400px; /* Accommodates up to 400px logo */
+    }
+
+    .footer-madtrip__logo-link {
+      margin: 0;
+    }
+
+    .footer-madtrip__logo-menu {
+      justify-content: space-between !important;
+      text-align: left;
+      margin: 0;
+      width: 100%;
+    }
+    
+    .footer-madtrip__logo-menu.footer-madtrip__logo-menu--center {
+      justify-content: center !important;
+    }
+
+    .footer-madtrip__nav-row {
+      width: auto;
+      max-width: none;
+      justify-content: flex-end;
+      gap: 64px;
+    }
+
+    .footer-madtrip__bottom-bar {
+      padding: 20px 24px;
+    }
+  }
+
+  /* RESPONSIVE: Large Desktop (>= 1400px) */
+  @media (min-width: 1400px) {
+    .footer-madtrip__container {
+        padding: 60px 50px 40px; /* Match desktop design padding */
+    }
+  }
+
+</style>
+
+<div class="footer-madtrip">
+  <div class="footer-madtrip__container">
+    
+    <div class="footer-madtrip__top">
+      <!-- Brand / Logo Section -->
+      <div class="footer-madtrip__brand-col">
+        {% if section.settings.logo != blank %}
+          <a href="/" aria-label="Home" class="footer-madtrip__logo-link">
+            {{ section.settings.logo | image_url: width: 800 | image_tag: class: 'footer-madtrip__logo', loading: 'lazy' }}
+          </a>
+        {% else %}
+           <!-- Text Placeholder for Logo if no image -->
+           <a href="/" aria-label="Home" class="footer-madtrip__logo-link" style="text-decoration: none; color: inherit;">
+             <div class="footer-madtrip__logo-placeholder">MAD TRIP</div>
+           </a>
+        {% endif %}
+
+        {% if section.settings.menu_below_logo != blank %}
+          <ul class="footer-madtrip__logo-menu {% if linklists[section.settings.menu_below_logo].links.size == 1 %}footer-madtrip__logo-menu--center{% endif %}">
+            {% for link in linklists[section.settings.menu_below_logo].links %}
+              <li><a href="{{ link.url }}" class="footer-madtrip__logo-menu-link">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <!-- Menus Section -->
+      <div class="footer-madtrip__nav-row">
+        <!-- Products -->
+        <div class="footer-madtrip__menu-col">
+          <div class="footer-madtrip__menu-header">
+            <h3 class="footer-madtrip__menu-title">
+              {% if section.settings.menu_products != blank %}
+                {{ linklists[section.settings.menu_products].title }}
+              {% else %}
+                Products
+              {% endif %}
+            </h3>
+            <span class="footer-madtrip__menu-icon">
+              <span class="footer-madtrip__accordion-icon">
+                {% if section.settings.accordion_icon != blank %}
+                  {{ section.settings.accordion_icon }}
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="43" viewBox="0 0 46 43" fill="none">
+                    <path d="M0.208012 4.51761C1.01693 1.03329 5.33889 0.811357 7.83499 2.80874C9.42972 4.14033 10.1693 9.1933 11.4867 10.7024C12.0876 11.5458 13.2015 11.5867 14.1677 11.7011C14.8914 11.7868 15.5313 12.2559 16.0629 12.6998C17.3803 13.8095 18.2585 18.2742 19.4141 19.4948C19.9457 20.0497 20.5235 20.7155 21.3787 20.7377C23.6205 20.7377 24.7068 18.5849 25.6082 16.9204C26.1629 15.9661 26.8331 12.0784 27.5958 11.2573C28.9825 9.70374 31.0164 8.8604 33.1427 8.8604C33.9978 8.79382 34.8992 8.68286 35.6157 8.2168C36.5171 7.61759 36.8868 6.57451 37.4878 5.75336C38.6202 3.93353 40.7697 -0.431458 43.0809 0.0345979C46.1086 0.47846 45.7619 2.63119 45.4383 4.85051C45.2765 5.96016 45.0916 7.09201 45.3459 8.00193C45.6001 8.57895 46.0623 9.20036 45.993 9.84396C45.5539 13.4171 41.255 15.1481 41.9946 19.0541C42.5724 23.6037 39.2443 27.4431 35.893 30.2394C34.437 31.5266 32.588 32.3922 31.0164 33.4796C28.7976 35.2551 30.3692 38.5619 28.5203 40.5592C27.4802 41.8908 26.0706 42.2965 24.3743 42.6539C23.6122 42.8145 22.5343 42.6454 21.9565 42.3791C18.559 40.9143 17.4727 37.0305 14.7224 34.8556C13.2432 33.5684 11.3249 32.5475 9.84574 31.3491C8.43591 30.2838 7.60387 28.6637 7.71943 26.9105C7.74254 26.1559 7.76565 25.357 7.37275 24.6912C6.72561 23.5593 5.66246 22.6938 4.69175 21.8061C2.77345 20.0528 1.01693 18.0776 0.439133 15.5476C0.254236 14.7708 0.231122 13.9497 0.624027 13.2395C0.7627 12.9732 1.01693 12.727 1.01693 12.4184C1.01693 10.3985 0 8.37921 0 6.35964C0 5.76042 0.0693393 5.16121 0.208012 4.562V4.51761Z" fill="white"/>
+                  </svg>
+                {% endif %}
+              </span>
+            </span>
+          </div>
+          <div class="footer-madtrip__menu-content">
+            <ul class="footer-madtrip__menu-list">
+              {% if section.settings.menu_products != blank %}
+                {% for link in linklists[section.settings.menu_products].links %}
+                  <li><a href="{{ link.url }}" class="footer-madtrip__menu-link">{{ link.title }}</a></li>
+                {% endfor %}
+              {% else %}
+                 <li><a href="#" class="footer-madtrip__menu-link">Facemask</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">T-shirt</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Tank top</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Tapestry</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Support -->
+        <div class="footer-madtrip__menu-col">
+          <div class="footer-madtrip__menu-header">
+            <h3 class="footer-madtrip__menu-title">
+               {% if section.settings.menu_support != blank %}
+                {{ linklists[section.settings.menu_support].title }}
+              {% else %}
+                Support
+              {% endif %}
+            </h3>
+            <span class="footer-madtrip__menu-icon">
+              <span class="footer-madtrip__accordion-icon">
+                {% if section.settings.accordion_icon != blank %}
+                  {{ section.settings.accordion_icon }}
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="43" viewBox="0 0 46 43" fill="none">
+                    <path d="M0.208012 4.51761C1.01693 1.03329 5.33889 0.811357 7.83499 2.80874C9.42972 4.14033 10.1693 9.1933 11.4867 10.7024C12.0876 11.5458 13.2015 11.5867 14.1677 11.7011C14.8914 11.7868 15.5313 12.2559 16.0629 12.6998C17.3803 13.8095 18.2585 18.2742 19.4141 19.4948C19.9457 20.0497 20.5235 20.7155 21.3787 20.7377C23.6205 20.7377 24.7068 18.5849 25.6082 16.9204C26.1629 15.9661 26.8331 12.0784 27.5958 11.2573C28.9825 9.70374 31.0164 8.8604 33.1427 8.8604C33.9978 8.79382 34.8992 8.68286 35.6157 8.2168C36.5171 7.61759 36.8868 6.57451 37.4878 5.75336C38.6202 3.93353 40.7697 -0.431458 43.0809 0.0345979C46.1086 0.47846 45.7619 2.63119 45.4383 4.85051C45.2765 5.96016 45.0916 7.09201 45.3459 8.00193C45.6001 8.57895 46.0623 9.20036 45.993 9.84396C45.5539 13.4171 41.255 15.1481 41.9946 19.0541C42.5724 23.6037 39.2443 27.4431 35.893 30.2394C34.437 31.5266 32.588 32.3922 31.0164 33.4796C28.7976 35.2551 30.3692 38.5619 28.5203 40.5592C27.4802 41.8908 26.0706 42.2965 24.3743 42.6539C23.6122 42.8145 22.5343 42.6454 21.9565 42.3791C18.559 40.9143 17.4727 37.0305 14.7224 34.8556C13.2432 33.5684 11.3249 32.5475 9.84574 31.3491C8.43591 30.2838 7.60387 28.6637 7.71943 26.9105C7.74254 26.1559 7.76565 25.357 7.37275 24.6912C6.72561 23.5593 5.66246 22.6938 4.69175 21.8061C2.77345 20.0528 1.01693 18.0776 0.439133 15.5476C0.254236 14.7708 0.231122 13.9497 0.624027 13.2395C0.7627 12.9732 1.01693 12.727 1.01693 12.4184C1.01693 10.3985 0 8.37921 0 6.35964C0 5.76042 0.0693393 5.16121 0.208012 4.562V4.51761Z" fill="white"/>
+                  </svg>
+                {% endif %}
+              </span>
+            </span>
+          </div>
+          <div class="footer-madtrip__menu-content">
+            <ul class="footer-madtrip__menu-list">
+              {% if section.settings.menu_support != blank %}
+                {% for link in linklists[section.settings.menu_support].links %}
+                  <li><a href="{{ link.url }}" class="footer-madtrip__menu-link">{{ link.title }}</a></li>
+                {% endfor %}
+              {% else %}
+                 <li><a href="#" class="footer-madtrip__menu-link">Terms of Service</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Privacy Policy</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Return Policy</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Contact</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Orders</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- About -->
+        <div class="footer-madtrip__menu-col">
+          <div class="footer-madtrip__menu-header">
+            <h3 class="footer-madtrip__menu-title">
+               {% if section.settings.menu_about != blank %}
+                {{ linklists[section.settings.menu_about].title }}
+              {% else %}
+                About
+              {% endif %}
+            </h3>
+            <span class="footer-madtrip__menu-icon">
+              <span class="footer-madtrip__accordion-icon">
+                {% if section.settings.accordion_icon != blank %}
+                  {{ section.settings.accordion_icon }}
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="43" viewBox="0 0 46 43" fill="none">
+                    <path d="M0.208012 4.51761C1.01693 1.03329 5.33889 0.811357 7.83499 2.80874C9.42972 4.14033 10.1693 9.1933 11.4867 10.7024C12.0876 11.5458 13.2015 11.5867 14.1677 11.7011C14.8914 11.7868 15.5313 12.2559 16.0629 12.6998C17.3803 13.8095 18.2585 18.2742 19.4141 19.4948C19.9457 20.0497 20.5235 20.7155 21.3787 20.7377C23.6205 20.7377 24.7068 18.5849 25.6082 16.9204C26.1629 15.9661 26.8331 12.0784 27.5958 11.2573C28.9825 9.70374 31.0164 8.8604 33.1427 8.8604C33.9978 8.79382 34.8992 8.68286 35.6157 8.2168C36.5171 7.61759 36.8868 6.57451 37.4878 5.75336C38.6202 3.93353 40.7697 -0.431458 43.0809 0.0345979C46.1086 0.47846 45.7619 2.63119 45.4383 4.85051C45.2765 5.96016 45.0916 7.09201 45.3459 8.00193C45.6001 8.57895 46.0623 9.20036 45.993 9.84396C45.5539 13.4171 41.255 15.1481 41.9946 19.0541C42.5724 23.6037 39.2443 27.4431 35.893 30.2394C34.437 31.5266 32.588 32.3922 31.0164 33.4796C28.7976 35.2551 30.3692 38.5619 28.5203 40.5592C27.4802 41.8908 26.0706 42.2965 24.3743 42.6539C23.6122 42.8145 22.5343 42.6454 21.9565 42.3791C18.559 40.9143 17.4727 37.0305 14.7224 34.8556C13.2432 33.5684 11.3249 32.5475 9.84574 31.3491C8.43591 30.2838 7.60387 28.6637 7.71943 26.9105C7.74254 26.1559 7.76565 25.357 7.37275 24.6912C6.72561 23.5593 5.66246 22.6938 4.69175 21.8061C2.77345 20.0528 1.01693 18.0776 0.439133 15.5476C0.254236 14.7708 0.231122 13.9497 0.624027 13.2395C0.7627 12.9732 1.01693 12.727 1.01693 12.4184C1.01693 10.3985 0 8.37921 0 6.35964C0 5.76042 0.0693393 5.16121 0.208012 4.562V4.51761Z" fill="white"/>
+                  </svg>
+                {% endif %}
+              </span>
+            </span>
+          </div>
+          <div class="footer-madtrip__menu-content">
+            <ul class="footer-madtrip__menu-list">
+              {% if section.settings.menu_about != blank %}
+                {% for link in linklists[section.settings.menu_about].links %}
+                  <li><a href="{{ link.url }}" class="footer-madtrip__menu-link">{{ link.title }}</a></li>
+                {% endfor %}
+              {% else %}
+                 <li><a href="#" class="footer-madtrip__menu-link">Our Story</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Sustainability</a></li>
+                 <li><a href="#" class="footer-madtrip__menu-link">Careers</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-madtrip__bottom-bar">
+      <p class="footer-madtrip__copyright">{{ section.settings.copyright }}</p>
+      
+      <ul class="footer-madtrip__social-list">
+        {% if section.settings.social_facebook != blank %}
+        <li><a href="{{ section.settings.social_facebook }}" class="footer-madtrip__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+          <svg class="footer-madtrip__social-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_2294_431)">
+            <path d="M20 10C20 4.47715 15.5229 0 10 0C4.47715 0 0 4.47715 0 10C0 14.9912 3.65684 19.1283 8.4375 19.8785V12.8906H5.89844V10H8.4375V7.79688C8.4375 5.29063 9.93047 3.90625 12.2146 3.90625C13.3084 3.90625 14.4531 4.10156 14.4531 4.10156V6.5625H13.1922C11.95 6.5625 11.5625 7.3334 11.5625 8.125V10H14.3359L13.8926 12.8906H11.5625V19.8785C16.3432 19.1283 20 14.9912 20 10Z" fill="currentColor"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_2294_431">
+            <rect width="20" height="20" fill="white"/>
+            </clipPath>
+            </defs>
+          </svg>
+        </a></li>
+        {% endif %}
+        
+        {% if section.settings.social_instagram != blank %}
+        <li><a href="{{ section.settings.social_instagram }}" class="footer-madtrip__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+          <svg class="footer-madtrip__social-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g>
+            <path d="M10 1.80078C12.6719 1.80078 12.9883 1.8125 14.0391 1.85937C15.0156 1.90234 15.543 2.06641 15.8945 2.20313C16.3594 2.38281 16.6953 2.60156 17.043 2.94922C17.3945 3.30078 17.6094 3.63281 17.7891 4.09766C17.9258 4.44922 18.0898 4.98047 18.1328 5.95313C18.1797 7.00781 18.1914 7.32422 18.1914 9.99219C18.1914 12.6641 18.1797 12.9805 18.1328 14.0313C18.0898 15.0078 17.9258 15.5352 17.7891 15.8867C17.6094 16.3516 17.3906 16.6875 17.043 17.0352C16.6914 17.3867 16.3594 17.6016 15.8945 17.7813C15.543 17.918 15.0117 18.082 14.0391 18.125C12.9844 18.1719 12.668 18.1836 10 18.1836C7.32813 18.1836 7.01172 18.1719 5.96094 18.125C4.98438 18.082 4.45703 17.918 4.10547 17.7813C3.64063 17.6016 3.30469 17.3828 2.95703 17.0352C2.60547 16.6836 2.39063 16.3516 2.21094 15.8867C2.07422 15.5352 1.91016 15.0039 1.86719 14.0313C1.82031 12.9766 1.80859 12.6602 1.80859 9.99219C1.80859 7.32031 1.82031 7.00391 1.86719 5.95313C1.91016 4.97656 2.07422 4.44922 2.21094 4.09766C2.39063 3.63281 2.60938 3.29688 2.95703 2.94922C3.30859 2.59766 3.64063 2.38281 4.10547 2.20313C4.45703 2.06641 4.98828 1.90234 5.96094 1.85937C7.01172 1.8125 7.32813 1.80078 10 1.80078ZM10 0C7.28516 0 6.94531 0.0117187 5.87891 0.0585938C4.81641 0.105469 4.08594 0.277344 3.45313 0.523437C2.79297 0.78125 2.23438 1.12109 1.67969 1.67969C1.12109 2.23438 0.78125 2.79297 0.523438 3.44922C0.277344 4.08594 0.105469 4.8125 0.0585938 5.875C0.0117188 6.94531 0 7.28516 0 10C0 12.7148 0.0117188 13.0547 0.0585938 14.1211C0.105469 15.1836 0.277344 15.9141 0.523438 16.5469C0.78125 17.207 1.12109 17.7656 1.67969 18.3203C2.23438 18.875 2.79297 19.2188 3.44922 19.4727C4.08594 19.7188 4.8125 19.8906 5.875 19.9375C6.94141 19.9844 7.28125 19.9961 9.99609 19.9961C12.7109 19.9961 13.0508 19.9844 14.1172 19.9375C15.1797 19.8906 15.9102 19.7188 16.543 19.4727C17.1992 19.2188 17.7578 18.875 18.3125 18.3203C18.8672 17.7656 19.2109 17.207 19.4648 16.5508C19.7109 15.9141 19.8828 15.1875 19.9297 14.125C19.9766 13.0586 19.9883 12.7188 19.9883 10.0039C19.9883 7.28906 19.9766 6.94922 19.9297 5.88281C19.8828 4.82031 19.7109 4.08984 19.4648 3.45703C19.2188 2.79297 18.8789 2.23438 18.3203 1.67969C17.7656 1.125 17.207 0.78125 16.5508 0.527344C15.9141 0.28125 15.1875 0.109375 14.125 0.0625C13.0547 0.0117188 12.7148 0 10 0Z" fill="currentColor"/>
+            <path d="M9.99609 4.86328C7.16016 4.86328 4.85938 7.16406 4.85938 10C4.85938 12.8359 7.16016 15.1367 9.99609 15.1367C12.832 15.1367 15.1328 12.8359 15.1328 10C15.1328 7.16406 12.832 4.86328 9.99609 4.86328ZM9.99609 13.332C8.15625 13.332 6.66406 11.8398 6.66406 10C6.66406 8.16016 8.15625 6.66797 9.99609 6.66797C11.8359 6.66797 13.3281 8.16016 13.3281 10C13.3281 11.8398 11.8359 13.332 9.99609 13.332Z" fill="currentColor"/>
+            <path d="M16.5391 4.66013C16.5391 5.32419 16 5.85935 15.3398 5.85935C14.6758 5.85935 14.1406 5.32028 14.1406 4.66013C14.1406 3.99606 14.6797 3.46091 15.3398 3.46091C16 3.46091 16.5391 3.99997 16.5391 4.66013Z" fill="currentColor"/>
+            </g>
+          </svg>
+        </a></li>
+        {% endif %}
+        
+        {% if section.settings.social_twitter != blank %}
+        <li><a href="{{ section.settings.social_twitter }}" class="footer-madtrip__social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
+           <svg class="footer-madtrip__social-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <g clip-path="url(#clip0_2294_428)">
+             <path d="M15.75 0.937805H18.8175L12.1175 8.61531L20 19.0628H13.8287L8.995 12.7253L3.46375 19.0628H0.395L7.56125 10.8503L0 0.937805H6.32875L10.6975 6.72906L15.75 0.937805ZM14.675 17.2228H16.375L5.40375 2.68156H3.58125L14.675 17.2228Z" fill="currentColor"/>
+             </g>
+             <defs>
+             <clipPath id="clip0_2294_428">
+             <rect width="20" height="20" fill="white"/>
+             </clipPath>
+             </defs>
+           </svg>
+        </a></li>
+        {% endif %}
+        
+        {% if section.settings.social_pinterest != blank %}
+        <li><a href="{{ section.settings.social_pinterest }}" class="footer-madtrip__social-link" aria-label="Pinterest" target="_blank" rel="noopener noreferrer">
+           <svg class="footer-madtrip__social-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <g clip-path="url(#clip0_2297_466)">
+             <path d="M11.363 0.0932703C8.97111 -0.234477 6.5414 0.313883 4.52214 1.63718C2.50289 2.96047 1.03034 4.9694 0.376201 7.29332C-0.277941 9.61724 -0.0695425 12.0993 0.962947 14.2816C1.99544 16.4639 3.78235 18.1992 5.99399 19.1673C5.93454 18.3995 5.98914 17.6271 6.15599 16.8753C6.34099 16.0363 7.45199 11.4123 7.45199 11.4123C7.22955 10.9168 7.11893 10.3783 7.12799 9.83527C7.12799 8.35027 7.98499 7.24227 9.05099 7.24227C9.24249 7.23948 9.43235 7.27797 9.60766 7.3551C9.78297 7.43224 9.93961 7.54622 10.0669 7.68929C10.1943 7.83237 10.2893 8.00118 10.3455 8.18426C10.4018 8.36734 10.418 8.56038 10.393 8.75027C10.393 9.65027 9.81499 11.0123 9.51299 12.2903C9.4533 12.5247 9.44952 12.7698 9.50193 13.0059C9.55435 13.242 9.6615 13.4625 9.81475 13.6496C9.968 13.8367 10.1631 13.9852 10.3842 14.0831C10.6054 14.181 10.8464 14.2256 11.088 14.2133C12.985 14.2133 14.258 11.7823 14.258 8.91227C14.258 6.71127 12.801 5.06527 10.115 5.06527C9.47245 5.0403 8.83154 5.14617 8.23116 5.37644C7.63078 5.60671 7.08345 5.95658 6.6224 6.40481C6.16136 6.85305 5.7962 7.3903 5.54911 7.98395C5.30201 8.57761 5.17813 9.21528 5.18499 9.85827C5.15636 10.5716 5.38649 11.2712 5.83299 11.8283C5.91642 11.8906 5.97734 11.9783 6.00656 12.0782C6.03578 12.1781 6.03172 12.2849 5.99499 12.3823C5.94899 12.5663 5.83299 13.0053 5.78699 13.1673C5.77729 13.2218 5.75493 13.2733 5.72173 13.3176C5.68852 13.3619 5.64538 13.3978 5.59578 13.4224C5.54618 13.447 5.4915 13.4596 5.43613 13.4592C5.38077 13.4589 5.32626 13.4455 5.27699 13.4203C3.89299 12.8663 3.24099 11.3433 3.24099 9.60427C3.24099 6.75727 5.62499 3.34927 10.395 3.34927C14.191 3.34927 16.714 6.12627 16.714 9.09627C16.714 13.0053 14.538 15.9443 11.321 15.9443C10.8402 15.9597 10.3632 15.8537 9.93425 15.6359C9.50531 15.4181 9.13823 15.0956 8.86699 14.6983C8.86699 14.6983 8.28799 17.0143 8.17499 17.4523C7.94264 18.2091 7.59923 18.9273 7.15599 19.5833C8.07899 19.8633 9.03799 20.0033 10.002 19.9993C11.3154 20.0001 12.6161 19.7418 13.8296 19.2394C15.0431 18.737 16.1457 18.0002 17.0741 17.0711C18.0026 16.1421 18.7387 15.0392 19.2404 13.8253C19.7421 12.6115 19.9996 11.3107 19.998 9.99727C19.9974 7.58198 19.1227 5.24851 17.5354 3.428C15.9482 1.60748 13.7557 0.422958 11.363 0.0932703Z" fill="currentColor"/>
+             </g>
+             <defs>
+             <clipPath id="clip0_2297_466">
+             <rect width="20" height="20" fill="white"/>
+             </clipPath>
+             </defs>
+           </svg>
+        </a></li>
+        {% endif %}
+
+        {% if section.settings.social_facebook == blank and section.settings.social_instagram == blank and section.settings.social_twitter == blank and section.settings.social_linkedin == blank %}
+         <!-- Default Icons for Preview -->
+          <li><a href="#" class="footer-madtrip__social-link"><svg class="footer-madtrip__social-icon" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a></li>
+          <li><a href="#" class="footer-madtrip__social-link"><svg class="footer-madtrip__social-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a></li>
+          <li><a href="#" class="footer-madtrip__social-link"><svg class="footer-madtrip__social-icon" viewBox="0 0 24 24"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a></li>
+          <li><a href="#" class="footer-madtrip__social-link"><svg class="footer-madtrip__social-icon" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const bottomBar = document.querySelector('.footer-madtrip__bottom-bar');
+    if (!bottomBar) return;
+
+    function renderFlies() {
+      // Remove existing flies to regenerate properly on window resize
+      const existingFlies = bottomBar.querySelectorAll('.footer-madtrip__fly');
+      existingFlies.forEach(fly => fly.remove());
+
+      const barWidth = bottomBar.offsetWidth;
+      // Always generate exactly 3 flies
+      const numFlies = 3; 
+      const placedPositions = [];
+      const safeMargin = 40;
+      const minDistance = 75; // Prevent overlap (flies are up to 64px max width + padding)
+
+      let activeFlyText = null;
+      let activeTextTimer = null;
+
+      for (let i = 0; i < numFlies; i++) {
+        let leftPosPx;
+        let attempts = 0;
+        let overlapping = true;
+
+        // Try to find a non-overlapping position up to 50 times
+        while (overlapping && attempts < 50) {
+          leftPosPx = safeMargin + Math.random() * (barWidth - 2 * safeMargin);
+          overlapping = placedPositions.some(pos => Math.abs(pos - leftPosPx) < minDistance);
+          attempts++;
+        }
+
+        // If we couldn't find a free spot after 50 attempts, skip to avoid infinite loop
+        if (overlapping) continue;
+
+        placedPositions.push(leftPosPx);
+
+        const flyWrap = document.createElement('div');
+        flyWrap.className = 'footer-madtrip__fly';
+        flyWrap.style.left = leftPosPx + 'px';
+
+        const flyText = document.createElement('div');
+        flyText.className = 'footer-madtrip__fly-text';
+        if (leftPosPx > barWidth / 2) {
+          flyText.classList.add('footer-madtrip__fly-text--right');
+        }
+        flyText.innerText = 'nahi jayega';
+        flyWrap.appendChild(flyText);
+
+        const flyImg = document.createElement('img');
+        flyImg.className = 'footer-madtrip__fly-img';
+        
+        {% if section.settings.fly_image_1 != blank %}
+        const flySrc1 = '{{ section.settings.fly_image_1 | image_url: width: 128 }}';
+        {% else %}
+        const flySrc1 = 'https://via.placeholder.com/64x64?text=Fly1';
+        {% endif %}
+        
+        {% if section.settings.fly_image_2 != blank %}
+        const flySrc2 = '{{ section.settings.fly_image_2 | image_url: width: 128 }}';
+        {% else %}
+        const flySrc2 = 'https://via.placeholder.com/64x64?text=Fly2';
+        {% endif %}
+        
+        flyImg.src = flySrc1;
+        flyImg.alt = 'Fly Animation';
+        flyWrap.appendChild(flyImg);
+        
+        // Toggle src to create the buzzing animation natively
+        let isFrame1 = true;
+        setInterval(() => {
+          isFrame1 = !isFrame1;
+          flyImg.src = isFrame1 ? flySrc1 : flySrc2;
+        }, 200); /* Fast fly speed toggle speed for wings */
+        
+        const showText = () => {
+          if (activeFlyText && activeFlyText !== flyText) {
+             activeFlyText.classList.remove('is-visible');
+          }
+          if (activeTextTimer) clearTimeout(activeTextTimer);
+          
+          flyText.classList.add('is-visible');
+          activeFlyText = flyText;
+          
+          activeTextTimer = setTimeout(() => {
+            flyText.classList.remove('is-visible');
+            if (activeFlyText === flyText) activeFlyText = null;
+          }, 1000);
+        };
+
+        const moveFly = (e) => {
+          let isTouch = false;
+          if (e && e.type === 'touchstart') {
+            isTouch = true;
+            // Prevent mouseenter from firing directly after touch
+            e.preventDefault(); 
+          }
+          
+          // Clear text ONLY if we touched/hovered a *different* fly
+          if (activeFlyText && activeFlyText !== flyText) {
+             activeFlyText.classList.remove('is-visible');
+             activeFlyText = null;
+             clearTimeout(activeTextTimer);
+          }
+          
+          let newLeft;
+          let moveAttempts = 0;
+          let stillOverlapping = true;
+          
+          while (stillOverlapping && moveAttempts < 50) {
+            newLeft = safeMargin + Math.random() * (barWidth - 2 * safeMargin);
+            
+            // Check potential overlap against all *currently rendered* flies
+            const allFlies = Array.from(bottomBar.querySelectorAll('.footer-madtrip__fly'));
+            stillOverlapping = allFlies.some(otherFly => {
+              if (otherFly === flyWrap) return false; // Ignore self
+              const otherLeftStyle = otherFly.style.left;
+              if (!otherLeftStyle) return false;
+              
+              const otherLeft = parseFloat(otherLeftStyle);
+              return Math.abs(otherLeft - newLeft) < minDistance;
+            });
+            moveAttempts++;
+          }
+          
+          if (!stillOverlapping) {
+             flyWrap.style.left = newLeft + 'px';
+             if (newLeft > barWidth / 2) {
+               flyText.classList.add('footer-madtrip__fly-text--right');
+             } else {
+               flyText.classList.remove('footer-madtrip__fly-text--right');
+             }
+          }
+
+          // Desktop logic fix: 
+          // Since it moves away on hover, user can't click it easily.
+          // Trigger the 'nahi jayega' text popup unconditionally just like we do for touch on mobile!
+          showText();
+        };
+
+        flyWrap.addEventListener('mouseenter', moveFly);
+        flyWrap.addEventListener('touchstart', moveFly, { passive: false });
+        flyWrap.addEventListener('click', showText);
+        
+        bottomBar.appendChild(flyWrap);
+      }
+    }
+
+    // Initial render
+    renderFlies();
+
+    // Re-render when window size changes
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderFlies, 200);
+    });
+
+    // Accordion functionality for mobile menus
+    const menuHeaders = document.querySelectorAll('.footer-madtrip__menu-header');
+    menuHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        if (window.innerWidth < 480) {
+          const col = header.closest('.footer-madtrip__menu-col');
+          // Close others
+          const allCols = document.querySelectorAll('.footer-madtrip__menu-col');
+          allCols.forEach(c => {
+            if (c !== col) {
+               c.classList.remove('is-active');
+            }
+          });
+          // Toggle current
+          col.classList.toggle('is-active');
+        }
+      });
+    });
+  });
+</script>

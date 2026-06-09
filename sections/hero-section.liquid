@@ -1,0 +1,1292 @@
+<style>
+  /* === Krugat Font === */
+  @font-face {
+    font-family: 'Krugat';
+    src: url({{ 'Krugat.woff2' | asset_url }}) format('woff2'),
+         url({{ 'Krugat.woff' | asset_url }}) format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    /* overflow: hidden; no default scrollbars */
+  }
+
+  .scroll-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    /* Fallback before JS runs */
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: #111111;
+    z-index: 0;
+  }
+
+  #heroProgressBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background-color: #FFDE17;
+    z-index: 11;
+    display: block !important;
+    /* CRITICAL: Force the browser GPU to paint this in a 3D layer above the videos */
+    -webkit-transform: translateZ(100px) !important;
+    transform: translateZ(100px) !important;
+    will-change: width;
+  }
+
+  .scroll-container video {
+    position: absolute;
+    top: 0;
+    height: 100vh;
+    /* Fallback before JS runs */
+    width: auto;
+    display: block;
+  }
+
+  #video1 {
+    z-index: 1;
+    /* Sky layer */
+    opacity: 0;
+    /* Will fade to 0.7 via JS */
+    /* Force hardware acceleration and hacky blend to drop Safari black backgrounds on webm */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  #video2 {
+    z-index: 2;
+    /* Background layer (starts offscreen at bottom) */
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+
+  .frame-container {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 80%;
+    width: auto;
+    z-index: 3;
+  }
+
+  .frame-container img {
+    width: auto;
+    height: 100%;
+    display: block;
+  }
+
+  @media (max-width: 1024px) {
+    .frame-container {
+      top: 65%;
+      height: 70%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .frame-container {
+      top: 70%;
+      height: 60%;
+    }
+  }
+
+  /* === TAKE TRIP Title Words === */
+
+  /* Wrapper that holds both words — used on mobile for side-by-side layout */
+  #heroTitleWrapper {
+    position: absolute;
+    z-index: 4;
+    pointer-events: none;
+    user-select: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-title-word {
+    position: absolute;
+    font-family: 'Krugat', sans-serif;
+    font-size: 64px;
+    font-weight: normal;
+    line-height: 1;
+    color: #FFDE17;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.4s ease;
+    will-change: opacity;
+    white-space: nowrap;
+  }
+
+  /* Desktop: centre of left half = 25%, centre of right half = 75% */
+  #heroWordTake {
+    left: 20%;
+  }
+
+  #heroWordTrip {
+    left: 80%;
+  }
+
+  .scrollnow {
+    top: 6.5vh;
+  }
+
+  /* Tablet (max-width: 1024px): same split, smaller font */
+  @media (max-width: 1024px) {
+    .hero-title-word {
+      font-size: 48px;
+    }
+    #heroWordTake {
+      left: 20%;
+    }
+    #heroWordTrip {
+      left: 80%;
+    }
+    .scrollnow {
+      top: 8.5vh;
+      transform-origin: center;
+      scale: 0.95;
+    }
+  }
+
+  /* Mobile (max-width: 480px): side-by-side above the character, centred as a row */
+  @media (max-width: 480px) {
+    #heroTitleWrapper {
+      top: 24vh;
+      height: auto;
+      bottom: 62%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .hero-title-word {
+      position: static;
+      transform: none;
+      font-size: 40px;
+    }
+    .scrollnow {
+      top: 6.5vh;
+      transform-origin: center;
+      scale: 0.9;
+    }
+  }
+
+  #mainContent {
+    opacity: 0;
+    /* Hidden initially until loaded */
+    transition: opacity 0.5s ease;
+    background-color: #000000;
+  }
+
+  /* === Asset Loading Overlay === */
+  #heroLoadingOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.80);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  #heroLoadingOverlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .hero-loader-spinner {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3.5px solid rgba(255, 222, 23, 0.15);
+    border-top-color: #FFDE17;
+    animation: heroSpinnerRotate 0.8s linear infinite;
+  }
+
+  @keyframes heroSpinnerRotate {
+    to { transform: rotate(360deg); }
+  }
+
+  .hero-floating-btn {
+    bottom: 24px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #111111;
+    border: 1px solid #606060;
+    color: #eaeaea;
+    padding: 14px 14px 14px 16px;
+    border-radius: 1000px;
+    cursor: pointer;
+    font-family: 'PallyVariable', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    text-transform: capitalize;
+    transition: all 0.3s ease, opacity 0.3s ease;
+  }
+
+  .hero-floating-btn.scrolling {
+    opacity: 0.4 !important;
+  }
+  
+  .hero-floating-btn:hover {
+    background: #111111;
+    border-color: #606060;
+    opacity: 1 !important;
+    transform: scale(1.05);
+  }
+
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+  }
+
+  .btn-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .mute-btn {
+    left: 24px;
+    padding: 14px; /* Square button 48x48: (20px icon + 14px*2 padding) */
+  }
+
+  .skip-btn {
+    right: 24px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .skip-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+  }
+
+  /* Swaps text/icon order and padding for 'Take Trip' */
+  .skip-btn.reversed {
+    padding: 14px 16px 14px 14px;
+    flex-direction: row-reverse;
+  }
+
+  /* Make buttons absolute within mainContent so they scroll up with the section */
+  #mainContent {
+    position: relative;
+  }
+
+  .mute-btn {
+    position: fixed;
+    bottom: 24px;
+    z-index: 2;
+  }
+
+  .skip-btn {
+    position: absolute;
+    bottom: 24px;
+    z-index: 6;
+  }
+
+  @media (max-width: 768px) {
+    .mute-btn {
+      bottom: 16px;
+    }
+    .skip-btn {
+      bottom: 16px;
+    }
+    .hero-floating-btn {
+      gap: 8px;
+      padding: 10px 10px 10px 12px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .mute-btn {
+      left: 16px;
+      padding: 10px; /* Square button 36x36 for mobile */
+    }
+
+    .skip-btn.reversed {
+      padding: 10px 12px 10px 10px;
+    }
+
+    .skip-btn {
+      right: 16px;
+    }
+  }
+</style>
+
+<div id="mainContent">
+  <button id="muteToggleBtn" class="hero-floating-btn mute-btn">
+    <span class="btn-icon">
+      {%- if section.settings.unmuted_icon != blank -%}
+        {{ section.settings.unmuted_icon }}
+      {%- else -%}
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+      {%- endif -%}
+    </span>
+  </button>
+
+  <div class="scroll-container" id="scrollContainer">
+    <audio id="bgAudio" loop preload="auto">
+      <source src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/mt-full_track.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="ambientAudio" loop preload="auto">
+      <source src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/traffic_jam.mp3" type="audio/mpeg">
+    </audio>
+    <!-- Videos have no src initially — loaded after page window.load -->
+    <video muted loop playsinline id="video1">
+      Your browser does not support the video tag.
+    </video>
+    <video muted loop playsinline id="video2">
+      Your browser does not support the video tag.
+    </video>
+    <div class="frame-container">
+      <!-- Only the first frame loads with the page for fast initial paint -->
+      <img id="animFrame" src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/framea.png"
+        alt="Animation Frame">
+    </div>
+
+    <div id="heroTitleWrapper" aria-hidden="true">
+      <div id="heroWordTake" class="hero-title-word">start</div>
+      <div id="heroWordTrip" class="hero-title-word">trippin</div>
+    </div>
+
+    <!-- Figma Scroll Arrow + Scroll to Trip (SVG importable via Shopify editor) -->
+    <div id="scrollToExplore" style="position:absolute; gap:8px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; z-index:5; width:auto; pointer-events:none;" class="scrollnow">
+      <div style="width:24px; height:35.327px; position:relative; display:flex; align-items:center; justify-content:center;">
+        {%- if section.settings.scroll_arrow_svg != blank -%}
+          {{ section.settings.scroll_arrow_svg }}
+        {%- else -%}
+          <!-- Default SVG if not set in editor -->
+          <svg width="24" height="36" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block; width:24px; height:35.327px;">
+            <path d="M12 4V32" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 26L12 32L18 26" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        {%- endif -%}
+      </div>
+      <p style="font-family:'Pally_Variable:Bold',sans-serif; font-weight:bold; font-size:24px; line-height:32px; color:#fff; text-align:center; margin:0; text-transform:capitalize; white-space:nowrap;">Scroll</p>
+    </div>
+
+    <button id="skipTripBtn" class="hero-floating-btn skip-btn">
+      <span class="btn-text">Skip Trip</span>
+      <span class="btn-icon">
+        {%- if section.settings.skip_button_icon != blank -%}
+          {{ section.settings.skip_button_icon }}
+        {%- else -%}
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+        {%- endif -%}
+      </span>
+    </button>
+
+    <div id="heroProgressBar"></div>
+  </div>
+
+  <!-- Circular loader overlay shown when user scrolls before assets are ready -->
+  <div id="heroLoadingOverlay">
+    <div class="hero-loader-spinner"></div>
+  </div>
+</div>
+
+<script>
+  const scrollContainer = document.getElementById('scrollContainer');
+  const video1 = document.getElementById('video1');
+  const video2 = document.getElementById('video2');
+  const imgEl = document.getElementById("animFrame");
+  const bgAudio = document.getElementById('bgAudio');
+  const ambientAudio = document.getElementById('ambientAudio');
+  const frameContainer = document.querySelector('.frame-container');
+  const heroProgressBar = document.getElementById('heroProgressBar');
+  const muteBtn = document.getElementById('muteToggleBtn');
+  const skipBtn = document.getElementById('skipTripBtn');
+  const heroLoadingOverlay = document.getElementById('heroLoadingOverlay');
+
+  // === Deferred Loading State ===
+  // True once all heavy assets (videos + all animation frames) are fully loaded.
+  let assetsFullyLoaded = false;
+  // True once the page window.load has fired and we've begun injecting deferred sources.
+  let deferredLoadStarted = false;
+  // True if the user tried to scroll before assets were ready — we show the loader.
+  let showingLoadingOverlay = false;
+
+  function showAssetLoader() {
+    if (!assetsFullyLoaded && heroLoadingOverlay) {
+      showingLoadingOverlay = true;
+      heroLoadingOverlay.classList.add('visible');
+    }
+  }
+
+  function hideAssetLoader() {
+    showingLoadingOverlay = false;
+    if (heroLoadingOverlay) {
+      heroLoadingOverlay.classList.remove('visible');
+    }
+  }
+
+  const IDLE_VOLUME = {{ section.settings.audio_idle_volume | default: 50 }} / 100;
+  const ACTIVE_VOLUME = {{ section.settings.audio_active_volume | default: 100 }} / 100;
+  const CONSTANT_VOLUME = {{ section.settings.audio_constant_volume | default: 40 }} / 100;
+  const AMBIENT_DIMMED_VOLUME = {{ section.settings.audio_ambient_dimmed_volume | default: 20 }} / 100;
+  const ENABLE_AUTO_SCROLL = {{ section.settings.enable_auto_scroll | default: false }};
+  const AUTO_SCROLL_DELAY = {{ section.settings.auto_scroll_delay | default: 200 }};
+
+  let audioStarted = false;
+  let targetVolume = IDLE_VOLUME;
+  let currentVolume = IDLE_VOLUME;
+  let targetAmbientVolume = CONSTANT_VOLUME;
+  let currentAmbientVolume = CONSTANT_VOLUME;
+  let scrollTimeout = null;
+  let autoScrollTimer = null;
+  let autoScrollTriggered = false;
+
+  // === VISIBILITY CHANGE STATE ===
+  let isPageHidden = false;
+  let isMutedByUser = false;
+  let fadeOutTimeoutId = null;
+
+  // Add a global "interaction" unlock for strict browsers (Safari/Chrome)
+  function unlockAudio() {
+    if (audioStarted || window.audioIsAttempting) return;
+
+    if (bgAudio || ambientAudio) {
+      window.audioIsAttempting = true;
+      console.log("[Audio] Attempting user-gesture unlock...");
+      let promises = [];
+      if (bgAudio) {
+        bgAudio.volume = IDLE_VOLUME;
+        promises.push(bgAudio.play());
+      }
+      if (ambientAudio) {
+        ambientAudio.volume = CONSTANT_VOLUME;
+        promises.push(ambientAudio.play());
+      }
+      Promise.allSettled(promises).then((results) => {
+        let allSuccess = true;
+        results.forEach(res => { if (res.status === 'rejected') allSuccess = false; });
+        
+        if (allSuccess) {
+          console.log("[Audio] Successfully unlocked background tracks.");
+          audioStarted = true;
+          document.removeEventListener('click', unlockAudio);
+          document.removeEventListener('touchstart', unlockAudio);
+        } else {
+          console.warn("[Audio] Autoplay blocked by browser. Scroll interactions failed gesture evaluation.");
+          window.audioIsAttempting = false; // Allow retry
+        }
+      });
+    }
+  }
+  
+  document.addEventListener('click', unlockAudio);
+  document.addEventListener('touchstart', unlockAudio);
+
+  function audioFadeLoop() {
+    if (audioStarted) {
+      if (bgAudio) {
+        const delta = targetVolume - currentVolume;
+        if (Math.abs(delta) > 0.01) {
+          currentVolume += delta * 0.05; // Ease towards target volume
+        } else {
+          currentVolume = targetVolume;
+        }
+        bgAudio.volume = currentVolume;
+      }
+      if (ambientAudio) {
+        const deltaAmb = targetAmbientVolume - currentAmbientVolume;
+        if (Math.abs(deltaAmb) > 0.01) {
+          currentAmbientVolume += deltaAmb * 0.05; // Ease towards target
+        } else {
+          currentAmbientVolume = targetAmbientVolume;
+        }
+        ambientAudio.volume = currentAmbientVolume;
+      }
+    } // End of conditional audio lock
+
+    requestAnimationFrame(audioFadeLoop);
+  }
+  audioFadeLoop();
+
+  function triggerScrollActive() {
+    targetVolume = ACTIVE_VOLUME;
+    
+    // Attempt play on first scroll if not unlocked yet
+    if (!audioStarted) {
+      unlockAudio();
+    }
+
+    if (audioStarted && !scrollTimeout) {
+      console.log(`[Audio] Scroll ACTIVE -> Ramping volume to ${ACTIVE_VOLUME * 100}%`);
+    }
+    
+    // Dim icons during scroll
+    if (muteBtn) muteBtn.classList.add('scrolling');
+    if (skipBtn) skipBtn.classList.add('scrolling');
+
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      targetVolume = IDLE_VOLUME; // Revert to idle volume
+      if (audioStarted) console.log(`[Audio] Scroll IDLE -> Ramping volume back to ${IDLE_VOLUME * 100}%`);
+      
+      // Restore icons opacity
+      if (muteBtn) muteBtn.classList.remove('scrolling');
+      if (skipBtn) skipBtn.classList.remove('scrolling');
+
+      scrollTimeout = null;
+    }, 200); // 200ms of no scrolling = inactive
+  }
+
+  const starterFrame = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/framea.png";
+  const loopFrames = [
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame1.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame2.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame3.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame4.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame5.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame6.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame7.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame8.png"
+  ];
+
+  const transformFrames = [];
+  for (let i = 1; i <= 18; i++) {
+    transformFrames.push(`https://raw.githubusercontent.com/suhotraneel/madtripstore/main/transform/trans_${i}.png`);
+  }
+
+  // === SCROLL ANIMATION TWEAKS ===
+  const TRANSFORM_SCROLL_RANGE = 1200; // Pixels to scroll for the initial transformation
+  const BACKGROUND_ENTRANCE_RANGE = 400; // Pixels to scroll to slide background UP after transform
+  const REVERSE_TRANSFORM_RANGE = 800; // Pixels to scroll to reverse the transformation at the end
+  const PAUSE_AT_END_RANGE = 400;       // Re-added safe buffer
+  const SMOOTHNESS = 0.08;              // Middle ground for organic tracking
+  const SCROLL_SPEED_MULTIPLIER = {{ section.settings.scroll_speed_multiplier | default: 1.5 }};  // Overall scroll sensitivity (controlled via Shopify Dashboard)
+  // ===============================
+
+  let scrollSpeed1, scrollSpeed2;
+  let maxScrollableDistance = 0;
+
+  // Physics variables for smooth scrolling
+  let scrollX = 0;
+  let targetScrollX = 0;
+  let isAnimating = false;
+
+  // Fix Mobile Browser Viewport Issues and account for fixed headers/navbars
+  // We capture the initial innerHeight once, subtract any navbar offset, and enforce it so videos don't get cropped
+  let initialViewportHeight = window.innerHeight;
+
+  function calculateTargetHeight() {
+    const offset = scrollContainer.getBoundingClientRect().top + window.scrollY;
+    
+    if (offset >= 0 && offset < window.innerHeight / 2) {
+      return window.innerHeight - offset;
+    }
+    
+    return window.innerHeight;
+  }
+
+  let cachedAspectRatios = {};
+
+  function getDynamicWidth(video) {
+    if (video.videoWidth && video.videoHeight) {
+      cachedAspectRatios[video.id] = video.videoWidth / video.videoHeight;
+    }
+    // Fallback securely to the cached ratio if the browser suspended the video process during idle
+    const aspectRatio = cachedAspectRatios[video.id] || (1920 / 1080);
+    return initialViewportHeight * aspectRatio;
+  }
+
+  function setupRatios() {
+    initialViewportHeight = calculateTargetHeight();
+    const viewportWidth = window.innerWidth;
+
+    // Lock heights manually
+    scrollContainer.style.height = `${initialViewportHeight}px`;
+    video1.style.height = `${initialViewportHeight}px`;
+    video2.style.height = `${initialViewportHeight}px`;
+
+    const width1 = getDynamicWidth(video1);
+    const width2 = getDynamicWidth(video2);
+
+    const scroll1 = width1 - viewportWidth;
+    const scroll2 = width2 - viewportWidth;
+
+    maxScrollableDistance = Math.max(0, scroll1, scroll2);
+    scrollSpeed1 = (scroll1 / maxScrollableDistance);
+    scrollSpeed2 = (scroll2 / maxScrollableDistance);
+  }
+
+  function updateFramesFromScroll() {
+    // Start background transition 2 frames before transformation ends
+    const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+    const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+
+    // Re-declare walkScrollX which is needed for the walk loop phase
+    const walkScrollX = Math.max(0, scrollX - combinedEntrance);
+    const overscroll = Math.max(0, walkScrollX - maxScrollableDistance);
+    const overscrollProgress = Math.min(1, Math.max(0, overscroll / REVERSE_TRANSFORM_RANGE));
+
+    // Sky fades in over the entirety of the transformation, and fades out in reverse at the end
+    const skyProgress = Math.min(1, Math.max(0, scrollX / TRANSFORM_SCROLL_RANGE));
+    video1.style.opacity = (skyProgress * 0.7) * (1 - overscrollProgress);
+
+    // Background slides up overlaying the end of transformation, and slides back down at the end
+    const bgEntranceScroll = Math.max(0, scrollX - bgStartScroll);
+    const bgProgress = Math.min(1, Math.max(0, bgEntranceScroll / BACKGROUND_ENTRANCE_RANGE));
+    const backgroundY = ((1 - bgProgress) * 100) + (overscrollProgress * 100);
+    
+    video2.style.transform = `translate3d(0px, ${backgroundY}%, 0px)`;
+    video2.style.webkitTransform = `translate3d(0px, ${backgroundY}%, 0px)`; // Safari fallback
+
+    if (scrollX < TRANSFORM_SCROLL_RANGE) {
+      // Phase 1: Transformation
+      const transformProgress = Math.max(0, scrollX / TRANSFORM_SCROLL_RANGE);
+      const frameIndex = Math.min(
+        transformFrames.length - 1,
+        Math.floor(transformProgress * transformFrames.length)
+      );
+      imgEl.src = transformFrames[frameIndex];
+
+      // Ensure character stays centered
+      frameContainer.style.transform = "translate(-50%, -50%)";
+    } else if (scrollX < combinedEntrance) {
+      // Phase 2: Background rising
+      // Character is fully transformed but waits for the background before walking
+      imgEl.src = transformFrames[transformFrames.length - 1];
+    } else {
+      const animationProgress = maxScrollableDistance === 0 ? 0 : (walkScrollX / maxScrollableDistance);
+
+      if (walkScrollX <= maxScrollableDistance) {
+        // Phase 3: Walk loop
+        if (animationProgress <= 0.01) {
+          // Keep showing the last transform frame just before walk starts
+          imgEl.src = transformFrames[transformFrames.length - 1];
+        } else {
+          const loopProgress = Math.max(0, (animationProgress - 0.01) * 120);
+          const idxRaw = Math.floor(loopProgress);
+          const frameIndex = ((idxRaw % loopFrames.length) + loopFrames.length) % loopFrames.length;
+          imgEl.src = loopFrames[frameIndex];
+        }
+      } else {
+        // Phase 4: Reverse Transformation (instead of walking off-screen)
+        // Scrub backwards through the transformFrames array using global overscrollProgress
+        const reverseIndex = Math.max(
+          0,
+          Math.floor((1 - overscrollProgress) * (transformFrames.length - 1))
+        );
+        imgEl.src = transformFrames[reverseIndex];
+      }
+    }
+  }
+
+  const heroTitleWrapper = document.getElementById('heroTitleWrapper');
+  const scrollToExplore = document.getElementById('scrollToExplore');
+  // Fade-out threshold: words vanish over the first ~300px of scrollX
+  const TITLE_FADE_RANGE = 300;
+
+  function applyScrollOutput() {
+    // Start background transition 2 frames before transformation ends
+    const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+    const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+
+    // Clamp target
+    const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+    targetScrollX = Math.max(0, Math.min(targetScrollX, totalScrollable));
+
+    // Fade TAKE / TRIP words and Scroll to Trip out as scroll progresses, fade back in when returning to start
+    const titleOpacity = Math.max(0, 1 - scrollX / TITLE_FADE_RANGE);
+    if (heroTitleWrapper) heroTitleWrapper.style.opacity = titleOpacity;
+    if (scrollToExplore) scrollToExplore.style.opacity = titleOpacity;
+
+    // Video scrolling only starts after transform and background phases
+    const walkScrollX = Math.max(0, scrollX - combinedEntrance);
+    const videoScrollX = Math.min(walkScrollX, maxScrollableDistance);
+    video1.style.left = `${-videoScrollX * scrollSpeed1}px`;
+    video2.style.left = `${-videoScrollX * scrollSpeed2}px`;
+
+    if (heroProgressBar && totalScrollable > 0) {
+      const progressEndScroll = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE;
+      const progress = Math.min(1, Math.max(0, scrollX / progressEndScroll));
+      heroProgressBar.style.width = `${progress * 100}%`;
+      
+      if (skipBtn) {
+        const textSpan = skipBtn.querySelector('.btn-text');
+        const iconSpan = skipBtn.querySelector('.btn-icon');
+        
+        if (progress >= 0.999) {
+          // Animation ended
+          if (textSpan) textSpan.innerText = 'Take Trip';
+          if (iconSpan) {
+            iconSpan.innerHTML = `{%- if section.settings.take_trip_icon != blank -%}{{ section.settings.take_trip_icon }}{%- else -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>{%- endif -%}`;
+          }
+          // Button should NOT be hidden anymore, it stays visible as "Take Trip"
+          skipBtn.classList.remove('hidden');
+          skipBtn.classList.add('reversed');
+          skipBtn.style.pointerEvents = 'auto'; 
+        } else {
+          // Animation playing
+          if (textSpan) textSpan.innerText = 'Skip Trip';
+          if (iconSpan) {
+            iconSpan.innerHTML = `{%- if section.settings.skip_button_icon != blank -%}{{ section.settings.skip_button_icon }}{%- else -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>{%- endif -%}`;
+          }
+          skipBtn.classList.remove('hidden');
+          skipBtn.classList.remove('reversed');
+          skipBtn.style.pointerEvents = 'auto';
+        }
+
+        // Auto Scroll to next section logic
+        if (ENABLE_AUTO_SCROLL && progress >= 0.999 && !autoScrollTriggered) {
+          autoScrollTriggered = true;
+          autoScrollTimer = setTimeout(() => {
+            // Check again if we're still at the end
+            if (progress >= 0.999 && window.scrollY < 10) {
+              const mainElement = document.getElementById('mainContent');
+              const scrollDistance = mainElement ? mainElement.offsetHeight : window.innerHeight;
+              window.scrollBy({ 
+                top: scrollDistance, 
+                behavior: 'smooth' 
+              });
+            }
+          }, AUTO_SCROLL_DELAY);
+        } else if (progress < 0.999) {
+          // Reset if user scrolls back up
+          if (autoScrollTimer) {
+            clearTimeout(autoScrollTimer);
+            autoScrollTimer = null;
+          }
+          autoScrollTriggered = false;
+        }
+      }
+    }
+
+    updateFramesFromScroll();
+  }
+
+  function trackDynamicLayout() {
+    // CRITICAL: Stop dynamically tracking layout size if the user has begun interacting with the animation.
+    // If the Shopify navbar resizes or mobile URL bar hides while they are deeply scrubbing through the video sequence
+    // or scrolling naturally down the page, freezing this logic stops the Hero section from morphing height and rattling the layout layout!
+    if (targetScrollX > 50 || window.scrollY > 10) return;
+
+    // Aggressively check every single frame if the navbar/browser bar has shifted or resized
+    const currentCalculatedHeight = calculateTargetHeight();
+    
+    // If the space grew or shrank by more than 2 pixels, automatically conform to the new bounds instantly
+    if (Math.abs(initialViewportHeight - currentCalculatedHeight) > 2) {
+      const oldMaxDistance = maxScrollableDistance;
+      initialViewportHeight = currentCalculatedHeight;
+      setupRatios();
+      
+      // Proportional math logic to stop the video from jerking forward when aspect ratio changes
+      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+      if (oldMaxDistance > 0 && maxScrollableDistance > 0) {
+        if (targetScrollX > combinedEntrance) {
+           const targetWalkProgress = (targetScrollX - combinedEntrance) / oldMaxDistance;
+           targetScrollX = combinedEntrance + (targetWalkProgress * maxScrollableDistance);
+           const currentWalkProgress = Math.max(0, scrollX - combinedEntrance) / oldMaxDistance;
+           scrollX = combinedEntrance + (currentWalkProgress * maxScrollableDistance);
+        }
+      }
+      applyScrollOutput();
+    }
+  }
+
+  function renderLoop() {
+    // Linear interpolation (lerp) for buttery smooth momentum
+    const diff = targetScrollX - scrollX;
+
+    // Stop animating if the difference is tiny (optimization)
+    if (Math.abs(diff) < 0.5) {
+      scrollX = targetScrollX;
+      isAnimating = false;
+      applyScrollOutput();
+      return;
+    }
+
+    scrollX += diff * SMOOTHNESS;
+    
+    // Hook in our aggressive layout tracker to run non-stop during animations
+    trackDynamicLayout();
+    
+    applyScrollOutput();
+
+    if (isAnimating) {
+      requestAnimationFrame(renderLoop);
+    }
+  }
+
+  function triggerSmoothScroll(deltaY) {
+    targetScrollX += deltaY;
+
+    if (!isAnimating) {
+      isAnimating = true;
+      requestAnimationFrame(renderLoop);
+    }
+  }
+
+  // Add this function to your existing script
+  // Store images globally to prevent JavaScript Garbage Collection from destroying 
+  // preloaded memory frames during idle time
+  window.cachedHeroFrames = [];
+
+  function preloadImages(urls) {
+    const promises = urls.map(url => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          window.cachedHeroFrames.push(img); // Force browser to keep decoded image in RAM permanently
+          resolve(img);
+        };
+        img.onerror = () => reject(new Error(`Failed to load image at ${url}`));
+      });
+    });
+    return Promise.all(promises);
+  }
+
+  // =========================================================
+  // DEFERRED ASSET LOADING
+  // Phase 1 (page load): Only framea.png is shown.
+  // Phase 2 (after window.load): Videos and all frames are loaded.
+  // =========================================================
+
+  function waitForVideos(callback) {
+    let loadedVideos = 0;
+    const totalVideos = 2;
+
+    function checkVideos() {
+      loadedVideos++;
+      if (loadedVideos === totalVideos) {
+        // Now that videos have enough data to play, start preloading images
+        Promise.all([
+          preloadImages(transformFrames),
+          preloadImages(loopFrames)
+        ]).then(() => {
+          console.log("[Hero] All animation frames and assets preloaded successfully.");
+          showContentAndStart(callback);
+        }).catch(error => {
+          console.error("[Hero] Error preloading images:", error);
+          // Fallback: still start it even if some images failed
+          showContentAndStart(callback);
+        });
+      }
+    }
+
+    function showContentAndStart(cb) {
+      assetsFullyLoaded = true;
+      hideAssetLoader(); // Dismiss loader if it was visible due to early scroll
+      const mainContent = document.getElementById('mainContent');
+      mainContent.style.opacity = '1';
+      cb();
+    }
+
+    // readyState >= 3 means HAVE_FUTURE_DATA (can play at least a bit smoothly)
+    if (video1.readyState >= 3) checkVideos(); else video1.addEventListener('canplay', checkVideos, { once: true });
+    if (video2.readyState >= 3) checkVideos(); else video2.addEventListener('canplay', checkVideos, { once: true });
+
+    // Force trigger load and play for strict browsers (Safari)
+    video1.load();
+    video2.load();
+    video1.play().catch(e => console.log("[Hero] Video 1 autoplay prevented:", e));
+    video2.play().catch(e => console.log("[Hero] Video 2 autoplay prevented:", e));
+  }
+
+  function startDeferredLoad() {
+    if (deferredLoadStarted) return;
+    deferredLoadStarted = true;
+    console.log("[Hero] Page fully loaded — beginning deferred asset injection.");
+
+    // Inject video sources now that the page is done loading
+    const src1 = document.createElement('source');
+    src1.src = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/sky.webm";
+    src1.type = "video/webm";
+    video1.appendChild(src1);
+
+    const src2 = document.createElement('source');
+    src2.src = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/background.webm";
+    src2.type = "video/webm";
+    video2.appendChild(src2);
+
+    waitForVideos(() => {
+      setupRatios();
+      applyScrollOutput();
+
+      // Automatically re-poll the layout bounds in the background every 250ms.
+      // This allows the Hero section to instantly "snap" to its perfect height
+      // the moment Shopify finishes painting the Header, without waiting for the first scroll.
+      setInterval(() => {
+        if (!isAnimating) {
+          trackDynamicLayout();
+        }
+      }, 250);
+    });
+  }
+
+  // === Phase 1: Show mainContent immediately with just the first frame ===
+  // We reveal the container right away (the first frame is already loaded).
+  // setupRatios is called with defaults until videos provide real dimensions.
+  (function initFirstFrame() {
+    const mainContent = document.getElementById('mainContent');
+    // Show the hero container immediately — only the frame image is loaded
+    mainContent.style.opacity = '1';
+    // Apply a best-effort layout so the frame appears correctly positioned
+    initialViewportHeight = calculateTargetHeight();
+    scrollContainer.style.height = `${initialViewportHeight}px`;
+    // video1 (sky) starts at opacity 0 per CSS — scroll animation controls it.
+    // video2 (background) is hidden off-screen via CSS transform — no opacity change needed.
+    applyScrollOutput();
+  })();
+
+  // === Phase 2: Trigger deferred loading after window is fully loaded ===
+  if (document.readyState === 'complete') {
+    // Already loaded (e.g., script parsed after window.load)
+    startDeferredLoad();
+  } else {
+    window.addEventListener('load', startDeferredLoad, { once: true });
+  }
+
+  window.addEventListener('wheel', (e) => {
+    handleScrollDelta(e.deltaY, e);
+  }, { passive: false });
+
+  let touchStartY = 0;
+  window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!touchStartY) return;
+    const touchEndY = e.touches[0].clientY;
+    const deltaY = (touchStartY - touchEndY) * 1.5;
+    touchStartY = touchEndY;
+    handleScrollDelta(deltaY, e);
+  }, { passive: false });
+
+  function handleScrollDelta(rawDeltaY, event) {
+    if (window.scrollY > 0) return; // Allow natural scroll if we're scrolled down past the hero content
+
+    // === Deferred Load Guard ===
+    // If assets are not yet loaded and the user is scrolling down into the hero,
+    // show the circular loader and block the animation from advancing.
+    if (!assetsFullyLoaded && rawDeltaY > 0) {
+      if (event && event.cancelable) event.preventDefault();
+      showAssetLoader();
+      return;
+    }
+
+    triggerScrollActive();
+    const deltaY = rawDeltaY * SCROLL_SPEED_MULTIPLIER;
+
+    const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+    const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+    const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+
+    // 1. If we are ALREADY at the bottom and the visual animation has played out, allow native scroll
+    if (targetScrollX >= totalScrollable && scrollX >= totalScrollable - 10 && deltaY > 0) return;
+    
+    // 2. If we are ALREADY at the top, allow natural bounce
+    if (targetScrollX <= 0 && scrollX <= 10 && deltaY < 0) return;
+
+    // We take complete control over this scroll gesture to prevent browser UI resizing and layout glitches
+    if (event && event.cancelable) {
+      event.preventDefault();
+    }
+
+    targetScrollX += deltaY;
+    if (targetScrollX >= totalScrollable) targetScrollX = totalScrollable;
+    if (targetScrollX <= 0) targetScrollX = 0;
+
+    if (!isAnimating) {
+      isAnimating = true;
+      requestAnimationFrame(renderLoop);
+    }
+  }
+
+  // Only update ratios if WIDTH changed explicitly (e.g. tablet rotation).
+  // Vertical height changes (address bars, shopify navbars hiding/showing) 
+  // are now handled continuously by trackDynamicLayout() during the scroll!
+  let lastWidth = window.innerWidth;
+  
+  window.addEventListener('resize', () => {
+    if (window.innerWidth !== lastWidth) {
+      lastWidth = window.innerWidth;
+      
+      setTimeout(() => {
+        initialViewportHeight = calculateTargetHeight();
+        setupRatios();
+        applyScrollOutput();
+      }, 50); 
+    }
+  });
+
+  // Handle reducing traffic jam sound when scrolled down past the hero section
+  const ambientObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        targetAmbientVolume = CONSTANT_VOLUME;
+        if (audioStarted) console.log(`[Audio] Hero visible -> Traffic Jam back to ${CONSTANT_VOLUME * 100}%`);
+      } else {
+        targetAmbientVolume = AMBIENT_DIMMED_VOLUME;
+        targetVolume = IDLE_VOLUME; // Force main audio back to idle when out of view
+        if (audioStarted) {
+          console.log(`[Audio] Hero hidden -> Traffic Jam dimmed to ${AMBIENT_DIMMED_VOLUME * 100}%`);
+          console.log(`[Audio] Hero hidden -> Main track dimmed to idle ${IDLE_VOLUME * 100}%`);
+        }
+      }
+    });
+  }, { threshold: 0.05 }); 
+  
+  if (scrollContainer) {
+    ambientObserver.observe(scrollContainer);
+  }
+
+  // === VISIBILITY CHANGE HANDLERS ===
+  // Triggered when user leaves the tab or switches to another app (especially mobile)
+  function handlePageHidden() {
+    isPageHidden = true;
+    
+    // Only pause if audio is playing and not already muted by user
+    if (audioStarted && !isMutedByUser) {
+      // Stop audio instantly
+      if (bgAudio) bgAudio.pause();
+      if (ambientAudio) ambientAudio.pause();
+      if (fadeOutTimeoutId) clearTimeout(fadeOutTimeoutId);
+      console.log("[Audio] Page hidden - audio stopped instantly");
+    }
+  }
+
+  // Triggered when user returns to the tab or app
+  function handlePageVisible() {
+    isPageHidden = false;
+    
+    // Only auto-resume if we paused due to visibility change (not if user muted)
+    if (audioStarted && !isMutedByUser) {
+      // Resume audio from where it was paused
+      if (bgAudio) bgAudio.play().catch(e => console.log("[Audio] Resume play failed:", e));
+      if (ambientAudio) ambientAudio.play().catch(e => console.log("[Audio] Ambient resume play failed:", e));
+      
+      // Restore volume based on current scroll state
+      if (scrollTimeout) {
+        // User is currently scrolling, use active volume
+        targetVolume = ACTIVE_VOLUME;
+        targetAmbientVolume = CONSTANT_VOLUME;
+      } else {
+        // User is idle, use idle volume
+        targetVolume = IDLE_VOLUME;
+        targetAmbientVolume = CONSTANT_VOLUME;
+      }
+      
+      console.log("[Audio] Page visible - audio resumed");
+    }
+  }
+
+  // Attach visibility change listeners
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      handlePageHidden();
+    } else {
+      handlePageVisible();
+    }
+  });
+
+  // Handle app switch on mobile (e.g., user switches to Messages, Mail, etc.)
+  window.addEventListener('pagehide', handlePageHidden);
+  window.addEventListener('pageshow', handlePageVisible);
+
+  // Floating Buttons Logic
+  let isMuted = false;
+  
+  if (muteBtn) {
+    muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // prevent document click interaction if needed
+      isMuted = !isMuted;
+      isMutedByUser = isMuted; // Track user's explicit mute action
+      
+      if (bgAudio) bgAudio.muted = isMuted;
+      if (ambientAudio) ambientAudio.muted = isMuted;
+
+      const iconSpan = muteBtn.querySelector('.btn-icon');
+      if (isMuted) {
+        iconSpan.innerHTML = `{%- if section.settings.muted_icon != blank -%}{{ section.settings.muted_icon }}{%- else -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>{%- endif -%}`;
+      } else {
+        iconSpan.innerHTML = `{%- if section.settings.unmuted_icon != blank -%}{{ section.settings.unmuted_icon }}{%- else -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>{%- endif -%}`;
+      }
+    });
+  }
+
+  if (skipBtn) {
+    skipBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+      const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+      
+      const textSpan = skipBtn.querySelector('.btn-text');
+      if (textSpan && textSpan.innerText === 'Take Trip') {
+        // 1. First scroll to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // 2. Wait for the scroll to complete (or at least start moving) before reversing animation
+        // We use a slight delay to ensure the user sees the scroll happening first
+        setTimeout(() => {
+          targetScrollX = 0;
+          if (!isAnimating) {
+            isAnimating = true;
+            requestAnimationFrame(renderLoop);
+          }
+        }, 500); 
+      } else {
+        // "Skip Trip" behavior: Immediate skip to end of animation
+        targetScrollX = totalScrollable;
+        if (!isAnimating) {
+          isAnimating = true;
+          requestAnimationFrame(renderLoop);
+        }
+      }
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "MadTrip Hero Scroll",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "html",
+      "id": "scroll_arrow_svg",
+      "label": "Scroll Arrow SVG",
+      "info": "Paste SVG code for the scroll arrow here. Leave blank to use the default arrow."
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed_multiplier",
+      "min": 0.1,
+      "max": 5.0,
+      "step": 0.1,
+      "default": 1.5,
+      "label": "Scroll Speed Multiplier",
+      "info": "Adjust the overall scroll sensitivity. Lower is slower (requires more scrolling), higher is faster."
+    },
+    {
+      "type": "range",
+      "id": "audio_idle_volume",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "label": "Idle Audio Volume (%)",
+      "info": "The volume of the background track when the user is not actively scrolling."
+    },
+    {
+      "type": "range",
+      "id": "audio_active_volume",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 100,
+      "label": "Active Audio Volume (%)",
+      "info": "The volume of the background track when the user begins to scroll."
+    },
+    {
+      "type": "range",
+      "id": "audio_constant_volume",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "label": "Ambient Audio Volume (%)",
+      "info": "The volume of the secondary ambient track."
+    },
+    {
+      "type": "range",
+      "id": "audio_ambient_dimmed_volume",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20,
+      "label": "Ambient Dimmed Volume (%)",
+      "info": "The volume of the ambient track when you scroll past the hero section."
+    },
+    {
+      "type": "header",
+      "content": "Floating Buttons"
+    },
+    {
+      "type": "html",
+      "id": "unmuted_icon",
+      "label": "Unmuted Icon (SVG)",
+      "info": "Paste SVG code here. Leave blank for default unmuted icon."
+    },
+    {
+      "type": "html",
+      "id": "muted_icon",
+      "label": "Muted Icon (SVG)",
+      "info": "Paste SVG code here. Leave blank for default muted icon."
+    },
+    {
+      "type": "html",
+      "id": "skip_button_icon",
+      "label": "Skip Button Icon (SVG)",
+      "info": "Paste SVG code here. Leave blank for default skip icon."
+    },
+    {
+      "type": "html",
+      "id": "take_trip_icon",
+      "label": "Take Trip Icon (SVG)",
+      "info": "Paste SVG code here. Leave blank for default arrow icon."
+    },
+    {
+      "type": "header",
+      "content": "Auto Scroll"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_auto_scroll",
+      "label": "Enable Auto Scroll to Next Section",
+      "default": false,
+      "info": "Automatically scroll down when the animation ends."
+    },
+    {
+      "type": "range",
+      "id": "auto_scroll_delay",
+      "min": 0,
+      "max": 2000,
+      "step": 100,
+      "unit": "ms",
+      "label": "Auto Scroll Delay",
+      "default": 200
+    }
+  ],
+  "presets": [
+    {
+      "name": "MadTrip Hero Scroll"
+    }
+  ]
+}
+{% endschema %}

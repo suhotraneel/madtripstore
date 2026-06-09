@@ -1,0 +1,252 @@
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "settings": [
+    {
+      "type": "text",
+      "id": "breadcrumb_4_text",
+      "label": "Final Breadcrumb Override",
+      "info": "Type text to manually replace the final breadcrumb label. Leave this blank to automatically use the current page's title."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FFDE17"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#2d2d2d"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}
+
+{%- style -%}
+  @font-face {
+    font-family: "PallyVariable";
+    src: url("https://cdn.shopify.com/s/files/1/0655/0667/2825/files/PallyVariable.ttf?v=1732101857") format("truetype");
+  }
+
+  .genix-breadcrumbs-bg-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    width: 100%;
+  }
+
+  .genix-breadcrumbs-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    padding: 4px 24px;
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    margin: 0 auto;
+  }
+  
+  .genix-breadcrumbs-{{ section.id }} .breadcrumbs-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 14px;
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-family: 'PallyVariable', sans-serif;
+    font-weight: 400;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .genix-breadcrumbs-{{ section.id }} li {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    height: 14px;
+  }
+
+  .genix-breadcrumbs-{{ section.id }} .breadcrumbs-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .genix-breadcrumbs-{{ section.id }} .breadcrumb-item {
+    font-size: 10px;
+    line-height: 14px;
+    color: {{ section.settings.text_color }};
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.2s ease;
+  }
+  
+  .genix-breadcrumbs-{{ section.id }} a.breadcrumb-item:hover {
+    opacity: 0.7;
+  }
+  
+  .genix-breadcrumbs-{{ section.id }} .breadcrumb-separator {
+    font-size: 8px;
+    line-height: 14px;
+    color: {{ section.settings.text_color }};
+    opacity: 0.6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .genix-breadcrumbs-{{ section.id }} {
+      padding: 6px 50px;
+    }
+    .genix-breadcrumbs-{{ section.id }} .breadcrumbs-container,
+    .genix-breadcrumbs-{{ section.id }} li {
+      height: 16px;
+    }
+    .genix-breadcrumbs-{{ section.id }} .breadcrumb-item {
+      font-size: 12px;
+      line-height: 16px;
+    }
+    .genix-breadcrumbs-{{ section.id }} .breadcrumb-separator {
+      font-size: 10px;
+      line-height: 16px;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .genix-breadcrumbs-{{ section.id }} {
+      max-width: 1400px;
+    }
+  }
+{%- endstyle -%}
+
+{%- assign current_template = template.name -%}
+{%- assign child_coll = nil -%}
+{%- assign parent_coll = nil -%}
+{%- assign last_label = page_title -%}
+
+{%- comment -%} Determine Child Collection {%- endcomment -%}
+{%- if current_template == 'product' -%}
+  {%- assign child_coll = product.metafields.custom.child_category.value | first | default: product.metafields.custom.child_category.value -%}
+  {%- assign last_label = product.title -%}
+{%- elsif current_template == 'collection' -%}
+  {%- assign child_coll = collection -%}
+  {%- assign last_label = collection.title -%}
+{%- endif -%}
+
+{%- comment -%} Determine Parent Collection from Child Collection {%- endcomment -%}
+{%- if child_coll != blank -%}
+  {%- assign parent_coll = child_coll.metafields.custom.parent_category.value | first | default: child_coll.metafields.custom.parent_category.value -%}
+{%- endif -%}
+
+{%- comment -%} Final Label Override {%- endcomment -%}
+{%- if section.settings.breadcrumb_4_text != blank -%}
+  {%- assign last_label = section.settings.breadcrumb_4_text -%}
+{%- endif -%}
+
+<div class="genix-breadcrumbs-bg-{{ section.id }}">
+  <nav class="genix-breadcrumbs-{{ section.id }}" aria-label="Breadcrumb">
+    <ol class="breadcrumbs-container">
+      {%- comment -%} Slot 1: Home {%- endcomment -%}
+      <li>
+        <a href="{{ routes.root_url }}" class="breadcrumb-item">Home</a>
+      </li>
+
+      {%- comment -%} Slot 2: Parent Collection {%- endcomment -%}
+      {%- if parent_coll.title != blank -%}
+        <li class="breadcrumb-separator">
+          <span aria-hidden="true">|</span>
+        </li>
+        <li>
+          <a href="{{ parent_coll.url }}" class="breadcrumb-item">
+            {{- parent_coll.title -}}
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Slot 3: Child Collection {%- endcomment -%}
+      {%- if child_coll.title != blank and child_coll.handle != parent_coll.handle and child_coll.title != last_label -%}
+        <li class="breadcrumb-separator">
+          <span aria-hidden="true">|</span>
+        </li>
+        <li>
+          <a href="{{ child_coll.url }}" class="breadcrumb-item">
+            {{- child_coll.title -}}
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Slot 4: Final Text {%- endcomment -%}
+      {%- if last_label != blank -%}
+        <li class="breadcrumb-separator">
+          <span aria-hidden="true">|</span>
+        </li>
+        <li>
+          <span class="breadcrumb-item" aria-current="page">
+            {{- last_label -}}
+          </span>
+        </li>
+      {%- endif -%}
+    </ol>
+  </nav>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ shop.url }}{{ routes.root_url }}"
+    }
+    {%- assign position = 1 -%}
+
+    {%- if parent_coll.title != blank -%}
+      {%- assign position = position | plus: 1 -%}
+      ,{
+        "@type": "ListItem",
+        "position": {{ position }},
+        "name": {{ parent_coll.title | json }},
+        "item": "{{ shop.url }}{{ parent_coll.url | replace: '//', '/' }}"
+      }
+    {%- endif -%}
+
+    {%- if child_coll.title != blank and child_coll.handle != parent_coll.handle and child_coll.title != last_label -%}
+      {%- assign position = position | plus: 1 -%}
+      ,{
+        "@type": "ListItem",
+        "position": {{ position }},
+        "name": {{ child_coll.title | json }},
+        "item": "{{ shop.url }}{{ child_coll.url | replace: '//', '/' }}"
+      }
+    {%- endif -%}
+
+    {%- if last_label != blank -%}
+      {%- assign position = position | plus: 1 -%}
+      ,{
+        "@type": "ListItem",
+        "position": {{ position }},
+        "name": {{ last_label | json }}
+        {%- if product.url -%}
+        ,"item": "{{ shop.url }}{{ product.url | replace: '//', '/' }}"
+        {%- elsif collection.url and current_template == 'collection' -%}
+        ,"item": "{{ shop.url }}{{ collection.url | replace: '//', '/' }}"
+        {%- elsif page.url -%}
+        ,"item": "{{ shop.url }}{{ page.url | replace: '//', '/' }}"
+        {%- endif -%}
+      }
+    {%- endif -%}
+  ]
+}
+</script>

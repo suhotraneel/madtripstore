@@ -1,0 +1,1071 @@
+{%- style -%}
+  /* section-collection-list.css */
+  .collection-list {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .collection-list-title {
+    margin: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    .collection-list:not(.slider) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .section-collection-list .page-width {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .section-collection-list .collection-list:not(.slider) {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  .collection-list__item:only-child {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 767px) {
+    .slider.collection-list--1-items {
+      padding-bottom: 0;
+    }
+  }
+
+  @media screen and (max-width: 0px) /* DELETED RANGE */ {
+    .slider.collection-list--1-items,
+    .slider.collection-list--2-items,
+    .slider.collection-list--3-items,
+    .slider.collection-list--4-items {
+      padding-bottom: 0;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .collection-list__item a:hover {
+      box-shadow: none;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .collection-list.slider .collection-list__item {
+      max-width: 100%;
+    }
+  }
+
+  .collection-list-view-all {
+    margin-top: 2rem;
+  }
+
+  /* component-card.css */
+  .card-wrapper {
+    color: inherit;
+    height: 100%;
+    position: relative;
+    text-decoration: none;
+  }
+
+  .card {
+    text-decoration: none;
+    text-align: var(--text-alignment);
+    padding: 8px 4px;
+    gap: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .card {
+      padding: 16px 8px;
+      gap: 16px;
+    }
+  }
+
+  .card:not(.ratio) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card.card--horizontal {
+    --text-alignment: left;
+    --image-padding: 0rem;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .card--horizontal.ratio:before {
+    padding-bottom: 0;
+  }
+
+  .card--card.card--horizontal {
+    padding: 1.2rem;
+  }
+
+  .card--card.card--horizontal.card--text {
+    column-gap: 0;
+  }
+
+  .card--card {
+    height: 100%;
+  }
+
+  .card--card,
+  .card--standard .card__inner {
+    position: relative;
+    box-sizing: border-box;
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid rgba(var(--color-foreground), var(--border-opacity));
+  }
+
+  .card--card:after,
+  .card--standard .card__inner:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: calc(var(--border-width) * 2 + 100%);
+    height: calc(var(--border-width) * 2 + 100%);
+    top: calc(var(--border-width) * -1);
+    left: calc(var(--border-width) * -1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-horizontal-offset) var(--shadow-vertical-offset) var(--shadow-blur-radius)
+      rgba(var(--color-shadow), var(--shadow-opacity));
+  }
+
+  .card--card.gradient,
+  .card__inner.gradient {
+    transform: perspective(0);
+  }
+
+  .card__inner.color-scheme-1 {
+    background: transparent;
+  }
+
+  .card .card__inner .card__media {
+    overflow: hidden;
+    z-index: 0;
+    border-radius: calc(var(--border-radius) - var(--border-width) - var(--image-padding));
+  }
+
+  .card--card .card__inner .card__media {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .card--standard.card--text {
+    background-color: transparent;
+  }
+
+  .card-information {
+    text-align: var(--text-alignment);
+  }
+
+  .card__media,
+  .card .media {
+    bottom: 0;
+    position: absolute;
+    top: 0;
+  }
+
+  .card .media {
+    width: 100%;
+  }
+
+  .card__media {
+    margin: var(--image-padding);
+    width: calc(100% - 2 * var(--image-padding));
+  }
+
+  .card--standard .card__media {
+    margin: var(--image-padding);
+  }
+
+  .card__inner {
+    width: 100%;
+  }
+
+  .card--media .card__inner .card__content {
+    position: relative;
+    padding: calc(var(--image-padding) + 1rem);
+  }
+
+  .card__content {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) max-content minmax(0, 1fr);
+    padding: 0px;
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  .card__content--auto-margins {
+    grid-template-rows: minmax(0, auto) max-content minmax(0, auto);
+  }
+
+  .card__information {
+    grid-row-start: 2;
+    padding: 4px 8px;
+  }
+
+  @media (min-width: 768px) {
+    .card__information {
+      padding: 4px 16px;
+    }
+  }
+
+  .card:not(.ratio) > .card__content {
+    grid-template-rows: max-content minmax(0, 1fr) max-content auto;
+  }
+
+  .card__badge {
+    align-self: flex-end;
+    grid-row-start: 3;
+    position: relative;
+    top: -20px;
+  }
+
+  @media (max-width: 767px) {
+    .card__badge {
+      position: relative;
+      top: -8px;
+    }
+  }
+
+  .card__badge.top {
+    align-self: flex-start;
+    grid-row-start: 1;
+  }
+
+  .card__badge.right {
+    justify-self: flex-end;
+  }
+
+  .card:not(.card--horizontal) > .card__content > .card__badge {
+    margin: 1.3rem;
+  }
+
+  .card__media .media img {
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    width: 100%;
+  }
+
+  .card__media--svg-mask.vertical img, .sold-out-overlay.vertical {
+    -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0655/0667/2825/files/card_vertical.svg?v=1761427601');
+    mask-image: url('https://cdn.shopify.com/s/files/1/0655/0667/2825/files/card_vertical.svg?v=1761427601');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: cover;
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    display: block;
+  }
+
+  .card__media--svg-mask.horizontal img, .sold-out-overlay.horizontal {
+    -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0655/0667/2825/files/card_horizontal.svg?v=1761427600');
+    mask-image: url('https://cdn.shopify.com/s/files/1/0655/0667/2825/files/card_horizontal.svg?v=1761427600');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: cover;
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    display: block;
+  }
+
+  .card__media--svg-mask.square img, .sold-out-overlay.square {
+    -webkit-mask-image: url('https://cdn.shopify.com/s/files/1/0655/0667/2825/files/card_square.svg?v=1761427601');
+    mask-image: url('https://cdn.shopify.com/s/files/1/0655/0667/2825/files/card_square.svg?v=1761427601');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: cover;
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    display: block;
+  }
+
+  .sold-out-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0F212799;
+    z-index: 5;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .card__inner:not(.ratio) > .card__content {
+    height: 100%;
+  }
+
+  .card__heading {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .card__heading:last-child {
+    margin-bottom: 0;
+  }
+
+  .card--horizontal .card__heading,
+  .card--horizontal .price__container .price-item,
+  .card--horizontal__quick-add {
+    font-size: calc(var(--font-heading-scale) * 1.2rem);
+  }
+
+  .card--horizontal
+    .card-information
+    > *:not(.visually-hidden:first-child)
+    + *:not(.rating):not(.card__information-volume-pricing-note) {
+    margin-top: 0;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .card--horizontal .card__heading,
+    .card--horizontal .price__container .price-item,
+    .card--horizontal__quick-add {
+      font-size: calc(var(--font-heading-scale) * 1.3rem);
+    }
+  }
+
+  .card--card.card--media > .card__content {
+    margin-top: calc(0rem - var(--image-padding));
+  }
+
+  .card__heading a::after {
+    bottom: 0;
+    content: '';
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+  }
+
+  @media screen and (min-width: 768px) {
+    .card .media.media--hover-effect > img:only-child,
+    .card-wrapper .media.media--hover-effect > img:only-child {
+      transition: transform var(--duration-long) ease;
+    }
+
+    .card:hover .media.media--hover-effect > img:first-child:only-child,
+    .card-wrapper:hover .media.media--hover-effect > img:first-child:only-child {
+      transform: scale(1.05); /* Added slight zoom for premium feel */
+    }
+
+    .underline-links-hover:hover a {
+      text-decoration: underline;
+      text-underline-offset: 0.3rem;
+    }
+  }
+
+  .card--standard.card--media .card__inner .card__information,
+  .card--standard.card--text:not(.card--horizontal) > .card__content .card__heading:not(.card__heading--placeholder),
+  .card--standard:not(.card--horizontal) > .card__content .card__badge,
+  .card--standard.card--text.article-card > .card__content .card__information,
+  .card--standard > .card__content .card__caption {
+    display: none;
+  }
+
+  .card--card.card--media .card__inner .card__information,
+  .card--card.card--text .card__inner,
+  .card--card.card--media > .card__content .card__badge {
+    display: none;
+  }
+
+  .card-information {
+    width: 100%;
+  }
+
+  .card-information > * {
+    line-height: calc(1 + 0.4 / var(--font-body-scale));
+    color: rgb(var(--color-foreground));
+  }
+
+  /* component-slider.css */
+  slider-component {
+    --desktop-margin-left-first-item: max(
+      5rem,
+      calc((100vw - var(--page-width) + 10rem - var(--grid-desktop-horizontal-spacing)) / 2)
+    );
+    position: relative;
+    display: block;
+  }
+
+  slider-component.slider-component-full-width {
+    --desktop-margin-left-first-item: 1.5rem;
+  }
+
+  @media screen and (max-width: 767px) {
+    slider-component.page-width {
+      padding: 0 1.5rem;
+    }
+  }
+
+  @media screen and (max-width: 0px) /* DELETED RANGE */ {
+    slider-component.page-width {
+      padding: 0 5rem;
+    }
+  }
+
+  .slider__slide {
+    --focus-outline-padding: 0.5rem;
+    --shadow-padding-top: calc((var(--shadow-vertical-offset) * -1 + var(--shadow-blur-radius)) * var(--shadow-visible));
+    --shadow-padding-bottom: calc((var(--shadow-vertical-offset) + var(--shadow-blur-radius)) * var(--shadow-visible));
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    padding-bottom: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    .slider.slider--mobile {
+      position: relative;
+      flex-wrap: inherit;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scroll-padding-left: 1.5rem;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1rem;
+    }
+
+    .slider--mobile:after {
+      content: '';
+      width: 0;
+      padding-left: 1.5rem;
+    }
+
+    .slider.slider--mobile .slider__slide {
+      margin-bottom: 0;
+      padding-top: max(var(--focus-outline-padding), var(--shadow-padding-top));
+      padding-bottom: max(var(--focus-outline-padding), var(--shadow-padding-bottom));
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .slider.slider--tablet-up {
+      position: relative;
+      flex-wrap: inherit;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scroll-padding-left: 1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .slider.slider--tablet-up .slider__slide {
+      margin-bottom: 0;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .slider.slider--tablet {
+      position: relative;
+      flex-wrap: inherit;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scroll-padding-left: 1.5rem;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1rem;
+    }
+
+    .slider--tablet:after {
+      content: '';
+      width: 0;
+      padding-left: 1.5rem;
+      margin-left: calc(-1 * var(--grid-desktop-horizontal-spacing));
+    }
+
+    .slider.slider--tablet .slider__slide {
+      margin-bottom: 0;
+      padding-top: max(var(--focus-outline-padding), var(--shadow-padding-top));
+      padding-bottom: max(var(--focus-outline-padding), var(--shadow-padding-bottom));
+    }
+  }
+
+  .slider--everywhere {
+    position: relative;
+    flex-wrap: inherit;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+  }
+
+  .slider.slider--everywhere .slider__slide {
+    margin-bottom: 0;
+    scroll-snap-align: center;
+  }
+
+  @media screen and (min-width: 768px) {
+    .slider--desktop {
+      position: relative;
+      flex-wrap: inherit;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1rem;
+      scroll-padding-left: var(--desktop-margin-left-first-item);
+    }
+
+    .slider--desktop:after {
+      content: '';
+      width: 0;
+      padding-left: 5rem;
+      margin-left: calc(-1 * var(--grid-desktop-horizontal-spacing));
+    }
+
+    .slider.slider--desktop .slider__slide {
+      margin-bottom: 0;
+      padding-top: max(var(--focus-outline-padding), var(--shadow-padding-top));
+      padding-bottom: max(var(--focus-outline-padding), var(--shadow-padding-bottom));
+    }
+
+    .slider--desktop .slider__slide:first-child {
+      margin-left: var(--desktop-margin-left-first-item);
+      scroll-margin-left: var(--desktop-margin-left-first-item);
+    }
+  }
+
+  .slider {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slider-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media screen and (min-width: 768px) {
+    .slider:not(.slider--everywhere):not(.slider--desktop) + .slider-buttons {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .slider--desktop:not(.slider--tablet) + .slider-buttons {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .slider--mobile + .slider-buttons {
+      display: none;
+    }
+  }
+
+  .slider-button {
+    color: rgba(var(--color-foreground), 0.75);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .slider-button:not([disabled]):hover {
+    color: rgb(var(--color-foreground));
+    transform: scale(1.1);
+  }
+
+  .slider-button .icon {
+    height: 0.6rem;
+  }
+
+  .slider-button[disabled] .icon {
+    color: rgba(var(--color-foreground), 0.3);
+    cursor: not-allowed;
+  }
+
+  .slider-button--next .icon {
+    transform: rotate(-90deg);
+  }
+
+  .slider-button--prev .icon {
+    transform: rotate(90deg);
+  }
+
+  .section-{{ section.id }}-padding {
+    /* Fluid customized scaling: Anchors exactly at 100% on 1400px desktops, interpolates to exactly 75% at 768px tablet, settling smoothly around ~60% across mobile. */
+    padding-top: clamp(12px, calc({{ section.settings.padding_top | times: 0.4463 }}px + {{ section.settings.padding_top | times: 0.03955 }}vw), {{ section.settings.padding_top }}px);
+    padding-bottom: clamp(12px, calc({{ section.settings.padding_bottom | times: 0.4463 }}px + {{ section.settings.padding_bottom | times: 0.03955 }}vw), {{ section.settings.padding_bottom }}px);
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign collection_count = 0
+  assign child_collections = "" | split: ","
+  
+  for i in (1..4)
+    assign key = 'child_collection_' | append: i
+    assign child_coll = collection.metafields.custom[key].value
+    if child_coll != blank
+      assign collection_count = collection_count | plus: 1
+    endif
+  endfor
+
+  assign columns_mobile_int = section.settings.columns_mobile | plus: 0
+  assign show_mobile_slider = false
+  if section.settings.swipe_on_mobile and collection_count > columns_mobile_int
+    assign show_mobile_slider = true
+  endif
+-%}
+
+{% comment %} Debug Console Log (Visible only in inspector/console) {% endcomment %}
+<script>
+  console.group('Madtrip Child Collection Debug (Section {{ section.id }})');
+  console.log('Detected Count: {{ collection_count }}');
+  console.log('Collection Page: {{ collection.title | default: "Not a Collection Page" }}');
+  console.groupEnd();
+</script>
+
+{%- if true -%}
+<style>
+  #Slider-{{ section.id }} .card__content {
+    text-align: center !important;
+  }
+  #Slider-{{ section.id }} .card__heading {
+    text-align: center !important;
+    justify-content: center !important;
+    display: flex;
+    flex-wrap: wrap;
+    color: {{ section.settings.card_text_color }} !important;
+  }
+  #Slider-{{ section.id }} .card-information > *,
+  #Slider-{{ section.id }} .card__heading a,
+  .section-{{ section.id }}-padding .collection-list-title {
+    color: {{ section.settings.card_text_color }} !important;
+    font-family: 'Krugat', sans-serif !important;
+  }
+  #Slider-{{ section.id }} .card-information > *,
+  #Slider-{{ section.id }} .card__heading a {
+    /* Fluid typography mapping 16px @ 400px -> 20px @ 768px */
+    font-size: clamp(16px, 11.652px + 1.087vw, 20px) !important;
+    text-transform: uppercase !important;
+  }
+  @media screen and (min-width: 768px) {
+    #Slider-{{ section.id }} .card-information > *,
+    #Slider-{{ section.id }} .card__heading a {
+      /* Fluid typography mapping 20px @ 768px -> 24px @ 1400px */
+      font-size: clamp(20px, 15.139px + 0.633vw, 24px) !important;
+    }
+  }
+  #Slider-{{ section.id }} .icon-wrap,
+  #Slider-{{ section.id }} .card__heading .icon,
+  #Slider-{{ section.id }} .card__heading svg {
+    display: none !important;
+  }
+
+  /* Wipe all underlying background colors/shadows on cards so mask reveals section's background safely */
+  #Slider-{{ section.id }} .card,
+  #Slider-{{ section.id }} .card__inner,
+  #Slider-{{ section.id }} .card--card,
+  #Slider-{{ section.id }} .card__media,
+  #Slider-{{ section.id }} .media {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  #Slider-{{ section.id }} .card:after,
+  #Slider-{{ section.id }} .card__inner:after {
+    display: none !important;
+  }
+
+  /* Set row-gap for mobile */
+  #Slider-{{ section.id }} {
+    row-gap: 16px !important;
+  }
+
+  /* Force desktop grid layout starting from 768px (tablet up) instead of theme default (typically 990px or 1024px) */
+  @media screen and (min-width: 768px) {
+    #Slider-{{ section.id }} {
+      display: grid !important;
+      grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr)) !important;
+      column-gap: var(--grid-desktop-horizontal-spacing, 1.5rem) !important;
+      row-gap: 32px !important;
+    }
+    #Slider-{{ section.id }} .grid__item {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+</style>
+
+{%- if section.settings.svg_mask != blank -%}
+  {%- assign mask_ratio = section.settings.svg_mask.aspect_ratio | default: 0 -%}
+  <style>
+    #Slider-{{ section.id }} {
+      --svg-mask-ratio: {% if mask_ratio != 0 and mask_ratio != blank %}{{ mask_ratio }}{% else %}2.0{% endif %};
+    }
+    #Slider-{{ section.id }} .card__inner {
+      padding-bottom: 0 !important;
+      aspect-ratio: var(--svg-mask-ratio) !important;
+      height: auto !important;
+      position: relative !important;
+    }
+    #Slider-{{ section.id }} .card__inner::before {
+      padding-bottom: 0 !important;
+      content: none !important;
+      display: none !important;
+    }
+    #Slider-{{ section.id }} .card__inner .media {
+      position: absolute !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      padding-bottom: 0 !important;
+      height: 100% !important;
+      width: 100% !important;
+    }
+    
+    {%- assign stroke = section.settings.stroke_width -%}
+    
+    /* Simulate a rigid customizable stroke around the masked image using a pure SVG morphology filter */
+    #Slider-{{ section.id }} .card__media {
+      {%- if stroke > 0 -%}
+      filter: url(#svg-stroke-{{ section.id }}) !important;
+      {%- else -%}
+      filter: none !important;
+      {%- endif -%}
+    }
+
+    #Slider-{{ section.id }} .card__media img,
+    #Slider-{{ section.id }} .sold-out-overlay {
+      -webkit-mask-image: url('{{ section.settings.svg_mask | image_url }}') !important;
+      mask-image: url('{{ section.settings.svg_mask | image_url }}') !important;
+      -webkit-mask-repeat: no-repeat !important;
+      -webkit-mask-size: 100% 100% !important;
+      -webkit-mask-position: center !important;
+      mask-repeat: no-repeat !important;
+      mask-size: 100% 100% !important;
+      mask-position: center !important;
+      object-fit: cover !important;
+    }
+
+    /* Section SVG Cut Clip and Stroke Layer */
+    #shopify-section-{{ section.id }} {
+      position: relative;
+      z-index: 1;
+      /* Link the height perfectly to the SVG aspect ratios via viewport width */
+      --svg-cut-height: calc(100vw * 56 / 2466);
+      --svg-cut-height-bottom: calc(100vw * 56 / 2463);
+    }
+    #shopify-section-{{ section.id }} .color-{{ section.settings.color_scheme }} {
+      /* Mask the top & bottom edges precisely tracking the waves, while preserving the center natively */
+      -webkit-mask-image: 
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2466 56' preserveAspectRatio='none'><path fill='black' d='M2463.32 40.2117C2454.79 16.0988 2427.73 14.7548 2406.89 16.7708C2387.33 18.6682 2367.47 29.2226 2348.82 31.3176C2311.55 35.5473 2274.06 3.7261 2233.95 3.40987C2193.84 3.09363 2175.12 24.5186 2141.57 36.9703C2116.17 46.3783 2106.52 35.3496 2082.8 29.6574C2055.3 23.056 2034.24 20.6842 2006.15 25.744C1989.54 28.7087 1960.43 42.1487 1946.3 41.5952C1927.5 40.8442 1897.08 17.1266 1877.96 10.6042C1825.46 -7.34212 1801.89 10.96 1755.48 27.3647C1715.7 41.4371 1686.48 13.5294 1650.19 14.2014C1618.94 14.7548 1579.34 39.4607 1542.94 42.3463C1496.42 46.0621 1472.27 17.68 1426.4 32.2268C1403.82 39.3816 1383.38 53.375 1358.35 53.375C1311.97 53.3355 1275.58 9.02304 1228.29 21.9096C1209.82 26.9694 1196.53 36.8122 1175.8 38.1957C1144.18 40.2908 1130.81 28.9459 1103.26 21.9096C1054.45 9.41834 1023.88 53.3355 977.179 53.3355C939.11 53.3355 897.288 17.3242 860.602 27.9181C851.094 30.6456 841.586 36.7331 831.276 39.184C766.466 54.6399 713.096 5.70257 654.115 17.1266C634.807 20.8819 611.601 33.0174 592.038 31.5943C575.353 30.3689 550.726 16.415 533.421 11.1181C507.228 3.0541 480.889 -0.305892 454.003 6.76987C430.979 12.8574 400.414 39.8164 379.576 40.3698C361.652 40.8442 331.888 26.3369 311.524 23.5699C296.697 21.5539 275.822 21.5539 260.995 23.5699C241.432 26.2579 211.595 41.0814 195.02 40.2908C176.44 39.4211 145.948 17.5219 126.858 10.6437C84.162 -4.69366 39.8627 2.26352 1.31934 26.2183 L 0 56 L 2466 56 Z'/></svg>"),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='black' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.442 1013.03 55.9064 960.023 51.7954C918.165 48.554 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123 L 0 0 L 2463 0 Z'/></svg>"),
+        linear-gradient(#000, #000);
+      -webkit-mask-size: 
+        100% var(--svg-cut-height), 
+        100% var(--svg-cut-height-bottom), 
+        100% calc(100% - var(--svg-cut-height) - var(--svg-cut-height-bottom) + 2px);
+      -webkit-mask-position: 
+        top center, 
+        bottom center, 
+        0 calc(var(--svg-cut-height) - 1px);
+      -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
+      
+      mask-image: 
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2466 56' preserveAspectRatio='none'><path fill='black' d='M2463.32 40.2117C2454.79 16.0988 2427.73 14.7548 2406.89 16.7708C2387.33 18.6682 2367.47 29.2226 2348.82 31.3176C2311.55 35.5473 2274.06 3.7261 2233.95 3.40987C2193.84 3.09363 2175.12 24.5186 2141.57 36.9703C2116.17 46.3783 2106.52 35.3496 2082.8 29.6574C2055.3 23.056 2034.24 20.6842 2006.15 25.744C1989.54 28.7087 1960.43 42.1487 1946.3 41.5952C1927.5 40.8442 1897.08 17.1266 1877.96 10.6042C1825.46 -7.34212 1801.89 10.96 1755.48 27.3647C1715.7 41.4371 1686.48 13.5294 1650.19 14.2014C1618.94 14.7548 1579.34 39.4607 1542.94 42.3463C1496.42 46.0621 1472.27 17.68 1426.4 32.2268C1403.82 39.3816 1383.38 53.375 1358.35 53.375C1311.97 53.3355 1275.58 9.02304 1228.29 21.9096C1209.82 26.9694 1196.53 36.8122 1175.8 38.1957C1144.18 40.2908 1130.81 28.9459 1103.26 21.9096C1054.45 9.41834 1023.88 53.3355 977.179 53.3355C939.11 53.3355 897.288 17.3242 860.602 27.9181C851.094 30.6456 841.586 36.7331 831.276 39.184C766.466 54.6399 713.096 5.70257 654.115 17.1266C634.807 20.8819 611.601 33.0174 592.038 31.5943C575.353 30.3689 550.726 16.415 533.421 11.1181C507.228 3.0541 480.889 -0.305892 454.003 6.76987C430.979 12.8574 400.414 39.8164 379.576 40.3698C361.652 40.8442 331.888 26.3369 311.524 23.5699C296.697 21.5539 275.822 21.5539 260.995 23.5699C241.432 26.2579 211.595 41.0814 195.02 40.2908C176.44 39.4211 145.948 17.5219 126.858 10.6437C84.162 -4.69366 39.8627 2.26352 1.31934 26.2183 L 0 56 L 2466 56 Z'/></svg>"),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='black' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.442 1013.03 55.9064 960.023 51.7954C918.165 48.554 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123 L 0 0 L 2463 0 Z'/></svg>"),
+        linear-gradient(#000, #000);
+      mask-size: 
+        100% var(--svg-cut-height), 
+        100% var(--svg-cut-height-bottom), 
+        100% calc(100% - var(--svg-cut-height) - var(--svg-cut-height-bottom) + 2px);
+      mask-position: 
+        top center, 
+        bottom center, 
+        0 calc(var(--svg-cut-height) - 1px);
+      mask-repeat: no-repeat, no-repeat, no-repeat;
+    }
+
+    /* Overlay actual 5px black stroke along the perimeter of the crop for TOP */
+    #shopify-section-{{ section.id }}::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--svg-cut-height);
+      pointer-events: none;
+      z-index: 5;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2466 56' preserveAspectRatio='none'><path fill='none' stroke='black' stroke-width='5' d='M2463.32 40.2117C2454.79 16.0988 2427.73 14.7548 2406.89 16.7708C2387.33 18.6682 2367.47 29.2226 2348.82 31.3176C2311.55 35.5473 2274.06 3.7261 2233.95 3.40987C2193.84 3.09363 2175.12 24.5186 2141.57 36.9703C2116.17 46.3783 2106.52 35.3496 2082.8 29.6574C2055.3 23.056 2034.24 20.6842 2006.15 25.744C1989.54 28.7087 1960.43 42.1487 1946.3 41.5952C1927.5 40.8442 1897.08 17.1266 1877.96 10.6042C1825.46 -7.34212 1801.89 10.96 1755.48 27.3647C1715.7 41.4371 1686.48 13.5294 1650.19 14.2014C1618.94 14.7548 1579.34 39.4607 1542.94 42.3463C1496.42 46.0621 1472.27 17.68 1426.4 32.2268C1403.82 39.3816 1383.38 53.375 1358.35 53.375C1311.97 53.3355 1275.58 9.02304 1228.29 21.9096C1209.82 26.9694 1196.53 36.8122 1175.8 38.1957C1144.18 40.2908 1130.81 28.9459 1103.26 21.9096C1054.45 9.41834 1023.88 53.3355 977.179 53.3355C939.11 53.3355 897.288 17.3242 860.602 27.9181C851.094 30.6456 841.586 36.7331 831.276 39.184C766.466 54.6399 713.096 5.70257 654.115 17.1266C634.807 20.8819 611.601 33.0174 592.038 31.5943C575.353 30.3689 550.726 16.415 533.421 11.1181C507.228 3.0541 480.889 -0.305892 454.003 6.76987C430.979 12.8574 400.414 39.8164 379.576 40.3698C361.652 40.8442 331.888 26.3369 311.524 23.5699C296.697 21.5539 275.822 21.5539 260.995 23.5699C241.432 26.2579 211.595 41.0814 195.02 40.2908C176.44 39.4211 145.948 17.5219 126.858 10.6437C84.162 -4.69366 39.8627 2.26352 1.31934 26.2183'/></svg>");
+      background-size: 100% var(--svg-cut-height);
+      background-position: top center;
+      background-repeat: no-repeat;
+    }
+
+    /* Overlay actual 6px black stroke along the perimeter of the crop for BOTTOM */
+    #shopify-section-{{ section.id }}::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: var(--svg-cut-height-bottom);
+      pointer-events: none;
+      z-index: 5;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2463 56' preserveAspectRatio='none'><path fill='none' stroke='black' stroke-width='6' d='M2462.16 25.9036C2444.34 23.2552 2427.84 16.5352 2409.51 15.1517C2392.98 13.9262 2375.31 14.282 2359.39 18.8674C2350.35 21.4764 2340.3 28.1568 2331.63 29.6589C2294.54 36.1022 2257.89 0.328134 2214.87 4.24154C2182.92 7.16672 2154.72 32.7027 2125.39 36.4185C2094.72 40.2923 2068.23 17.1281 2036.25 17.1281C1991.29 17.1281 1978.76 48.0796 1927.03 30.2123C1893.44 18.6302 1874.9 0.209546 1835.63 4.24154C1808.34 7.0086 1781.49 28.2754 1754.28 30.1728C1733.84 31.5959 1718.21 17.7211 1698.5 15.3493C1641.13 8.43166 1615.41 33.6909 1567.17 40.4109C1533.66 45.1149 1501.85 22.346 1472.49 23.6505C1450.96 24.5992 1417.7 47.7634 1392.45 51.2024C1338.72 58.5154 1322.91 37.4858 1278.75 20.5276C1247.2 8.43166 1225.6 28.0382 1194.16 32.0702C1180.43 33.8491 1158.93 33.7305 1145.27 31.7935C1120.28 28.2359 1089.93 9.49896 1066.36 18.3535C1023.63 34.442 1013.03 55.9064 960.023 51.7954C918.165 48.554 889.057 17.8001 845.887 26.8524C801.406 36.1813 795.431 46.8542 746.651 33.4142C706.213 22.2669 681.44 9.89425 636.704 15.3098C622.605 17.0095 610.219 26.0618 597.505 28.7893C564.426 35.865 530.072 7.32483 497.576 4.24154C451.31 -0.146219 438.377 20.8439 400.271 32.426C357.174 45.5497 331.891 15.626 288.903 17.1677C259.431 18.2349 236.99 38.3554 209.522 36.7347C173.273 34.6001 140.814 3.84625 100.74 3.01614C64.6744 2.26508 35.7851 28.3545 0.15625 30.2123'/></svg>");
+      background-size: 100% var(--svg-cut-height-bottom);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+    }
+  </style>
+
+  {%- if stroke > 0 -%}
+  <svg width="0" height="0" class="visually-hidden" style="position: absolute; display: none;">
+    <defs>
+      <filter id="svg-stroke-{{ section.id }}" x="-20%" y="-20%" width="140%" height="140%">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="{{ stroke }}" result="dilate" />
+        <feFlood flood-color="{{ section.settings.card_text_color }}" result="color" />
+        <feComposite in="color" in2="dilate" operator="in" result="stroke" />
+        <feMerge>
+          <feMergeNode in="stroke" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
+  {%- endif -%}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Instantly load the SVG to extract native aspect ratio if Shopify Liquid failed to grab it
+      var img = new Image();
+      img.onload = function() {
+        if (img.naturalWidth && img.naturalHeight) {
+          var ratio = img.naturalWidth / img.naturalHeight;
+          var slider = document.querySelector('#Slider-{{ section.id }}');
+          if (slider) {
+            slider.style.setProperty('--svg-mask-ratio', ratio);
+          }
+        }
+      };
+      img.src = "{{ section.settings.svg_mask | image_url }}";
+    });
+  </script>
+{%- endif -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient" style="background-color: {{ section.settings.section_bg_color }}; {% if collection_count == 0 %}display:none;{% endif %}">
+  <div class="collection-list-wrapper page-width isolate{% if show_mobile_slider %} page-width-desktop{% endif %}{% if section.settings.title == blank %} no-heading{% endif %} section-{{ section.id }}-padding">
+    {%- unless section.settings.title == blank -%}
+      <div class="title-wrapper-with-link{% if show_mobile_slider %} title-wrapper--self-padded-mobile{% else %} title-wrapper--self-padded-mobile{% endif %} title-wrapper--no-top-margin">
+        <h2
+          id="SectionHeading-{{ section.id }}"
+          class="collection-list-title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+        >
+          {{ section.settings.title }}
+        </h2>
+      </div>
+    {%- endunless -%}
+
+    <slider-component class="slider-mobile-gutter{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+      <ul
+        class="collection-list contains-card contains-card--collection{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down{% if section.settings.swipe_on_mobile %} slider slider--mobile grid--peek{% endif %} collection-list--{{ collection_count }}-items"
+        id="Slider-{{ section.id }}"
+        role="list"
+      >
+        {%- liquid
+          assign columns = collection_count
+          if columns > 3
+            assign columns = 3
+          endif
+        -%}
+        
+        {%- for i in (1..4) -%}
+          {%- assign key = 'child_collection_' | append: i -%}
+          {%- assign child_coll = collection.metafields.custom[key].value -%}
+          
+          {%- if child_coll != blank -%}
+          <li
+            id="Slide-{{ section.id }}-{{ forloop.index }}"
+            class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if child_coll.featured_image == nil %} collection-list__item--no-media{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+            {% if settings.animations_reveal_on_scroll %}
+              data-cascade
+              style="--animation-order: {{ forloop.index }};"
+            {% endif %}
+          >
+            {%- assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1 -%}
+            {%- assign placeholder_image = 'collection-apparel-' | append: placeholder_image_index -%}
+            {% render 'card-collection',
+              card_collection: child_coll,
+              media_aspect_ratio: 'adapt',
+              columns: columns,
+              placeholder_image: placeholder_image
+            %}
+          </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      {%- if show_mobile_slider -%}
+        <div class="slider-buttons">
+          <button
+            type="button"
+            class="slider-button slider-button--prev"
+            name="previous"
+            aria-label="{{ 'general.slider.previous_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+          <div class="slider-counter caption">
+            <span class="slider-counter--current">1</span>
+            <span aria-hidden="true"> / </span>
+            <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+            <span class="slider-counter--total">{{ collection_count }}</span>
+          </div>
+          <button
+            type="button"
+            class="slider-button slider-button--next"
+            name="next"
+            aria-label="{{ 'general.slider.next_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+        </div>
+      {%- endif -%}
+    </slider-component>
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Child Collection List",
+  "tag": "section",
+  "class": "section section-collection-list",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Collections",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" },
+        { "value": "hxl", "label": "Extra Large" }
+      ],
+      "default": "h1",
+      "label": "Heading Size"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Text Color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background Color",
+      "default": "#FFDE17"
+    },
+    {
+      "type": "image_picker",
+      "id": "svg_mask",
+      "label": "SVG Mask",
+      "info": "Upload an SVG file to use as a mask shape for the collection images."
+    },
+    {
+      "type": "range",
+      "id": "stroke_width",
+      "min": 0,
+      "max": 2,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Mask Stroke Width",
+      "default": 0.5
+    },
+    {
+      "type": "header",
+      "content": "Mobile Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ],
+      "default": "2",
+      "label": "Number of columns on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "Enable swipe on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Child Collection List"
+    }
+  ]
+}
+{% endschema %}
