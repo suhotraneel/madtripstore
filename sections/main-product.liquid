@@ -148,10 +148,10 @@
     <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
       <div class="grid__item product__media-wrapper">
         {% render 'product-media-gallery', variant_images: variant_images %}
-        <div class="desktop-only-accordion" style="margin-top: 3rem; max-width: 65rem; margin-left: auto; margin-right: auto;">
+        <div class="desktop-only-accordion" style="margin-top: 3rem; max-width: 65rem; margin-left: auto; margin-right: auto; width: 100%; display: block;">
           {%- for block in section.blocks -%}
             {%- if block.type == 'collapsible_tab' -%}
-              <div class="product__accordion accordion quick-add-hidden" {{ block.shopify_attributes }}>
+              <div class="product__accordion accordion">
                 <details id="Details-{{ block.id }}-{{ section.id }}-desktop">
                   <summary>
                     <div class="summary__title">
