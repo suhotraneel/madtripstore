@@ -196,6 +196,7 @@
           variant: section.settings.view_all_button_variant,
           size: section.settings.view_all_button_size,
           mobile_size: section.settings.view_all_button_mobile_size,
+          full_width: section.settings.view_all_button_full_width,
           aria_label: 'sections.featured_collection.view_all_label' | t: collection_name: section.settings.collection.title | escape
         %}
       </div>
@@ -376,6 +377,12 @@
       "id": "view_all_button_label",
       "label": "View all button label",
       "default": "View all"
+    },
+    {
+      "type": "checkbox",
+      "id": "view_all_button_full_width",
+      "label": "View all button full width",
+      "default": false
     },
     {
       "type": "checkbox",
