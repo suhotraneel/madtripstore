@@ -1497,14 +1497,14 @@ a.product__text {
   }
 }
 
-/* Responsive Accordions */
+/* Responsive Accordions and Complementary Blocks */
 @media screen and (min-width: 750px) {
-  .mobile-only-accordion {
+  .mobile-only-accordion, .mobile-only-complementary {
     display: none !important;
   }
 }
 @media screen and (max-width: 749px) {
-  .desktop-only-accordion {
+  .desktop-only-accordion, .desktop-only-complementary {
     display: none !important;
   }
 }

@@ -340,4 +340,12 @@
     {%- endfor -%}
   </div>
 
+  <div class="desktop-only-complementary" style="margin-top: 3rem; max-width: 65rem; margin-left: auto; margin-right: auto; width: 100%; display: block;">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'complementary' -%}
+        {% render 'complementary-products-block', block: block, product: product, section: section, is_desktop: true %}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
 </media-gallery>
