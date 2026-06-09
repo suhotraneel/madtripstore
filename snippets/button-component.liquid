@@ -4,6 +4,10 @@
   assign button_mobile_size = mobile_size | default: button_size
   assign button_label = label | strip
   assign button_full_width = full_width | default: false
+  assign button_tag = 'a'
+  if is_button
+    assign button_tag = 'button'
+  endif
 -%}
 
 <style>
@@ -279,14 +283,33 @@
   }
 </style>
 
-<a
-  href="{{ url }}"
-  class="button-component button-component--{{ button_variant }} button-component--{{ button_size }} button-component--mobile-{{ button_mobile_size }}{% if button_full_width %} button-component--full-width{% endif %}"
-  {% if aria_label != blank %}
-    aria-label="{{ aria_label }}"
-  {% endif %}
->
-  <span class="button-component__body">
-    <span class="button-component__label">{{ button_label }}</span>
-  </span>
-</a>
+{%- if button_tag == 'button' -%}
+  <button
+    {% if id %}id="{{ id }}"{% endif %}
+    {% if name %}name="{{ name }}"{% endif %}
+    {% if form %}form="{{ form }}"{% endif %}
+    {% if disabled %}disabled{% endif %}
+    type="{{ type | default: 'button' }}"
+    class="button-component button-component--{{ button_variant }} button-component--{{ button_size }} button-component--mobile-{{ button_mobile_size }}{% if button_full_width %} button-component--full-width{% endif %} {{ custom_class }}"
+    {% if aria_label != blank %}
+      aria-label="{{ aria_label }}"
+    {% endif %}
+  >
+    <span class="button-component__body">
+      <span class="button-component__label">{{ button_label }}</span>
+    </span>
+    {% if suffix_html %}{{ suffix_html }}{% endif %}
+  </button>
+{%- else -%}
+  <a
+    href="{{ url }}"
+    class="button-component button-component--{{ button_variant }} button-component--{{ button_size }} button-component--mobile-{{ button_mobile_size }}{% if button_full_width %} button-component--full-width{% endif %} {{ custom_class }}"
+    {% if aria_label != blank %}
+      aria-label="{{ aria_label }}"
+    {% endif %}
+  >
+    <span class="button-component__body">
+      <span class="button-component__label">{{ button_label }}</span>
+    </span>
+  </a>
+{%- endif -%}

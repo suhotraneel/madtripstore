@@ -78,31 +78,66 @@
               assign quantity_rule_soldout = true
             endif
           -%}
-          <button
-            id="ProductSubmitButton-{{ section_id }}"
-            type="submit"
-            name="add"
-            class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-            {% if product.selected_or_first_available_variant.available == false
-              or quantity_rule_soldout
-              or product.selected_or_first_available_variant == nil
-            %}
-              disabled
-            {% endif %}
-          >
-            <span>
-              {%- if product.selected_or_first_available_variant == nil -%}
-                {{ 'products.product.unavailable' | t }}
-              {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
-                {{ 'products.product.sold_out' | t }}
-              {%- else -%}
-                {{ 'products.product.add_to_cart' | t }}
-              {%- endif -%}
-            </span>
+          {%- capture add_to_cart_label -%}
+            {%- if product.selected_or_first_available_variant == nil -%}
+              {{ 'products.product.unavailable' | t }}
+            {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- else -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- endif -%}
+          {%- endcapture -%}
+          {%- capture add_to_cart_suffix -%}
             {%- render 'loading-spinner' -%}
-          </button>
+          {%- endcapture -%}
+          {%- liquid
+            assign is_disabled = false
+            if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == nil
+              assign is_disabled = true
+            endif
+          -%}
+          {% render 'button-component',
+            is_button: true,
+            type: 'submit',
+            name: 'add',
+            id: 'ProductSubmitButton-' | append: section_id,
+            custom_class: 'product-form__submit',
+            disabled: is_disabled,
+            label: add_to_cart_label,
+            suffix_html: add_to_cart_suffix,
+            variant: 'secondary',
+            size: 'medium',
+            full_width: true
+          %}
           {%- if show_dynamic_checkout -%}
-            {{ form | payment_button }}
+            <div class="shopify-payment-button-wrapper" style="display: none;">
+              {{ form | payment_button }}
+            </div>
+            {%- capture buy_now_label -%}{{ 'products.product.buy_it_now' | t | default: 'Buy it now' }}{%- endcapture -%}
+            {% render 'button-component',
+              is_button: true,
+              type: 'button',
+              custom_class: 'custom-buy-it-now',
+              label: buy_now_label,
+              variant: 'primary',
+              size: 'medium',
+              full_width: true
+            %}
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                const customBuyBtns = document.querySelectorAll('.custom-buy-it-now');
+                customBuyBtns.forEach(function(btn) {
+                  btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const wrapper = this.previousElementSibling;
+                    const realBuyBtn = wrapper ? wrapper.querySelector('.shopify-payment-button__button') : null;
+                    if (realBuyBtn) {
+                      realBuyBtn.click();
+                    }
+                  });
+                });
+              });
+            </script>
           {%- endif -%}
         </div>
       {%- endform -%}
@@ -110,14 +145,18 @@
   {%- else -%}
     <div class="product-form">
       <div class="product-form__buttons form">
-        <button
-          type="submit"
-          name="add"
-          class="product-form__submit button button--full-width button--primary"
-          disabled
-        >
-          {{ 'products.product.sold_out' | t }}
-        </button>
+        {%- capture fallback_label -%}{{ 'products.product.sold_out' | t }}{%- endcapture -%}
+        {% render 'button-component',
+          is_button: true,
+          type: 'submit',
+          name: 'add',
+          custom_class: 'product-form__submit',
+          disabled: true,
+          label: fallback_label,
+          variant: 'secondary',
+          size: 'medium',
+          full_width: true
+        %}
       </div>
     </div>
   {%- endif -%}
