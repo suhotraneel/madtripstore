@@ -84,14 +84,14 @@
         "complementary_3pJWXQ": {
           "type": "complementary",
           "settings": {
-            "block_heading": "Pairs well with",
+            "block_heading": "Designed Together",
             "make_collapsible_row": false,
-            "icon": "price_tag",
+            "icon": "lightning_bolt",
             "product_list_limit": 6,
             "products_per_page": 3,
-            "pagination_style": "counter",
-            "image_ratio": "square",
-            "enable_quick_add": false
+            "pagination_style": "dots",
+            "image_ratio": "portrait",
+            "enable_quick_add": true
           }
         }
       },
