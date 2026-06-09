@@ -186,16 +186,10 @@
                       price_class: 'price--large'
                     -%}
                   </div>
-                  {%- for b in section.blocks -%}
-                    {%- if b.type == 'share' -%}
-                      <div class="share-wrapper-right">
-                        {% liquid
-                          assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
-                          render 'share-button', block: b, share_link: share_url
-                        %}
-                      </div>
-                    {%- endif -%}
-                  {%- endfor -%}
+                  <div style="flex: 0 0 auto;">
+                    {%- assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin -%}
+                    {%- render 'share-button', share_link: share_url -%}
+                  </div>
                 </div>
                 {%- if product.quantity_price_breaks_configured? -%}
                   <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
