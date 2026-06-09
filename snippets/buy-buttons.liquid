@@ -110,34 +110,37 @@
             full_width: true
           %}
           {%- if show_dynamic_checkout -%}
-            <div class="shopify-payment-button-wrapper" style="display: none;">
-              {{ form | payment_button }}
-            </div>
-            {%- assign buy_now_label = 'Buy it now' -%}
-            {% render 'button-component',
-              is_button: true,
-              type: 'button',
-              custom_class: 'custom-buy-it-now',
-              label: buy_now_label,
-              variant: 'primary',
-              size: block.settings.button_size | default: 'small',
-              full_width: true
-            %}
-            <script>
-              document.addEventListener('DOMContentLoaded', function() {
-                const customBuyBtns = document.querySelectorAll('.custom-buy-it-now');
-                customBuyBtns.forEach(function(btn) {
-                  btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const wrapper = this.previousElementSibling;
-                    const realBuyBtn = wrapper ? wrapper.querySelector('.shopify-payment-button__button') : null;
-                    if (realBuyBtn) {
-                      realBuyBtn.click();
-                    }
-                  });
+            <div id="dynamic-checkout-{{ section_id }}" class="dynamic-checkout-buttons-container" style="position: relative;">
+              <div class="shopify-payment-button-wrapper" style="position: absolute; opacity: 0.01; pointer-events: none; z-index: -1;">
+                {{ form | payment_button }}
+              </div>
+              {%- assign buy_now_label = 'Buy Now' -%}
+              {% render 'button-component',
+                is_button: true,
+                type: 'button',
+                custom_class: 'custom-buy-it-now',
+                label: buy_now_label,
+                variant: 'primary',
+                size: block.settings.button_size | default: 'small',
+                full_width: true
+              %}
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  const container = document.getElementById('dynamic-checkout-{{ section_id }}');
+                  if (!container) return;
+                  const customBtn = container.querySelector('.custom-buy-it-now');
+                  if (customBtn) {
+                    customBtn.addEventListener('click', function(e) {
+                      e.preventDefault();
+                      const realBuyBtn = container.querySelector('.shopify-payment-button__button--unbranded, .shopify-payment-button__button');
+                      if (realBuyBtn) {
+                        realBuyBtn.click();
+                      }
+                    });
+                  }
                 });
-              });
-            </script>
+              </script>
+            </div>
           {%- endif -%}
         </div>
       {%- endform -%}
