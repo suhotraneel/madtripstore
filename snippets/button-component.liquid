@@ -47,6 +47,7 @@
   .button-component__label {
     position: relative;
     z-index: 1;
+    padding-top: 2px;
   }
 
   .button-component__body {
@@ -54,8 +55,8 @@
     position: relative;
     z-index: 1;
     border-radius: 0;
-    padding-left: calc(4rem + var(--button-left-clip-width));
-    padding-right: calc(4rem + var(--button-left-clip-width));
+    padding-left: calc(3rem + var(--button-left-clip-width));
+    padding-right: calc(3rem + var(--button-left-clip-width));
     -webkit-mask-image:
       var(--button-mask-left),
       var(--button-mask-right),
@@ -85,7 +86,7 @@
   }
 
   .button-component--large .button-component__body {
-    min-height: 7.2rem;
+    min-height: 6.4rem;
     font-size: 2.4rem;
     line-height: 3.2rem;
   }
@@ -95,7 +96,7 @@
   }
 
   .button-component--small .button-component__body {
-    min-height: 6rem;
+    min-height: 5.2rem;
   }
 
   .button-component--small.button-component--primary .button-component__body {
@@ -104,7 +105,7 @@
   }
 
   .button-component--small.button-component--secondary .button-component__body {
-    min-height: 5.6rem;
+    min-height: 4.8rem;
     font-size: 1.6rem;
     line-height: 2.4rem;
   }
@@ -118,9 +119,9 @@
   }
 
   .button-component--xsmall .button-component__body {
-    min-height: 4.8rem;
-    padding-left: calc(2.4rem + var(--button-left-clip-width));
-    padding-right: calc(2.4rem + var(--button-left-clip-width));
+    min-height: 4rem;
+    padding-left: calc(1.6rem + var(--button-left-clip-width));
+    padding-right: calc(1.6rem + var(--button-left-clip-width));
   }
 
   .button-component--xsmall.button-component--primary .button-component__body {
@@ -133,7 +134,7 @@
   }
 
   .button-component--xsmall.button-component--secondary .button-component__body {
-    min-height: 4.4rem;
+    min-height: 3.6rem;
     font-size: 1.4rem;
     line-height: 2rem;
   }
@@ -216,7 +217,7 @@
     }
 
     .button-component--mobile-large .button-component__body {
-      min-height: 6rem;
+      min-height: 5.2rem;
       font-size: 2rem;
       line-height: 2.6rem;
     }
@@ -226,7 +227,7 @@
     }
 
     .button-component--mobile-small .button-component__body {
-      min-height: 6rem;
+      min-height: 5.2rem;
       font-size: 2rem;
       line-height: 2.8rem;
     }
@@ -236,7 +237,7 @@
     }
 
     .button-component--mobile-small.button-component--secondary .button-component__body {
-      min-height: 5.6rem;
+      min-height: 4.8rem;
       font-size: 1.6rem;
       line-height: 2.4rem;
     }
@@ -246,9 +247,9 @@
     }
 
     .button-component--mobile-xsmall .button-component__body {
-      min-height: 4.8rem;
-      padding-left: calc(2.4rem + var(--button-left-clip-width));
-      padding-right: calc(2.4rem + var(--button-left-clip-width));
+      min-height: 4rem;
+      padding-left: calc(1.6rem + var(--button-left-clip-width));
+      padding-right: calc(1.6rem + var(--button-left-clip-width));
     }
 
     .button-component--mobile-xsmall.button-component--primary .button-component__body {
@@ -261,7 +262,7 @@
     }
 
     .button-component--mobile-xsmall.button-component--secondary .button-component__body {
-      min-height: 4.4rem;
+      min-height: 3.6rem;
       font-size: 1.4rem;
       line-height: 2rem;
     }
