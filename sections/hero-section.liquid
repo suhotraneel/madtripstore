@@ -354,10 +354,10 @@
 
   <div class="scroll-container" id="scrollContainer">
     <audio id="bgAudio" loop preload="auto">
-      <source src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/mt-full_track.mp3" type="audio/mpeg">
+      <source src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/hero_layers/mt-full_track.mp3" type="audio/mpeg">
     </audio>
     <audio id="ambientAudio" loop preload="auto">
-      <source src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/traffic_jam.mp3" type="audio/mpeg">
+      <source src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/hero_layers/traffic_jam.mp3" type="audio/mpeg">
     </audio>
     <!-- Videos have no src initially — loaded after page window.load -->
     <video muted loop playsinline id="video1">
@@ -368,7 +368,7 @@
     </video>
     <div class="frame-container">
       <!-- Only the first frame loads with the page for fast initial paint -->
-      <img id="animFrame" src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/framea.png"
+      <img id="animFrame" src="https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/framea.png"
         alt="Animation Frame">
     </div>
 
@@ -560,21 +560,21 @@
     }, 200); // 200ms of no scrolling = inactive
   }
 
-  const starterFrame = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/framea.png";
+  const starterFrame = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/framea.png";
   const loopFrames = [
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame1.png",
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame2.png",
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame3.png",
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame4.png",
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame5.png",
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame6.png",
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame7.png",
-    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/walk_frames/frame8.png"
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame1.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame2.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame3.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame4.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame5.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame6.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame7.png",
+    "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/walk_frames/frame8.png"
   ];
 
   const transformFrames = [];
   for (let i = 1; i <= 18; i++) {
-    transformFrames.push(`https://raw.githubusercontent.com/suhotraneel/madtripstore/main/transform/trans_${i}.png`);
+    transformFrames.push(`https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/transform/trans_${i}.png`);
   }
 
   // === SCROLL ANIMATION TWEAKS ===
@@ -922,12 +922,12 @@
 
     // Inject video sources now that the page is done loading
     const src1 = document.createElement('source');
-    src1.src = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/sky.webm";
+    src1.src = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/hero_layers/sky.webm";
     src1.type = "video/webm";
     video1.appendChild(src1);
 
     const src2 = document.createElement('source');
-    src2.src = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/hero_layers/background.webm";
+    src2.src = "https://raw.githubusercontent.com/suhotraneel/madtripstore/main/media-assets/hero_layers/background.webm";
     src2.type = "video/webm";
     video2.appendChild(src2);
 
