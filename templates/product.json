@@ -67,7 +67,7 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Core Features",
-            "icon": "question_mark",
+            "icon": "lightning_bolt",
             "content": "<p>{{ product.metafields.custom.core_features | metafield_tag }}</p>",
             "page": ""
           }
