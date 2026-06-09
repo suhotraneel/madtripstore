@@ -29,6 +29,12 @@
           "type": "price",
           "settings": {}
         },
+        "share": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
@@ -47,12 +53,6 @@
         "description": {
           "type": "description",
           "settings": {}
-        },
-        "share": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
-          }
         },
         "collapsible_tab_NYrAxB": {
           "type": "collapsible_tab",
@@ -80,18 +80,32 @@
             "content": "<p>{{ product.metafields.custom.care_guide | metafield_tag }}</p>",
             "page": ""
           }
+        },
+        "complementary_3pJWXQ": {
+          "type": "complementary",
+          "settings": {
+            "block_heading": "Pairs well with",
+            "make_collapsible_row": false,
+            "icon": "price_tag",
+            "product_list_limit": 6,
+            "products_per_page": 3,
+            "pagination_style": "counter",
+            "image_ratio": "square",
+            "enable_quick_add": false
+          }
         }
       },
       "block_order": [
         "title",
         "price",
+        "share",
         "variant_picker",
         "buy_buttons",
         "description",
-        "share",
         "collapsible_tab_NYrAxB",
         "collapsible_tab_wwVQaw",
-        "collapsible_tab_h4pag4"
+        "collapsible_tab_h4pag4",
+        "complementary_3pJWXQ"
       ],
       "settings": {
         "enable_sticky_info": true,
