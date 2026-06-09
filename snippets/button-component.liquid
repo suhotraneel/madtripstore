@@ -3,6 +3,7 @@
   assign button_size = size | default: 'large'
   assign button_mobile_size = mobile_size | default: button_size
   assign button_label = label | strip
+  assign button_full_width = full_width | default: false
 -%}
 
 <style>
@@ -211,6 +212,15 @@
     transform: scale(1.1);
   }
 
+  .button-component--full-width {
+    width: 100%;
+    display: flex;
+  }
+
+  .button-component--full-width .button-component__body {
+    width: 100%;
+  }
+
   @media screen and (max-width: 749px) {
     .button-component--mobile-large {
       --button-left-clip-width: 2.455rem;
@@ -271,7 +281,7 @@
 
 <a
   href="{{ url }}"
-  class="button-component button-component--{{ button_variant }} button-component--{{ button_size }} button-component--mobile-{{ button_mobile_size }}"
+  class="button-component button-component--{{ button_variant }} button-component--{{ button_size }} button-component--mobile-{{ button_mobile_size }}{% if button_full_width %} button-component--full-width{% endif %}"
   {% if aria_label != blank %}
     aria-label="{{ aria_label }}"
   {% endif %}
