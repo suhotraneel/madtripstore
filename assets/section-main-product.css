@@ -277,7 +277,7 @@ a.product__text {
 }
 
 .product .price .badge {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0rem;
 }
 
 .product .price__container {
@@ -330,6 +330,9 @@ a.product__text {
 
 .product__tax {
   margin-top: -1.4rem;
+  font-family: "PallyVariable";
+  color: #ffffff !important;
+  opacity: 0.8;
 }
 
 .product--no-media .share-button {
