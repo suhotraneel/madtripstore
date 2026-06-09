@@ -113,7 +113,7 @@
             <div class="shopify-payment-button-wrapper" style="display: none;">
               {{ form | payment_button }}
             </div>
-            {%- capture buy_now_label -%}{{ 'products.product.buy_it_now' | t | default: 'Buy it now' }}{%- endcapture -%}
+            {%- assign buy_now_label = 'Buy it now' -%}
             {% render 'button-component',
               is_button: true,
               type: 'button',
