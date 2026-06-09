@@ -364,7 +364,7 @@ a.product__text {
 }
 
 .product-form__buttons {
-  max-width: 44rem;
+  /* max-width: 44rem; */
 }
 
 .product--no-media .product__info-container>modal-opener {
@@ -390,7 +390,7 @@ a.product__text {
     margin-left: -2.5rem;
     margin-bottom: 3rem;
     width: calc(100% + 4rem);
-     overflow-y: hidden !important;
+    overflow-y: hidden !important;
   }
 
   .product__media-wrapper slider-component:not(.thumbnail-slider--no-slide) {

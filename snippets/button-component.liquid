@@ -39,6 +39,13 @@
     box-shadow: none !important;
   }
 
+  button.button-component::before,
+  button.button-component::after {
+    display: none !important;
+    content: none !important;
+    box-shadow: none !important;
+  }
+
   .button-component:focus-visible {
     outline: 0.2rem solid currentColor;
     outline-offset: 0.3rem;
@@ -103,6 +110,16 @@
     min-height: 6.4rem;
     font-size: 2.4rem;
     line-height: 3.2rem;
+  }
+
+  .button-component--medium {
+    --button-left-clip-width: 2.737rem;
+  }
+
+  .button-component--medium .button-component__body {
+    min-height: 5.8rem;
+    font-size: 2.2rem;
+    line-height: 3rem;
   }
 
   .button-component--small {
