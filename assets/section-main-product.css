@@ -231,6 +231,11 @@ product-info {
   margin: 2.5rem 0;
 }
 
+.product__description {
+  font-size: 14px;
+  color: hsla(0, 0%, 100%, 0.8);
+}
+
 .product__text {
   margin-bottom: 0;
 }
@@ -308,6 +313,10 @@ a.product__text {
 
 .product__description-title {
   font-weight: 600;
+}
+
+.product__description {
+  font-size: 16px;
 }
 
 .product--no-media .product__title,
@@ -1499,12 +1508,17 @@ a.product__text {
 
 /* Responsive Accordions and Complementary Blocks */
 @media screen and (min-width: 750px) {
-  .mobile-only-accordion, .mobile-only-complementary {
+
+  .mobile-only-accordion,
+  .mobile-only-complementary {
     display: none !important;
   }
 }
+
 @media screen and (max-width: 749px) {
-  .desktop-only-accordion, .desktop-only-complementary {
+
+  .desktop-only-accordion,
+  .desktop-only-complementary {
     display: none !important;
   }
 }
