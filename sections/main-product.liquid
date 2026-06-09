@@ -177,7 +177,7 @@
                   </a>
                 </div>
               {%- when 'price' -%}
-                <div class="price-and-share-wrapper" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div class="price-and-share-wrapper" style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
                   <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
                     {%- render 'price',
                       product: product,
@@ -186,13 +186,16 @@
                       price_class: 'price--large'
                     -%}
                   </div>
-                  {%- assign share_block = section.blocks | where: 'type', 'share' | first -%}
-                  {%- if share_block -%}
-                    {% liquid
-                      assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
-                      render 'share-button', block: share_block, share_link: share_url
-                    %}
-                  {%- endif -%}
+                  {%- for b in section.blocks -%}
+                    {%- if b.type == 'share' -%}
+                      <div class="share-wrapper-right">
+                        {% liquid
+                          assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
+                          render 'share-button', block: b, share_link: share_url
+                        %}
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
                 </div>
                 {%- if product.quantity_price_breaks_configured? -%}
                   <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
