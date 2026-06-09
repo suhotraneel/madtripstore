@@ -149,23 +149,21 @@
 
   .button-component--secondary {
     color: #ffffff;
-    background-color: transparent;
+    background-color: #ffffff;
     border-radius: 100px;
   }
 
   .button-component--secondary .button-component__body {
     background: transparent;
-    -webkit-mask-image: none !important;
-    mask-image: none !important;
   }
 
-  .button-component--secondary .button-component__body::before {
+  .button-component--secondary .button-component__body::before,
+  .button-component--secondary .button-component__body::after {
     content: '';
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background: #ffffff;
     -webkit-mask-image:
       var(--button-mask-left-solid),
       var(--button-mask-right-solid),
@@ -192,46 +190,20 @@
       left center,
       right center,
       center;
+  }
+
+  .button-component--secondary .button-component__body::before {
+    background: #ffffff;
     filter:
-      drop-shadow(1.5px 0 0 #ffffff)
-      drop-shadow(-1.5px 0 0 #ffffff)
-      drop-shadow(0 1.5px 0 #ffffff)
-      drop-shadow(0 -1.5px 0 #ffffff);
+      drop-shadow(1px 0 0 #ffffff)
+      drop-shadow(-1px 0 0 #ffffff)
+      drop-shadow(0 1px 0 #ffffff)
+      drop-shadow(0 -1px 0 #ffffff);
   }
 
   .button-component--secondary .button-component__body::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
     background: #111111;
-    -webkit-mask-image:
-      var(--button-mask-left),
-      var(--button-mask-right),
-      linear-gradient(#fff 0 0);
-    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
-    -webkit-mask-size:
-      var(--button-left-clip-width) 100%,
-      var(--button-left-clip-width) 100%,
-      calc(100% - (var(--button-left-clip-width) * 2) + 1rem) 100%;
-    -webkit-mask-position:
-      left center,
-      right center,
-      center;
-    mask-image:
-      var(--button-mask-left),
-      var(--button-mask-right),
-      linear-gradient(#fff 0 0);
-    mask-repeat: no-repeat, no-repeat, no-repeat;
-    mask-size:
-      var(--button-left-clip-width) 100%,
-      var(--button-left-clip-width) 100%,
-      calc(100% - (var(--button-left-clip-width) * 2) + 1rem) 100%;
-    mask-position:
-      left center,
-      right center,
-      center;
+    inset: 1px;
   }
 
   .button-component:hover,
