@@ -79,7 +79,7 @@
             endif
           -%}
           {%- if show_dynamic_checkout -%}
-            <div id="dynamic-checkout-{{ section_id }}" class="dynamic-checkout-buttons-container" style="position: relative; margin-bottom: 1rem;">
+            <div id="dynamic-checkout-{{ section_id }}" class="dynamic-checkout-buttons-container" style="position: relative; margin-bottom: 2rem;">
               <div class="shopify-payment-button-wrapper" style="position: absolute; opacity: 0.01; pointer-events: none; z-index: -1;">
                 {{ form | payment_button }}
               </div>
