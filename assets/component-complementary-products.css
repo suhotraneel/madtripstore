@@ -9,7 +9,6 @@ product-recommendations:not(.is-accordion) .complementary-products__container {
 }
 
 .complementary-products__container>details[open] {
-  margin-top: -1.5rem;
   padding-bottom: 1.5rem;
 }
 
