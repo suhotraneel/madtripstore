@@ -3,7 +3,7 @@
   letter-spacing: 0.1rem;
   line-height: calc(1 + 0.5 / var(--font-body-scale));
   color: rgb(var(--color-foreground));
-  font-family: 'Krugat', sans-serif !important;
+  font-family: "PallyVariable", sans-serif !important;
 }
 
 .price>* {
