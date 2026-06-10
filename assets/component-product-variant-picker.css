@@ -37,7 +37,7 @@ variant-selects {
 }
 
 .product-form__input--pill .form__label {
-  margin-bottom: 2px;
+  margin-bottom: 6px;
 }
 
 .product-form__input input[type='radio'] {
