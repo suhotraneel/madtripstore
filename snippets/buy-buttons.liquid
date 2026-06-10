@@ -77,8 +77,13 @@
             if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity and check_against_inventory
               assign quantity_rule_soldout = true
             endif
+            
+            assign is_disabled = false
+            if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == nil
+              assign is_disabled = true
+            endif
           -%}
-          {%- if show_dynamic_checkout -%}
+          {%- if show_dynamic_checkout and is_disabled == false -%}
             <style>
               .dynamic-checkout-buttons-container {
                 position: relative;
@@ -135,10 +140,7 @@
             {%- render 'loading-spinner' -%}
           {%- endcapture -%}
           {%- liquid
-            assign is_disabled = false
-            if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == nil
-              assign is_disabled = true
-            endif
+            # is_disabled calculation moved to top
           -%}
           {%- assign add_to_cart_class = 'product-form__submit' -%}
           {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
@@ -236,7 +238,7 @@
     </style>
     <div class="mobile-sticky-button-container" id="MobileStickyButtonContainer-{{ section_id }}">
       {%- assign sticky_id = 'MobileStickyButton-' | append: section_id -%}
-      {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
+      {%- if block.settings.mobile_sticky_button == 'add_to_cart' and is_disabled == false -%}
         {% render 'button-component',
           is_button: true,
           type: 'button',
@@ -247,7 +249,7 @@
           full_width: true,
           id: sticky_id
         %}
-      {%- elsif block.settings.mobile_sticky_button == 'buy_now' -%}
+      {%- elsif block.settings.mobile_sticky_button == 'buy_now' and is_disabled == false -%}
         {%- assign sticky_buy_now_label = 'Buy Now' -%}
         {% render 'button-component',
           is_button: true,

@@ -145,6 +145,13 @@
     background: #00adee;
   }
 
+  .button-component:disabled,
+  .button-component[disabled] {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
   .button-component--secondary {
     color: #ffffff;
     background-color: #ffffff;
