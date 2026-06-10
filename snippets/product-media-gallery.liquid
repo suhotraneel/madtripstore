@@ -231,11 +231,11 @@
             >
               {{
                 featured_media.preview_image
-                | image_url: width: 416
+                | image_url: width: 1946
                 | image_tag:
                   loading: 'lazy',
                   sizes: sizes,
-                  widths: '54, 74, 104, 162, 208, 324, 416',
+                  widths: '54, 74, 104, 162, 208, 324, 416, 600, 800, 1000',
                   id: thumbnail_id,
                   alt: featured_media.alt
                 | escape
@@ -289,11 +289,11 @@
               >
                 {{
                   media.preview_image
-                  | image_url: width: 416
+                  | image_url: width: 1946
                   | image_tag:
                     loading: 'lazy',
                     sizes: sizes,
-                    widths: '54, 74, 104, 162, 208, 324, 416',
+                    widths: '54, 74, 104, 162, 208, 324, 416, 600, 800, 1000',
                     id: thumbnail_id,
                     alt: media.alt
                   | escape
