@@ -1,9 +1,6 @@
 {%- liquid
   assign button_variant = variant | default: 'primary'
   assign button_size = size | default: 'large'
-  if button_size == 'medium'
-    assign button_size = 'small'
-  endif
   assign button_mobile_size = mobile_size | default: button_size
   assign button_label = label | strip
   assign button_full_width = full_width | default: false
