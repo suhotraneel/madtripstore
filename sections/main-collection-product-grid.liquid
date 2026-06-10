@@ -145,11 +145,10 @@
               id="product-grid"
               data-id="{{ section.id }}"
               class="
-                grid product-grid grid--{{ collection.metafields.custom.grid_columns_tablet }}-col-tablet-down
-                {% comment %} grid product-grid grid--{{ section.settings.columns_mobile }}-col-tablet-down {% endcomment %}
-                grid--{{ collection.metafields.custom.grid_columns_mobile }}-col-mobile
-                grid--{{ collection.metafields.custom.grid_columns_desktop }}-col-desktop
-                {% comment %} grid--{{ section.settings.columns_desktop }}-col-desktop {% endcomment %}
+                grid product-grid 
+                grid--{{ collection.metafields.custom.grid_columns_mobile | default: section.settings.columns_mobile }}-col
+                grid--{{ collection.metafields.custom.grid_columns_tablet | default: 3 }}-col-tablet
+                grid--{{ collection.metafields.custom.grid_columns_desktop | default: section.settings.columns_desktop }}-col-desktop
                 {% if section.settings.quick_add == 'bulk' %} collection-quick-add-bulk{% endif %}
               "
             >
