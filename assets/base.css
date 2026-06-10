@@ -799,12 +799,15 @@ summary::-webkit-details-marker {
 
 .title-wrapper {
   margin-bottom: 3rem;
+  text-align: center;
 }
 
 .title-wrapper-with-link {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
   gap: 1rem;
   margin-bottom: 3rem;
   flex-wrap: wrap;

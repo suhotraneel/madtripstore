@@ -573,6 +573,7 @@
   .card-information>.price {
     font-size: 16px;
   }
+
   .card-information>.price.price--on-sale .price-item--regular {
     font-size: 14px;
   }
@@ -593,7 +594,7 @@
 }
 
 .card-information>*:not(.visually-hidden:first-child)+*:not(.rating):not(.card__information-volume-pricing-note) {
-  margin-top: 0.7rem;
+  margin-top: 0.4rem;
 }
 
 .card-information .caption {
