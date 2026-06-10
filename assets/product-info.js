@@ -192,6 +192,12 @@ if (!customElements.get('product-info')) {
           updateSourceFromDestination('Volume');
           updateSourceFromDestination('Price-Per-Item', ({ classList }) => classList.contains('hidden'));
 
+          const stickySource = html.getElementById(`MobileStickyButtonContainer-${this.sectionId}`);
+          const stickyDest = document.getElementById(`MobileStickyButtonContainer-${this.dataset.section}`);
+          if (stickySource && stickyDest) {
+            stickyDest.classList.toggle('hidden', stickySource.classList.contains('hidden'));
+          }
+
           this.updateQuantityRules(this.sectionId, html);
           this.querySelector(`#Quantity-Rules-${this.dataset.section}`)?.classList.remove('hidden');
           this.querySelector(`#Volume-Note-${this.dataset.section}`)?.classList.remove('hidden');
@@ -237,6 +243,9 @@ if (!customElements.get('product-info')) {
           .map((id) => `#${id}-${this.dataset.section}`)
           .join(', ');
         document.querySelectorAll(selectors).forEach(({ classList }) => classList.add('hidden'));
+
+        const stickyDest = document.getElementById(`MobileStickyButtonContainer-${this.dataset.section}`);
+        if (stickyDest) stickyDest.classList.add('hidden');
       }
 
       updateMedia(html, variantFeaturedMediaId) {

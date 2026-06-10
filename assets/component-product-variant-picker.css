@@ -29,11 +29,15 @@ variant-selects {
 }
 
 :is(.product-form__input--pill, .product-form__input--swatch) .form__label {
-  margin-bottom: 12px;
+  margin-bottom: 0rem;
   font-family: "PallyVariable";
   font-size: 16px;
   color: #ffffff;
   width: 100%;
+}
+
+.product-form__input--pill .form__label {
+  margin-bottom: 2px;
 }
 
 .product-form__input input[type='radio'] {

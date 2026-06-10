@@ -240,9 +240,9 @@
         }
       }
     </style>
-    <div class="mobile-sticky-button-container" id="MobileStickyButtonContainer-{{ section_id }}">
+    <div class="mobile-sticky-button-container{% if is_disabled %} hidden{% endif %}" id="MobileStickyButtonContainer-{{ section_id }}">
       {%- assign sticky_id = 'MobileStickyButton-' | append: section_id -%}
-      {%- if block.settings.mobile_sticky_button == 'add_to_cart' and is_disabled == false -%}
+      {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
         {% render 'button-component',
           is_button: true,
           type: 'button',
@@ -253,7 +253,7 @@
           full_width: true,
           id: sticky_id
         %}
-      {%- elsif block.settings.mobile_sticky_button == 'buy_now' and is_disabled == false -%}
+      {%- elsif block.settings.mobile_sticky_button == 'buy_now' -%}
         {%- assign sticky_buy_now_label = 'Buy Now' -%}
         {% render 'button-component',
           is_button: true,
