@@ -65,7 +65,7 @@
       z-index: 99;
       background-color: #FFE600; /* Yellow background from Figma */
       color: #000000; /* Black arrow from Figma */
-      border: none;
+      border: 2px solid #000000; /* Stroke on the circular container */
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -77,6 +77,12 @@
       transition: opacity 0.3s ease, transform 0.3s ease;
       transform: translateY(0);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    @media screen and (max-width: 767px) {
+      #backToTopButton {
+        bottom: 110px;
+        right: 20px;
+      }
     }
     #backToTopButton.back-to-top-hidden {
       opacity: 0;
@@ -94,11 +100,11 @@
   </style>
 
   <button id="backToTopButton" class="back-to-top-hidden" aria-label="Go to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       {%- if section.settings.go_to_top_svg != blank -%}
         {{ section.settings.go_to_top_svg }}
       {%- else -%}
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
       {%- endif -%}
     </svg>
   </button>
@@ -109,7 +115,8 @@
         entries.forEach(entry => {
           const btn = document.getElementById('backToTopButton');
           if (!btn) return;
-          if (entry.isIntersecting) {
+          // Keep button visible if it's currently intersecting, or if we have scrolled past it downwards (top < 0)
+          if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
             btn.classList.remove('back-to-top-hidden');
           } else {
             btn.classList.add('back-to-top-hidden');
