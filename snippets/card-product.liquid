@@ -225,13 +225,6 @@
               <svg class="badge_low" xmlns="http://www.w3.org/2000/svg" width="43" height="4" viewBox="0 0 43 4" fill="none">
                 <path d="M0.094574 0.00177431C0.0381602 -0.00178369 -0.00637764 0.0587027 0.00104523 0.124526C0.00846809 0.199244 0.641924 1.30182 1.11833 1.45737C2.20709 1.81283 2.32736 1.6117 3.40305 1.93234C4.5704 2.2803 5.15851 2.12565 6.33971 2.12565C7.28192 2.12565 8.2234 2.33309 9.02358 2.37045C11.1361 2.49498 13.3667 2.90155 15.4124 3.42635C20.0591 4.81575 22.0573 1.78611 26.1696 2.53685C27.5042 2.8037 28.7097 3.65584 30.0577 3.86043C31.958 4.28561 33.3448 2.70403 35.2121 2.45635C36.5659 2.27678 37.4336 2.15242 38.7781 2.15242C39.4447 2.07059 40.0994 1.29689 40.7451 1.42676C41.1415 1.50325 41.5335 1.59932 41.9283 1.6776C42.0427 1.69894 42.154 1.59221 42.1778 1.46234C42.3039 1.00514 41.2261 0.914407 40.9827 0.829015C40.2552 0.681357 39.514 0.597195 38.7781 0.672461C36.87 0.867606 35.0358 0.829014 33.139 0.829014C31.624 0.829014 30.7092 1.28869 28.9729 1.37393C27.829 1.43009 26.6152 0.94074 25.456 0.829014C24.2705 0.714756 23.3958 0.829014 22.2097 0.829014C20.7488 0.829014 19.1192 0.935754 17.5025 0.829014C14.8719 0.745401 12.3601 0.963643 9.71133 0.829014C8.39536 0.762128 7.22294 0.898395 5.92394 0.829014C3.9168 0.708042 2.07202 0.330893 0.0960541 -1.19209e-06L0.094574 0.00177431Z" fill="#ED096C"/>
               </svg>
-            {%- elsif card_product.compare_at_price > card_product.price and card_product.available -%}
-              <span
-                id="NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}"
-                class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
-              >
-                {{- 'products.product.on_sale' | t -}}
-              </span>
             {%- endif -%}
           </div>
         </div>
@@ -644,13 +637,6 @@
               class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}"
             >
               {{- 'products.product.sold_out' | t -}}
-            </span>
-          {%- elsif card_product.compare_at_price > card_product.price and card_product.available -%}
-            <span
-              id="Badge-{{ section_id }}-{{ card_product.id }}"
-              class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
-            >
-              {{- 'products.product.on_sale' | t -}}
             </span>
           {%- endif -%}
         </div>
