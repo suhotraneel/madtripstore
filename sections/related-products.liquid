@@ -78,10 +78,11 @@
       transform: translateY(0);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    #backToTopButton.hidden {
+    #backToTopButton.back-to-top-hidden {
       opacity: 0;
       pointer-events: none;
       transform: translateY(20px);
+      visibility: hidden;
     }
     #backToTopButton:hover {
       transform: scale(1.1);
@@ -92,14 +93,14 @@
     }
   </style>
 
-  <button id="backToTopButton" class="hidden" aria-label="Go to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-    {%- if section.settings.go_to_top_svg != blank -%}
-      {{ section.settings.go_to_top_svg }}
-    {%- else -%}
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+  <button id="backToTopButton" class="back-to-top-hidden" aria-label="Go to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      {%- if section.settings.go_to_top_svg != blank -%}
+        {{ section.settings.go_to_top_svg }}
+      {%- else -%}
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-      </svg>
-    {%- endif -%}
+      {%- endif -%}
+    </svg>
   </button>
 
   <script>
@@ -109,14 +110,14 @@
           const btn = document.getElementById('backToTopButton');
           if (!btn) return;
           if (entry.isIntersecting) {
-            btn.classList.remove('hidden');
+            btn.classList.remove('back-to-top-hidden');
           } else {
-            btn.classList.add('hidden');
+            btn.classList.add('back-to-top-hidden');
           }
         });
       }, { threshold: 0 });
 
-      // The product-recommendations element is the root of the related products section
+      // Observe the related products section wrapper
       const relatedProductsSection = document.querySelector('product-recommendations.related-products');
       if (relatedProductsSection) {
         observer.observe(relatedProductsSection);
