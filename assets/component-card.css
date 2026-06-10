@@ -556,6 +556,7 @@
 .card-information>.price {
   color: #ffffff !important;
   font-size: 14px;
+  font-family: "PallyVariable", sans-serif !important;
 }
 
 .card-information>.price .price-item--regular {
