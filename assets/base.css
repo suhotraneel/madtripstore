@@ -2941,6 +2941,7 @@ details-disclosure > details {
   border-color: rgba(var(--color-badge-border), var(--alpha-badge-border));
   color: #E4F5FC;
   word-break: break-word;
+  font-family: "PallyVariable", sans-serif !important;
 }
 
 .badge_high {
