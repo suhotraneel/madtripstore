@@ -290,7 +290,10 @@
               </p>
             {%- endif -%}
 
-            {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+            {% capture price_html %}
+              {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+            {% endcapture %}
+            {{ price_html | replace: '.00', '' | replace: ',00', '' }}
             {%- if card_product.quantity_price_breaks_configured? -%}
               {% if card_product.variants.size == 1 and quick_add == 'bulk' %}
                 {% liquid
@@ -594,7 +597,10 @@
                         <a href="{{ card_product.url }}" class="full-unstyled-link">
                           <h3>{{ card_product.title | escape }}</h3>
                         </a>
-                        {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                        {% capture price_html_bulk %}
+                          {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                        {% endcapture %}
+                        {{ price_html_bulk | replace: '.00', '' | replace: ',00', '' }}
                         {%- if card_product.quantity_price_breaks_configured? -%}
                           <div class="card__information-volume-pricing-note">
                             <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>
@@ -609,7 +615,10 @@
                             {{ card_product.title | escape }}
                           </h3>
                         </a>
-                        {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                        {% capture price_html_bulk_large %}
+                          {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                        {% endcapture %}
+                        {{ price_html_bulk_large | replace: '.00', '' | replace: ',00', '' }}
                         {%- if card_product.quantity_price_breaks_configured? -%}
                           <div class="card__information-volume-pricing-note">
                             <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>
@@ -689,7 +698,10 @@
               <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
               <div class="caption-with-letter-spacing light">{{ 'products.product.vendor' | t }}</div>
             {%- endif -%}
-            {% render 'price', show_compare_at_price: true %}
+            {% capture price_html_placeholder %}
+              {% render 'price', show_compare_at_price: true %}
+            {% endcapture %}
+            {{ price_html_placeholder | replace: '.00', '' | replace: ',00', '' }}
           </div>
         </div>
       </div>
