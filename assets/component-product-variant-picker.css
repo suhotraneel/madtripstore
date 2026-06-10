@@ -22,11 +22,18 @@ variant-selects {
   max-width: 100%;
 }
 
+.product-form__input--pill {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 :is(.product-form__input--pill, .product-form__input--swatch) .form__label {
   margin-bottom: 0.2rem;
   font-family: "PallyVariable";
   font-size: 16px;
   color: #ffffff;
+  width: 100%;
 }
 
 .product-form__input input[type='radio'] {
@@ -66,14 +73,13 @@ variant-selects {
   justify-content: center;
   flex: 0 0 auto;
   min-width: 36px;
-  min-height: 36px;
-  aspect-ratio: 1;
-  border-radius: 50%;
+  height: 36px;
+  border-radius: 1000px;
   border: 1px solid #ffffff;
   background-color: transparent;
   color: #ffffff;
-  margin: 0 12px 12px 0;
-  padding: 4px;
+  margin: 0;
+  padding: 2px 2px 0px 2px;
   font-family: "Krugat", sans-serif;
   font-size: 20px;
   letter-spacing: 0.4757px;
