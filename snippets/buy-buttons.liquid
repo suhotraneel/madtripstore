@@ -22,6 +22,8 @@
       if block.settings.show_dynamic_checkout and gift_card_recipient_feature_active == false
         assign show_dynamic_checkout = true
       endif
+
+      assign btn_size_fallback = block.settings.button_size | default: 'small'
     -%}
 
     <product-form
@@ -106,7 +108,7 @@
                 custom_class: 'custom-buy-it-now',
                 label: buy_now_label,
                 variant: 'primary',
-                size: block.settings.button_size | default: 'small',
+                size: btn_size_fallback,
                 full_width: true
               %}
               <script>
@@ -146,17 +148,19 @@
           {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
             {%- assign add_to_cart_class = add_to_cart_class | append: ' hide-on-mobile' -%}
           {%- endif -%}
+          {%- assign submit_btn_id = 'ProductSubmitButton-' | append: section_id -%}
+          {%- assign btn_size = block.settings.button_size | default: 'small' -%}
           {% render 'button-component',
             is_button: true,
             type: 'submit',
             name: 'add',
-            id: 'ProductSubmitButton-' | append: section_id,
+            id: submit_btn_id,
             custom_class: add_to_cart_class,
             disabled: is_disabled,
             label: add_to_cart_label,
             suffix_html: add_to_cart_suffix,
             variant: 'secondary',
-            size: block.settings.button_size | default: 'small',
+            size: btn_size,
             full_width: true
           %}
         </div>
@@ -174,7 +178,7 @@
           disabled: true,
           label: fallback_label,
           variant: 'secondary',
-          size: block.settings.button_size | default: 'small',
+          size: btn_size_fallback,
           full_width: true
         %}
       </div>
@@ -248,7 +252,7 @@
           custom_class: 'mobile-sticky-btn',
           label: add_to_cart_label,
           variant: 'primary',
-          size: block.settings.button_size | default: 'small',
+          size: btn_size_fallback,
           full_width: true,
           id: sticky_id
         %}
@@ -260,7 +264,7 @@
           custom_class: 'mobile-sticky-btn',
           label: sticky_buy_now_label,
           variant: 'primary',
-          size: block.settings.button_size | default: 'small',
+          size: btn_size_fallback,
           full_width: true,
           id: sticky_id
         %}
