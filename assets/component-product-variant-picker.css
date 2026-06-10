@@ -72,14 +72,14 @@ variant-selects {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  min-width: 36px;
-  height: 36px;
+  min-width: 40px;
+  height: 40px;
   border-radius: 1000px;
   border: 1px solid #ffffff;
   background-color: transparent;
   color: #ffffff;
   margin: 0;
-  padding: 2px 2px 0px 2px;
+  padding: 2px 6px 0;
   font-family: "Krugat", sans-serif;
   font-size: 20px;
   letter-spacing: 0.4757px;
