@@ -61,9 +61,10 @@ variant-selects {
 
 /* Custom styles for Pill display type */
 .product-form__input--pill input[type='radio']+label {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   min-width: 36px;
   min-height: 36px;
   aspect-ratio: 1;
