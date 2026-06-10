@@ -23,9 +23,9 @@ product-recommendations:not(.is-accordion) .complementary-products__container {
 }
 
 .complementary-slide>ul {
-  display: flex;
-  flex-direction: column;
-  gap: var(--grid-mobile-vertical-spacing);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--grid-mobile-horizontal-spacing);
 }
 
 .complementary-slide.complementary-slide--standard>ul {
@@ -79,12 +79,12 @@ product-recommendations.is-accordion+.accordion {
 }
 
 .complementary-products__container .card--horizontal .card__inner {
-  max-width: 20%;
+  max-width: 50%;
 }
 
 @media screen and (min-width: 750px) and (max-width: 1200px) {
   .complementary-products__container .card--horizontal .card__inner {
-    max-width: 25%;
+    max-width: 50%;
   }
 }
 
