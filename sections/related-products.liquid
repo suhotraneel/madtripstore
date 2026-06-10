@@ -63,12 +63,12 @@
       bottom: 30px;
       right: 30px;
       z-index: 99;
-      background-color: rgb(var(--color-button));
-      color: rgb(var(--color-button-text));
+      background-color: #FFE600; /* Yellow background from Figma */
+      color: #000000; /* Black arrow from Figma */
       border: none;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -93,9 +93,11 @@
   </style>
 
   <button id="backToTopButton" class="hidden" aria-label="Go to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <!-- REPLACE THE SVG BELOW WITH YOUR EXACT FIGMA SVG CODE -->
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
     </svg>
+    <!-- END SVG -->
   </button>
 
   <script>
