@@ -85,15 +85,46 @@
               assign is_disabled = true
             endif
           -%}
+          {%- capture add_to_cart_label -%}
+            {%- if product.selected_or_first_available_variant == nil -%}
+              {{ 'products.product.unavailable' | t }}
+            {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- else -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- endif -%}
+          {%- endcapture -%}
+          {%- capture add_to_cart_suffix -%}
+            {%- render 'loading-spinner' -%}
+          {%- endcapture -%}
+          {%- assign add_to_cart_class = 'product-form__submit' -%}
+          {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
+            {%- assign add_to_cart_class = add_to_cart_class | append: ' hide-on-mobile' -%}
+          {%- endif -%}
+          {%- assign submit_btn_id = 'ProductSubmitButton-' | append: section_id -%}
+          {% render 'button-component',
+            is_button: true,
+            type: 'submit',
+            name: 'add',
+            id: submit_btn_id,
+            custom_class: add_to_cart_class,
+            disabled: is_disabled,
+            label: add_to_cart_label,
+            suffix_html: add_to_cart_suffix,
+            variant: 'secondary',
+            size: btn_size_fallback,
+            full_width: true
+          %}
+
           {%- if show_dynamic_checkout and is_disabled == false -%}
             <style>
               .dynamic-checkout-buttons-container {
                 position: relative;
-                margin-bottom: 1.5rem;
+                margin-top: 1.5rem;
               }
               @media screen and (max-width: 749px) {
                 .dynamic-checkout-buttons-container {
-                  margin-bottom: 1rem;
+                  margin-top: 1rem;
                 }
               }
             </style>
@@ -129,40 +160,6 @@
               </script>
             </div>
           {%- endif -%}
-          {%- capture add_to_cart_label -%}
-            {%- if product.selected_or_first_available_variant == nil -%}
-              {{ 'products.product.unavailable' | t }}
-            {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
-              {{ 'products.product.sold_out' | t }}
-            {%- else -%}
-              {{ 'products.product.add_to_cart' | t }}
-            {%- endif -%}
-          {%- endcapture -%}
-          {%- capture add_to_cart_suffix -%}
-            {%- render 'loading-spinner' -%}
-          {%- endcapture -%}
-          {%- liquid
-            # is_disabled calculation moved to top
-          -%}
-          {%- assign add_to_cart_class = 'product-form__submit' -%}
-          {%- if block.settings.mobile_sticky_button == 'add_to_cart' -%}
-            {%- assign add_to_cart_class = add_to_cart_class | append: ' hide-on-mobile' -%}
-          {%- endif -%}
-          {%- assign submit_btn_id = 'ProductSubmitButton-' | append: section_id -%}
-          {%- assign btn_size = block.settings.button_size | default: 'small' -%}
-          {% render 'button-component',
-            is_button: true,
-            type: 'submit',
-            name: 'add',
-            id: submit_btn_id,
-            custom_class: add_to_cart_class,
-            disabled: is_disabled,
-            label: add_to_cart_label,
-            suffix_html: add_to_cart_suffix,
-            variant: 'secondary',
-            size: btn_size,
-            full_width: true
-          %}
         </div>
       {%- endform -%}
     </product-form>
