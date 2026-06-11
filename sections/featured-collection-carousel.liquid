@@ -406,7 +406,7 @@
 
   /* ── configuration ──────────────────────────────────────── */
   const SECTION_ID      = '{{ section.id }}';
-  const AUTOPLAY_DELAY  = {{ section.settings.autoplay_delay | default: 3000 }};  /* ms */
+  const AUTOPLAY_DELAY  = parseFloat({{ section.settings.autoplay_delay | default: 3000 }}) || 3000;  /* ms */
   const AUTOPLAY_ACTIVE = {{ section.settings.autoplay | default: true }};
   const PRODUCT_URLS    = [
     {%- for product in products -%}
@@ -477,7 +477,7 @@
     var delta = timestamp - lastTick;
     lastTick = timestamp;
 
-    if (!isPaused && AUTOPLAY_ACTIVE && total > 1 && !isAnimating) {
+    if (!isPaused && AUTOPLAY_ACTIVE && !isAnimating) {
       timePassed += delta;
 
       if (timePassed >= AUTOPLAY_DELAY) {
@@ -504,11 +504,6 @@
   if (pauseBtn) {
     pauseBtn.addEventListener('click', function () {
       isPaused = !isPaused;
-      if (isPaused) {
-        stopAutoplay();
-      } else {
-        startAutoplay();
-      }
     });
   }
 
@@ -529,8 +524,7 @@
 
   /* ── keyboard ───────────────────────────────────────────── */
   document.addEventListener('keydown', function (e) {
-    if (!sectionEl) return;
-    var rect = sectionEl.getBoundingClientRect();
+    var rect = wrapper.getBoundingClientRect();
     var inView = rect.top < window.innerHeight && rect.bottom > 0;
     if (!inView) return;
     if (e.key === 'ArrowLeft')  { goTo(current - 1, true); e.preventDefault(); }
@@ -540,7 +534,7 @@
   /* ── init ───────────────────────────────────────────────── */
   resetAutoplay();
   goTo(0, false);
-  if (AUTOPLAY_ACTIVE && total > 1) {
+  if (AUTOPLAY_ACTIVE) {
     rafId = requestAnimationFrame(tick);
   }
 
