@@ -484,8 +484,8 @@
     if (!grainCtx || !grainCanvas.width || !grainCanvas.height) return;
     var w = grainCanvas.width;
     var h = grainCanvas.height;
-    /* Use a downscaled internal buffer for 2x2 grain blocks */
-    var blockSize = 2;
+    /* 1px grain on mobile, 2px blocks on desktop */
+    var blockSize = window.innerWidth <= 768 ? 1 : 2;
     var bw = Math.ceil(w / blockSize);
     var bh = Math.ceil(h / blockSize);
     var imageData = grainCtx.createImageData(w, h);
