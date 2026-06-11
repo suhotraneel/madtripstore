@@ -178,6 +178,52 @@
     .fcc-tv-next { top: 79.5%; left: 55.32%; width: 10.66%; height: 10.5%; }
   }
 
+  /* =========================================================
+     PROGRESS BARS
+  ========================================================= */
+  .fcc-progress-container {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .fcc-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .fcc-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #FFDE17;
+    border-radius: 2px;
+  }
+
+  .fcc-progress-bar.is-past .fcc-progress-fill {
+    width: 100%;
+  }
+
+  .fcc-progress-bar.is-active .fcc-progress-fill {
+    animation: fillProgress var(--autoplay-ms) linear forwards;
+  }
+
+  .fcc-tv-wrapper.is-paused .fcc-progress-fill {
+    animation-play-state: paused !important;
+  }
+
+  @keyframes fillProgress {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+
   .fcc-header {
     font-family: 'Krugat', system-ui, sans-serif;
     font-size: 40px;
@@ -297,7 +343,7 @@
     {%- endif -%}
 
     {%- comment -%} ── MASK + SLIDES ── {%- endcomment -%}
-    <div class="fcc-tv-wrapper">
+    <div class="fcc-tv-wrapper" id="fccTvWrapper-{{ section.id }}" style="--autoplay-ms: {{ section.settings.autoplay_delay | default: 3000 }}ms;">
 
       <div class="fcc-tv-bg fcc-tv-desktop">
         {%- if section.settings.tv_desktop != blank -%}
@@ -341,6 +387,17 @@
           </a>
         </div>
       {%- endfor -%}
+
+        {%- if section.settings.autoplay -%}
+          <div class="fcc-progress-container" id="fccProgress-{{ section.id }}">
+            {%- for product in products -%}
+              <div class="fcc-progress-bar{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
+                <div class="fcc-progress-fill"></div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
       </div><!-- /.fcc-mask-stage -->
 
       <button class="fcc-tv-control fcc-tv-prev" id="fccTvPrev-{{ section.id }}" aria-label="Previous product"></button>
@@ -378,10 +435,13 @@
   ];
 
   /* ── element refs ───────────────────────────────────────── */
+  const wrapper     = document.getElementById('fccTvWrapper-' + SECTION_ID);
   const stage       = document.getElementById('fccMaskStage-' + SECTION_ID);
   const prevBtn     = document.getElementById('fccTvPrev-'    + SECTION_ID);
   const pauseBtn    = document.getElementById('fccTvPause-'   + SECTION_ID);
   const nextBtn     = document.getElementById('fccTvNext-'    + SECTION_ID);
+  const progressEl  = document.getElementById('fccProgress-'  + SECTION_ID);
+  const progressBars = progressEl ? Array.from(progressEl.querySelectorAll('.fcc-progress-bar')) : [];
 
   if (!stage || PRODUCT_URLS.length === 0) return;
 
@@ -420,26 +480,59 @@
       isAnimating = false;
     }, FLICKER_MS);
 
-    /* reset autoplay timer on manual interaction */
-    if (userInitiated && AUTOPLAY_ACTIVE) {
-      clearInterval(autoTimer);
-      startAutoplay();
+    /* update progress bars */
+    if (progressBars.length) {
+      progressBars.forEach(function (bar, i) {
+        bar.classList.toggle('is-active', i === newIndex);
+        bar.classList.toggle('is-past', i < newIndex);
+      });
+      // Force CSS reflow to restart animation from 0%
+      var fill = progressBars[newIndex].querySelector('.fcc-progress-fill');
+      if (fill) {
+        fill.style.animation = 'none';
+        void fill.offsetWidth;
+        fill.style.animation = '';
+      }
+    }
+
+    /* reset autoplay timer */
+    if (AUTOPLAY_ACTIVE) {
+      resetAutoplay();
     }
   }
 
   /* ── autoplay ───────────────────────────────────────────── */
   let isPaused = false;
+  let autoTimer = null;
+  let startTime = null;
+  let remaining = AUTOPLAY_DELAY;
 
   function startAutoplay() {
     if (!AUTOPLAY_ACTIVE || total <= 1 || isPaused) return;
-    autoTimer = setInterval(function () {
+    if (wrapper) wrapper.classList.remove('is-paused');
+    startTime = Date.now();
+    autoTimer = setTimeout(function () {
       goTo(current + 1, false);
-    }, AUTOPLAY_DELAY);
+    }, remaining);
   }
 
   function stopAutoplay() {
-    clearInterval(autoTimer);
+    if (!autoTimer) return;
+    if (wrapper) wrapper.classList.add('is-paused');
+    clearTimeout(autoTimer);
     autoTimer = null;
+    remaining -= (Date.now() - startTime);
+    if (remaining < 0) remaining = 0;
+  }
+
+  function resetAutoplay() {
+    clearTimeout(autoTimer);
+    autoTimer = null;
+    remaining = AUTOPLAY_DELAY;
+    if (wrapper) wrapper.classList.remove('is-paused');
+    if (!isPaused) {
+      startAutoplay();
+    }
   }
 
   /* Pause autoplay when the user hovers over the section */
@@ -466,6 +559,13 @@
       } else {
         startAutoplay();
       }
+    });
+  }
+  if (progressBars.length) {
+    progressBars.forEach(function (bar) {
+      bar.addEventListener('click', function () {
+        goTo(parseInt(bar.dataset.index, 10), true);
+      });
     });
   }
 
