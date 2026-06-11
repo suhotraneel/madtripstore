@@ -106,14 +106,77 @@
   }
 
   /* =========================================================
-     MASK STAGE — the blob that clips the product image
+     TV SVG LAYOUT
+  ========================================================= */
+  .fcc-tv-wrapper {
+    position: relative;
+    width: min(90vw, 800px);
+    margin: 0 auto 16px;
+  }
+
+  .fcc-tv-bg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .fcc-tv-bg svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .fcc-tv-mobile { display: none; }
+
+  @media (max-width: 768px) {
+    .fcc-tv-desktop { display: none; }
+    .fcc-tv-mobile { display: block; }
+    
+    .fcc-tv-wrapper {
+      width: min(95vw, 600px);
+    }
+  }
+
+  /* =========================================================
+     MASK STAGE — absolutely positioned over the TV screen
   ========================================================= */
   .fcc-mask-stage {
-    position: relative;
-    width: min(80vw, 640px);
-    /* height auto so the SVG mask scales proportionally */
-    margin-bottom: 16px;
+    position: absolute;
+    /* Desktop Screen Box */
+    top: 18.50%;
+    left: 11.64%;
+    width: 73.10%;
+    height: 58.20%;
+    margin: 0;
   }
+
+  @media (max-width: 768px) {
+    .fcc-mask-stage {
+      /* Mobile Screen Box */
+      top: 20.25%;
+      left: 12.50%;
+      width: 71.48%;
+      height: 56.68%;
+    }
+  }
+
+  /* TV Button Overlays */
+  .fcc-tv-control {
+    position: absolute;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .fcc-tv-prev { top: 78.5%; left: 38.50%; width: 7.66%; height: 10.5%; }
+  .fcc-tv-pause { top: 78.5%; left: 46.16%; width: 7.66%; height: 10.5%; }
+  .fcc-tv-next { top: 78.5%; left: 53.82%; width: 7.66%; height: 10.5%; }
+
+  @media (max-width: 768px) {
+    .fcc-tv-prev { top: 79.5%; left: 34%; width: 10.66%; height: 10.5%; }
+    .fcc-tv-pause { top: 79.5%; left: 44.66%; width: 10.66%; height: 10.5%; }
+    .fcc-tv-next { top: 79.5%; left: 55.32%; width: 10.66%; height: 10.5%; }
+  }
+
   .fcc-header {
     font-family: 'Krugat', system-ui, sans-serif;
     font-size: 40px;
@@ -130,29 +193,6 @@
       font-size: 32px;
       margin-bottom: 48px;
     }
-  }
-
-  /* Mask overlay imgs — invisible; kept in normal flow only to give
-     the stage its natural height. The actual visual clipping is done
-     by the CSS mask-image applied directly to each .fcc-slide. */
-  .fcc-mask-svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    visibility: hidden; /* takes up space but is not rendered */
-    pointer-events: none;
-    position: relative;
-    z-index: 0;
-  }
-
-  /* Desktop mask visible, mobile mask hidden by default (≥ 769 px) */
-  .fcc-mask-mobile-svg { display: none; }
-  .fcc-mask-desktop-svg { display: block; }
-
-  /* Swap at the mobile breakpoint (≤ 768 px) */
-  @media (max-width: 768px) {
-    .fcc-mask-desktop-svg { display: none; }
-    .fcc-mask-mobile-svg  { display: block; }
   }
 
   /* =========================================================
@@ -224,17 +264,6 @@
     #fcc-{{ section.id }} {
       padding: clamp(48px, calc(48px + 2vw), 64px) 0;
     }
-
-    .fcc-mask-stage {
-      width: min(90vw, 480px);
-      margin-bottom: 24px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .fcc-mask-stage {
-      width: 92vw;
-    }
   }
 </style>
 
@@ -266,52 +295,37 @@
     {%- endif -%}
 
     {%- comment -%} ── MASK + SLIDES ── {%- endcomment -%}
-    <div
-      class="fcc-mask-stage"
-      id="fccMaskStage-{{ section.id }}"
-      style="
-        --fcc-mask-desktop: {{ mask_desktop_url | prepend: 'url(' | append: ')' }};
-        --fcc-mask-mobile:  {{ mask_mobile_url  | prepend: 'url(' | append: ')' }};
-      "
-    >
+    <div class="fcc-tv-wrapper">
 
-      {%- comment -%}
-        Mask imgs — visibility:hidden so they don't render visually
-        but stay in normal flow to give the stage its natural height.
-        The CSS mask-image on each .fcc-slide does the actual clipping.
-      {%- endcomment -%}
+      <div class="fcc-tv-bg fcc-tv-desktop">
+        {%- if section.settings.tv_svg_desktop != blank -%}
+          {{ section.settings.tv_svg_desktop }}
+        {%- else -%}
+          <svg viewBox="0 0 4024 3617" style="background:#444; width:100%; height:auto;"></svg>
+        {%- endif -%}
+      </div>
 
-      {%- comment -%} Desktop height-driver (shown ≥ 769 px) {%- endcomment -%}
-      {%- if section.settings.mask_desktop != blank -%}
-        <img
-          class="fcc-mask-svg fcc-mask-desktop-svg"
-          src="{{ section.settings.mask_desktop | image_url: width: 1200 }}"
-          alt="" aria-hidden="true" loading="eager"
-        >
-      {%- else -%}
-        {%- comment -%} Fallback spacer keeps stage height on desktop {%- endcomment -%}
-        <svg class="fcc-mask-svg fcc-mask-desktop-svg" xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 760 480" aria-hidden="true"><rect width="760" height="480" fill="none"/></svg>
-      {%- endif -%}
+      <div class="fcc-tv-bg fcc-tv-mobile">
+        {%- if section.settings.tv_svg_mobile != blank -%}
+          {{ section.settings.tv_svg_mobile }}
+        {%- else -%}
+          <svg viewBox="0 0 2964 3618" style="background:#444; width:100%; height:auto;"></svg>
+        {%- endif -%}
+      </div>
 
-      {%- comment -%} Mobile height-driver (shown ≤ 768 px) {%- endcomment -%}
-      {%- if section.settings.mask_mobile != blank -%}
-        <img
-          class="fcc-mask-svg fcc-mask-mobile-svg"
-          src="{{ section.settings.mask_mobile | image_url: width: 800 }}"
-          alt="" aria-hidden="true" loading="eager"
-        >
-      {%- else -%}
-        {%- comment -%} Fallback spacer keeps stage height on mobile {%- endcomment -%}
-        <svg class="fcc-mask-svg fcc-mask-mobile-svg" xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 480 380" aria-hidden="true"><rect width="480" height="380" fill="none"/></svg>
-      {%- endif -%}
-
-      {%- comment -%}
-        Slides — each sits absolutely over the stage and carries its own
-        CSS mask-image (set via custom properties on the stage element)
-        so the entire masked blob unit crossfades as one piece.
-      {%- endcomment -%}
+      <div
+        class="fcc-mask-stage"
+        id="fccMaskStage-{{ section.id }}"
+        style="
+          --fcc-mask-desktop: {{ mask_desktop_url | prepend: 'url(' | append: ')' }};
+          --fcc-mask-mobile:  {{ mask_mobile_url  | prepend: 'url(' | append: ')' }};
+        "
+      >
+        {%- comment -%}
+          Slides — each sits absolutely over the stage and carries its own
+          CSS mask-image (set via custom properties on the stage element)
+          so the entire masked blob unit crossfades as one piece.
+        {%- endcomment -%}
       {%- for product in products -%}
         <div class="fcc-slide{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
           <a href="{{ product.url }}" style="display: block; width: 100%; height: 100%;">
@@ -325,8 +339,13 @@
           </a>
         </div>
       {%- endfor -%}
+      </div><!-- /.fcc-mask-stage -->
 
-    </div><!-- /.fcc-mask-stage -->
+      <button class="fcc-tv-control fcc-tv-prev" id="fccTvPrev-{{ section.id }}" aria-label="Previous product"></button>
+      <button class="fcc-tv-control fcc-tv-pause" id="fccTvPause-{{ section.id }}" aria-label="Pause/Play carousel"></button>
+      <button class="fcc-tv-control fcc-tv-next" id="fccTvNext-{{ section.id }}" aria-label="Next product"></button>
+
+    </div><!-- /.fcc-tv-wrapper -->
 
   {% else %}
 
@@ -358,6 +377,9 @@
 
   /* ── element refs ───────────────────────────────────────── */
   const stage       = document.getElementById('fccMaskStage-' + SECTION_ID);
+  const prevBtn     = document.getElementById('fccTvPrev-'    + SECTION_ID);
+  const pauseBtn    = document.getElementById('fccTvPause-'   + SECTION_ID);
+  const nextBtn     = document.getElementById('fccTvNext-'    + SECTION_ID);
 
   if (!stage || PRODUCT_URLS.length === 0) return;
 
@@ -404,8 +426,10 @@
   }
 
   /* ── autoplay ───────────────────────────────────────────── */
+  let isPaused = false;
+
   function startAutoplay() {
-    if (!AUTOPLAY_ACTIVE || total <= 1) return;
+    if (!AUTOPLAY_ACTIVE || total <= 1 || isPaused) return;
     autoTimer = setInterval(function () {
       goTo(current + 1, false);
     }, AUTOPLAY_DELAY);
@@ -419,10 +443,28 @@
   /* Pause autoplay when the user hovers over the section */
   var sectionEl = document.getElementById('fcc-' + SECTION_ID);
   if (sectionEl) {
-    sectionEl.addEventListener('mouseenter', stopAutoplay);
+    sectionEl.addEventListener('mouseenter', function() { if (!isPaused) stopAutoplay(); });
     sectionEl.addEventListener('mouseleave', startAutoplay);
-    sectionEl.addEventListener('focusin',    stopAutoplay);
+    sectionEl.addEventListener('focusin',    function() { if (!isPaused) stopAutoplay(); });
     sectionEl.addEventListener('focusout',   startAutoplay);
+  }
+
+  /* ── button clicks ──────────────────────────────────────── */
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function () { goTo(current - 1, true); });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function () { goTo(current + 1, true); });
+  }
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', function () {
+      isPaused = !isPaused;
+      if (isPaused) {
+        stopAutoplay();
+      } else {
+        startAutoplay();
+      }
+    });
   }
 
   /* ── touch / swipe (on the stage element) ───────────────── */
@@ -492,6 +534,20 @@
       "id": "background_color",
       "label": "Background colour",
       "default": "#FFDE17"
+    },
+    {
+      "type": "header",
+      "content": "TV SVG Backgrounds"
+    },
+    {
+      "type": "html",
+      "id": "tv_svg_desktop",
+      "label": "Raw SVG code for Desktop TV"
+    },
+    {
+      "type": "html",
+      "id": "tv_svg_mobile",
+      "label": "Raw SVG code for Mobile TV"
     },
     {
       "type": "header",
