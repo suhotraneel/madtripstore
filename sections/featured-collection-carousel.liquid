@@ -201,24 +201,24 @@
 
   .fcc-progress-fill {
     height: 100%;
-    width: 100%;
+    width: 0%;
     background: #ffffff;
     border-radius: 2px;
-    transform-origin: left center;
-    transform: scaleX(0);
   }
 
   .fcc-progress-fill.is-animating {
-    animation: fillProgress var(--autoplay-ms) linear forwards;
+    animation-name: fccFillProgress;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
   }
 
   .fcc-tv-wrapper.is-paused .fcc-progress-fill {
     animation-play-state: paused !important;
   }
 
-  @keyframes fillProgress {
-    0% { transform: scaleX(0); }
-    100% { transform: scaleX(1); }
+  @keyframes fccFillProgress {
+    0% { width: 0%; }
+    100% { width: 100%; }
   }
 
   .fcc-header {
@@ -340,7 +340,7 @@
     {%- endif -%}
 
     {%- comment -%} ── MASK + SLIDES ── {%- endcomment -%}
-    <div class="fcc-tv-wrapper" id="fccTvWrapper-{{ section.id }}" style="--autoplay-ms: {{ section.settings.autoplay_delay | default: 3000 }}ms;">
+    <div class="fcc-tv-wrapper" id="fccTvWrapper-{{ section.id }}">
 
       <div class="fcc-tv-bg fcc-tv-desktop">
         {%- if section.settings.tv_desktop != blank -%}
@@ -388,7 +388,7 @@
         {%- if section.settings.autoplay -%}
           <div class="fcc-progress-container" id="fccProgress-{{ section.id }}">
             <div class="fcc-progress-bar">
-              <div class="fcc-progress-fill is-animating"></div>
+              <div class="fcc-progress-fill is-animating" style="animation-duration: {{ section.settings.autoplay_delay | default: 3000 }}ms;"></div>
             </div>
           </div>
         {%- endif -%}
