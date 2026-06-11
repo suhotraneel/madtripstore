@@ -183,7 +183,7 @@
   ========================================================= */
   .fcc-progress-container {
     position: absolute;
-    bottom: 15%;
+    bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
     width: 50%;
@@ -201,9 +201,11 @@
 
   .fcc-progress-fill {
     height: 100%;
-    width: 0%;
+    width: 100%;
     background: #ffffff;
     border-radius: 2px;
+    transform-origin: left center;
+    transform: scaleX(0);
   }
 
   .fcc-progress-fill.is-animating {
@@ -215,8 +217,8 @@
   }
 
   @keyframes fillProgress {
-    0% { width: 0%; }
-    100% { width: 100%; }
+    0% { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
   }
 
   .fcc-header {
@@ -513,19 +515,12 @@
     clearTimeout(autoTimer);
     autoTimer = null;
     remaining = AUTOPLAY_DELAY;
-    if (wrapper) wrapper.classList.remove('is-paused');
     if (!isPaused) {
+      if (wrapper) wrapper.classList.remove('is-paused');
       startAutoplay();
+    } else {
+      if (wrapper) wrapper.classList.add('is-paused');
     }
-  }
-
-  /* Pause autoplay when the user hovers over the section */
-  var sectionEl = document.getElementById('fcc-' + SECTION_ID);
-  if (sectionEl) {
-    sectionEl.addEventListener('mouseenter', function() { if (!isPaused) stopAutoplay(); });
-    sectionEl.addEventListener('mouseleave', startAutoplay);
-    sectionEl.addEventListener('focusin',    function() { if (!isPaused) stopAutoplay(); });
-    sectionEl.addEventListener('focusout',   startAutoplay);
   }
 
   /* ── button clicks ──────────────────────────────────────── */
