@@ -32,7 +32,7 @@
       "name": "Featured Collection Carousel",
       "settings": {
         "collection": "featured-collection",
-        "section_header": "FEATURED PRODUCTS",
+        "section_header": "FEATURED",
         "background_color": "#ffde17",
         "tv_desktop": "shopify://shop_images/featured-tv-desktop.svg",
         "tv_mobile": "shopify://shop_images/featured-tv-mobile.svg",
