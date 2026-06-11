@@ -171,13 +171,8 @@
 
   /* =========================================================
      SLIDES — each slide is absolutely stacked inside the stage.
-     All slides start off-screen right; the active one lives at
-     center (translateX(0)). Overflow on the stage clips the
-     off-screen slides so they don’t bleed outside the blob.
+     The mask stays at the center. Images flicker on transition.
   ========================================================= */
-
-  /* Stage does NOT clip — slides travel beyond it all the way to the
-     page edge. The section wrapper (full viewport width) does the clipping. */
 
   .fcc-slide {
     position: absolute;
@@ -186,9 +181,8 @@
     align-items: center;
     justify-content: center;
     background: #1a1a1a;
-    /* Park off-screen using viewport units so slides start at the page edge */
-    transform: translateX(100vw);
-    transition: transform var(--fcc-transition);
+    opacity: 0;
+    visibility: hidden;
     z-index: 1;
     /* CSS mask clips the slide to the blob shape on desktop */
     -webkit-mask-image: var(--fcc-mask-desktop);
@@ -208,10 +202,26 @@
     }
   }
 
+  @keyframes tvFlicker {
+    0%   { opacity: 0.1; filter: brightness(2) contrast(1.5); }
+    10%  { opacity: 1;   filter: brightness(1) contrast(1); }
+    20%  { opacity: 0.2; }
+    30%  { opacity: 1; }
+    40%  { opacity: 0.5; }
+    50%  { opacity: 1; }
+    60%  { opacity: 0.3; }
+    70%  { opacity: 1; }
+    80%  { opacity: 0.8; }
+    90%  { opacity: 1; }
+    100% { opacity: 1; }
+  }
+
   /* Active slide sits at the center */
   .fcc-slide.is-active {
-    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
     z-index: 2;
+    animation: tvFlicker 0.4s ease-out both;
   }
 
   .fcc-slide img {
@@ -496,52 +506,25 @@
     var newIndex = ((index % total) + total) % total;
     if (newIndex === current || isAnimating) return;
 
-    /* Determine slide direction:
-       forward  → current exits LEFT,  new enters from RIGHT
-       backward → current exits RIGHT, new enters from LEFT   */
-    var goingForward = (
-      (newIndex > current) ||
-      (current === total - 1 && newIndex === 0)
-    );
-    var incomingStart = goingForward ? 'translateX(100vw)'  : 'translateX(-100vw)';
-    var outgoingEnd   = goingForward ? 'translateX(-100vw)' : 'translateX(100vw)';
-
     var outSlide = slides[current];
     var inSlide  = slides[newIndex];
     current = newIndex;
     isAnimating = true;
 
-    /* ── PHASE 1: slide current blob OFF-SCREEN (200 ms) ───── */
-    var EXIT_MS  = 200;
-    var ENTER_MS = 300;
+    /* ── TV FLICKER TRANSITION ───── */
+    var FLICKER_MS = 400; // matches CSS animation duration
 
-    outSlide.style.transition = 'transform ' + EXIT_MS + 'ms cubic-bezier(0.55,0,1,0.45)';
-    outSlide.style.transform  = outgoingEnd;
+    outSlide.classList.remove('is-active');
+    
+    // Force reflow to restart animation if it was already active
+    inSlide.classList.remove('is-active');
+    void inSlide.offsetWidth; 
+    
+    inSlide.classList.add('is-active');
 
     setTimeout(function () {
-      /* ── silently reset outgoing off the right edge ──────── */
-      outSlide.style.transition = 'none';
-      outSlide.classList.remove('is-active');
-      outSlide.style.transform  = 'translateX(100vw)';
-
-      /* ── PHASE 2: snap incoming to far edge, then slide IN ── */
-      inSlide.style.transition = 'none';
-      inSlide.style.transform  = incomingStart;
-      inSlide.getBoundingClientRect();          /* force reflow */
-
-      inSlide.style.transition = 'transform ' + ENTER_MS + 'ms cubic-bezier(0,0.55,0.45,1)';
-      inSlide.style.transform  = 'translateX(0)';
-      inSlide.classList.add('is-active');
-
-      /* ── PHASE 3: tidy up inline overrides after enter ────── */
-      setTimeout(function () {
-        inSlide.style.transition  = '';
-        inSlide.style.transform   = '';
-        outSlide.style.transition = '';
-        isAnimating = false;
-      }, ENTER_MS);
-
-    }, EXIT_MS);
+      isAnimating = false;
+    }, FLICKER_MS);
 
     /* update dots */
     if (dotsEl) {
