@@ -179,39 +179,34 @@
   }
 
   /* =========================================================
-     PROGRESS BARS
+     PROGRESS BAR
   ========================================================= */
   .fcc-progress-container {
     position: absolute;
-    top: 5%;
-    left: 5%;
-    width: 90%;
-    display: flex;
-    gap: 8px;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 4px;
     z-index: 10;
   }
 
   .fcc-progress-bar {
-    flex: 1;
-    height: 4px;
+    width: 100%;
+    height: 100%;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 2px;
     overflow: hidden;
-    cursor: pointer;
   }
 
   .fcc-progress-fill {
     height: 100%;
     width: 0%;
-    background: #FFDE17;
+    background: #ffffff;
     border-radius: 2px;
   }
 
-  .fcc-progress-bar.is-past .fcc-progress-fill {
-    width: 100%;
-  }
-
-  .fcc-progress-bar.is-active .fcc-progress-fill {
+  .fcc-progress-fill.is-animating {
     animation: fillProgress var(--autoplay-ms) linear forwards;
   }
 
@@ -390,11 +385,9 @@
 
         {%- if section.settings.autoplay -%}
           <div class="fcc-progress-container" id="fccProgress-{{ section.id }}">
-            {%- for product in products -%}
-              <div class="fcc-progress-bar{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
-                <div class="fcc-progress-fill"></div>
-              </div>
-            {%- endfor -%}
+            <div class="fcc-progress-bar">
+              <div class="fcc-progress-fill is-animating"></div>
+            </div>
           </div>
         {%- endif -%}
 
@@ -441,7 +434,7 @@
   const pauseBtn    = document.getElementById('fccTvPause-'   + SECTION_ID);
   const nextBtn     = document.getElementById('fccTvNext-'    + SECTION_ID);
   const progressEl  = document.getElementById('fccProgress-'  + SECTION_ID);
-  const progressBars = progressEl ? Array.from(progressEl.querySelectorAll('.fcc-progress-bar')) : [];
+  const progressFill = progressEl ? progressEl.querySelector('.fcc-progress-fill') : null;
 
   if (!stage || PRODUCT_URLS.length === 0) return;
 
@@ -480,19 +473,11 @@
       isAnimating = false;
     }, FLICKER_MS);
 
-    /* update progress bars */
-    if (progressBars.length) {
-      progressBars.forEach(function (bar, i) {
-        bar.classList.toggle('is-active', i === newIndex);
-        bar.classList.toggle('is-past', i < newIndex);
-      });
-      // Force CSS reflow to restart animation from 0%
-      var fill = progressBars[newIndex].querySelector('.fcc-progress-fill');
-      if (fill) {
-        fill.style.animation = 'none';
-        void fill.offsetWidth;
-        fill.style.animation = '';
-      }
+    /* update progress bar */
+    if (progressFill) {
+      progressFill.classList.remove('is-animating');
+      void progressFill.offsetWidth;
+      progressFill.classList.add('is-animating');
     }
 
     /* reset autoplay timer */
@@ -503,7 +488,6 @@
 
   /* ── autoplay ───────────────────────────────────────────── */
   let isPaused = false;
-  let autoTimer = null;
   let startTime = null;
   let remaining = AUTOPLAY_DELAY;
 
@@ -559,13 +543,6 @@
       } else {
         startAutoplay();
       }
-    });
-  }
-  if (progressBars.length) {
-    progressBars.forEach(function (bar) {
-      bar.addEventListener('click', function () {
-        goTo(parseInt(bar.dataset.index, 10), true);
-      });
     });
   }
 
