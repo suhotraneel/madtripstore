@@ -207,9 +207,7 @@
   }
 
   .fcc-progress-fill.is-animating {
-    animation-name: fccFillProgress;
-    animation-timing-function: linear;
-    animation-fill-mode: forwards;
+    animation: fccFillProgress var(--fcc-dur) linear forwards;
   }
 
   .fcc-tv-wrapper.is-paused .fcc-progress-fill {
@@ -386,9 +384,9 @@
       {%- endfor -%}
 
         {%- if section.settings.autoplay -%}
-          <div class="fcc-progress-container" id="fccProgress-{{ section.id }}">
+          <div class="fcc-progress-container" id="fccProgress-{{ section.id }}" style="--fcc-dur: {{ section.settings.autoplay_delay | default: 3000 }}ms;">
             <div class="fcc-progress-bar">
-              <div class="fcc-progress-fill is-animating" style="animation-duration: {{ section.settings.autoplay_delay | default: 3000 }}ms;"></div>
+              <div class="fcc-progress-fill"></div>
             </div>
           </div>
         {%- endif -%}
@@ -567,6 +565,7 @@
   });
 
   /* ── init ───────────────────────────────────────────────── */
+  if (progressFill) progressFill.classList.add('is-animating');
   goTo(0, false);
   startAutoplay();
 
