@@ -269,8 +269,24 @@
     height: 100%;
     pointer-events: none;
     z-index: 6;
-    opacity: 0.09;
-    mix-blend-mode: screen;
+    opacity: 0.2;
+    mix-blend-mode: overlay;
+    /* clip to the same blob shape as the slides */
+    -webkit-mask-image: var(--fcc-mask-desktop);
+    mask-image: var(--fcc-mask-desktop);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  @media (max-width: 768px) {
+    .fcc-grain-canvas {
+      -webkit-mask-image: var(--fcc-mask-mobile);
+      mask-image: var(--fcc-mask-mobile);
+    }
   }
 
   /* =========================================================
@@ -468,14 +484,30 @@
     if (!grainCtx || !grainCanvas.width || !grainCanvas.height) return;
     var w = grainCanvas.width;
     var h = grainCanvas.height;
+    /* Use a downscaled internal buffer for 2x2 grain blocks */
+    var blockSize = 2;
+    var bw = Math.ceil(w / blockSize);
+    var bh = Math.ceil(h / blockSize);
     var imageData = grainCtx.createImageData(w, h);
     var data = imageData.data;
-    for (var i = 0; i < data.length; i += 4) {
-      var v = (Math.random() * 255) | 0;
-      data[i]     = v;   // R
-      data[i + 1] = v;   // G
-      data[i + 2] = v;   // B
-      data[i + 3] = 255; // A — opacity controlled by CSS
+    for (var by = 0; by < bh; by++) {
+      for (var bx = 0; bx < bw; bx++) {
+        var v = (Math.random() * 255) | 0;
+        /* fill blockSize x blockSize pixels with the same value */
+        for (var dy = 0; dy < blockSize; dy++) {
+          var py = by * blockSize + dy;
+          if (py >= h) continue;
+          for (var dx = 0; dx < blockSize; dx++) {
+            var px = bx * blockSize + dx;
+            if (px >= w) continue;
+            var idx = (py * w + px) * 4;
+            data[idx]     = v;
+            data[idx + 1] = v;
+            data[idx + 2] = v;
+            data[idx + 3] = 255;
+          }
+        }
+      }
     }
     grainCtx.putImageData(imageData, 0, 0);
   }
