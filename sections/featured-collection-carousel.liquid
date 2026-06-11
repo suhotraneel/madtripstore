@@ -206,19 +206,6 @@
     border-radius: 2px;
   }
 
-  .fcc-progress-fill.is-animating {
-    animation: fccFillProgress var(--fcc-dur) linear forwards;
-  }
-
-  .fcc-tv-wrapper.is-paused .fcc-progress-fill {
-    animation-play-state: paused !important;
-  }
-
-  @keyframes fccFillProgress {
-    0% { width: 0%; }
-    100% { width: 100%; }
-  }
-
   .fcc-header {
     font-family: 'Krugat', system-ui, sans-serif;
     font-size: 40px;
@@ -384,7 +371,7 @@
       {%- endfor -%}
 
         {%- if section.settings.autoplay -%}
-          <div class="fcc-progress-container" id="fccProgress-{{ section.id }}" style="--fcc-dur: {{ section.settings.autoplay_delay | default: 3000 }}ms;">
+          <div class="fcc-progress-container" id="fccProgress-{{ section.id }}">
             <div class="fcc-progress-bar">
               <div class="fcc-progress-fill"></div>
             </div>
@@ -443,11 +430,19 @@
 
   /* ── state ──────────────────────────────────────────────── */
   let current   = 0;
-  let autoTimer = null;
   const total   = slides.length;
 
-  /* ── render ─────────────────────────────────────────────── */
+  /* ── render & autoplay tracking ─────────────────────────── */
   var isAnimating = false;
+  var isPaused = false;
+  var timePassed = 0;
+  var lastTick = null;
+  var rafId = null;
+
+  function resetAutoplay() {
+    timePassed = 0;
+    if (progressFill) progressFill.style.width = '0%';
+  }
 
   function goTo(index, userInitiated) {
     var newIndex = ((index % total) + total) % total;
@@ -462,63 +457,41 @@
     var FLICKER_MS = 400; // matches CSS animation duration
 
     outSlide.classList.remove('is-active');
-    
-    // Force reflow to restart animation if it was already active
     inSlide.classList.remove('is-active');
     void inSlide.offsetWidth; 
-    
     inSlide.classList.add('is-active');
 
     setTimeout(function () {
       isAnimating = false;
     }, FLICKER_MS);
 
-    /* update progress bar */
-    if (progressFill) {
-      progressFill.classList.remove('is-animating');
-      void progressFill.offsetWidth;
-      progressFill.classList.add('is-animating');
-    }
-
-    /* reset autoplay timer */
+    /* instantly reset progress bar */
     if (AUTOPLAY_ACTIVE) {
       resetAutoplay();
     }
   }
 
-  /* ── autoplay ───────────────────────────────────────────── */
-  let isPaused = false;
-  let startTime = null;
-  let remaining = AUTOPLAY_DELAY;
+  /* ── animation loop ─────────────────────────────────────── */
+  function tick(timestamp) {
+    if (!lastTick) lastTick = timestamp;
+    var delta = timestamp - lastTick;
+    lastTick = timestamp;
 
-  function startAutoplay() {
-    if (!AUTOPLAY_ACTIVE || total <= 1 || isPaused) return;
-    if (wrapper) wrapper.classList.remove('is-paused');
-    startTime = Date.now();
-    autoTimer = setTimeout(function () {
-      goTo(current + 1, false);
-    }, remaining);
-  }
+    if (!isPaused && AUTOPLAY_ACTIVE && total > 1 && !isAnimating) {
+      timePassed += delta;
 
-  function stopAutoplay() {
-    if (!autoTimer) return;
-    if (wrapper) wrapper.classList.add('is-paused');
-    clearTimeout(autoTimer);
-    autoTimer = null;
-    remaining -= (Date.now() - startTime);
-    if (remaining < 0) remaining = 0;
-  }
-
-  function resetAutoplay() {
-    clearTimeout(autoTimer);
-    autoTimer = null;
-    remaining = AUTOPLAY_DELAY;
-    if (!isPaused) {
-      if (wrapper) wrapper.classList.remove('is-paused');
-      startAutoplay();
-    } else {
-      if (wrapper) wrapper.classList.add('is-paused');
+      if (timePassed >= AUTOPLAY_DELAY) {
+        timePassed = 0;
+        if (progressFill) progressFill.style.width = '100%';
+        goTo(current + 1, false);
+      } else {
+        if (progressFill) {
+          var percentage = (timePassed / AUTOPLAY_DELAY) * 100;
+          progressFill.style.width = percentage + '%';
+        }
+      }
     }
+    rafId = requestAnimationFrame(tick);
   }
 
   /* ── button clicks ──────────────────────────────────────── */
@@ -565,9 +538,11 @@
   });
 
   /* ── init ───────────────────────────────────────────────── */
-  if (progressFill) progressFill.classList.add('is-animating');
+  resetAutoplay();
   goTo(0, false);
-  startAutoplay();
+  if (AUTOPLAY_ACTIVE && total > 1) {
+    rafId = requestAnimationFrame(tick);
+  }
 
 })();
 </script>
