@@ -283,19 +283,8 @@
     assign products      = col.products
     assign product_count = products.size
 
-    if section.settings.mask_svg_desktop != blank
-      assign desktop_svg_encoded = section.settings.mask_svg_desktop | replace: '"', "'" | url_encode | replace: '+', '%20'
-      assign mask_desktop_data = 'data:image/svg+xml,' | append: desktop_svg_encoded
-    else
-      assign mask_desktop_data = 'none'
-    endif
-
-    if section.settings.mask_svg_mobile != blank
-      assign mobile_svg_encoded = section.settings.mask_svg_mobile | replace: '"', "'" | url_encode | replace: '+', '%20'
-      assign mask_mobile_data = 'data:image/svg+xml,' | append: mobile_svg_encoded
-    else
-      assign mask_mobile_data = 'none'
-    endif
+    assign mask_desktop_url = section.settings.mask_desktop | image_url: width: 1200
+    assign mask_mobile_url  = section.settings.mask_mobile  | image_url: width: 800
   -%}
 
   {%- comment -%} CSS vars for mask-image are set on the stage so .fcc-slide inherits them {%- endcomment -%}
@@ -310,16 +299,16 @@
     <div class="fcc-tv-wrapper">
 
       <div class="fcc-tv-bg fcc-tv-desktop">
-        {%- if section.settings.tv_svg_desktop != blank -%}
-          {{ section.settings.tv_svg_desktop }}
+        {%- if section.settings.tv_desktop != blank -%}
+          <img src="{{ section.settings.tv_desktop | image_url: width: 2400 }}" alt="" loading="lazy">
         {%- else -%}
           <svg viewBox="0 0 4024 3617" style="background:#444; width:100%; height:auto;"></svg>
         {%- endif -%}
       </div>
 
       <div class="fcc-tv-bg fcc-tv-mobile">
-        {%- if section.settings.tv_svg_mobile != blank -%}
-          {{ section.settings.tv_svg_mobile }}
+        {%- if section.settings.tv_mobile != blank -%}
+          <img src="{{ section.settings.tv_mobile | image_url: width: 1200 }}" alt="" loading="lazy">
         {%- else -%}
           <svg viewBox="0 0 2964 3618" style="background:#444; width:100%; height:auto;"></svg>
         {%- endif -%}
@@ -329,8 +318,8 @@
         class="fcc-mask-stage"
         id="fccMaskStage-{{ section.id }}"
         style="
-          --fcc-mask-desktop: {% if mask_desktop_data != 'none' %}url("{{ mask_desktop_data }}"){% else %}none{% endif %};
-          --fcc-mask-mobile:  {% if mask_mobile_data != 'none' %}url("{{ mask_mobile_data }}"){% else %}none{% endif %};
+          --fcc-mask-desktop: {% if section.settings.mask_desktop != blank %}{{ mask_desktop_url | prepend: 'url(' | append: ')' }}{% else %}none{% endif %};
+          --fcc-mask-mobile:  {% if section.settings.mask_mobile != blank %}{{ mask_mobile_url | prepend: 'url(' | append: ')' }}{% else %}none{% endif %};
         "
       >
         {%- comment -%}
@@ -549,33 +538,31 @@
     },
     {
       "type": "header",
-      "content": "TV SVG Backgrounds"
+      "content": "TV Backgrounds"
     },
     {
-      "type": "html",
-      "id": "tv_svg_desktop",
-      "label": "Raw SVG code for Desktop TV"
+      "type": "image_picker",
+      "id": "tv_desktop",
+      "label": "Desktop TV SVG"
     },
     {
-      "type": "html",
-      "id": "tv_svg_mobile",
-      "label": "Raw SVG code for Mobile TV"
+      "type": "image_picker",
+      "id": "tv_mobile",
+      "label": "Mobile TV SVG"
     },
     {
       "type": "header",
       "content": "SVG Masks"
     },
     {
-      "type": "html",
-      "id": "mask_svg_desktop",
-      "label": "Desktop mask SVG code (≥ 769 px)",
-      "info": "Paste the raw SVG code for the mask. Solid shapes show image, transparent hides it."
+      "type": "image_picker",
+      "id": "mask_desktop",
+      "label": "Desktop mask SVG (≥ 769 px)"
     },
     {
-      "type": "html",
-      "id": "mask_svg_mobile",
-      "label": "Mobile mask SVG code (≤ 768 px)",
-      "info": "Paste the raw SVG code for the mask."
+      "type": "image_picker",
+      "id": "mask_mobile",
+      "label": "Mobile mask SVG (≤ 768 px)"
     },
     {
       "type": "header",
