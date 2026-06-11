@@ -124,25 +124,11 @@
     margin-top: 0;
     word-wrap: break-word;
   }
-  .fcc-product-copy {
-    font-family: 'Krugat', system-ui, sans-serif;
-    font-size: 24px;
-    line-height: 1.4;
-    color: #111111;
-    text-align: center;
-    max-width: min(80vw, 640px);
-    margin: 16px 0 32px;
-    word-wrap: break-word;
-    text-transform: uppercase;
-  }
 
-  @media (max-width: 768px) {    .fcc-header {
+  @media (max-width: 768px) {
+    .fcc-header {
       font-size: 32px;
       margin-bottom: 48px;
-    }
-    .fcc-product-copy {
-      font-size: 20px;
-      margin: 8px 0 24px;
     }
   }
 
@@ -428,8 +414,6 @@
 
     </div><!-- /.fcc-mask-stage -->
 
-    <div class="fcc-product-copy" id="fccProductCopy-{{ section.id }}">{{ products.first.title | escape }}</div>
-
     {%- comment -%} ── CONTROLS ── {%- endcomment -%}
     <div class="fcc-controls">
       <button class="fcc-nav-btn" id="fccPrev-{{ section.id }}" aria-label="Previous product">
@@ -482,12 +466,6 @@
   const prevBtn     = document.getElementById('fccPrev-'      + SECTION_ID);
   const nextBtn     = document.getElementById('fccNext-'      + SECTION_ID);
   const dotsEl      = document.getElementById('fccDots-'      + SECTION_ID);
-  const productCopy = document.getElementById('fccProductCopy-' + SECTION_ID);
-  const PRODUCT_TITLES = [
-    {%- for product in products -%}
-      "{{ product.title | escape }}"{% unless forloop.last %},{% endunless %}
-    {%- endfor -%}
-  ];
 
   if (!stage || PRODUCT_URLS.length === 0) return;
 
@@ -535,10 +513,6 @@
           ? "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/active_carousel.svg?v=1769011901"
           : "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/inactive_carousel.svg?v=1769011901";
       });
-    }
-
-    if (productCopy) {
-      productCopy.textContent = PRODUCT_TITLES[current] || '';
     }
 
     /* reset autoplay timer on manual interaction */
