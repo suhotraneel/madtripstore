@@ -128,8 +128,8 @@
   .fcc-tv-mobile { display: none; }
 
   @media (max-width: 768px) {
-    .fcc-tv-desktop { display: none; }
-    .fcc-tv-mobile { display: block; }
+    .fcc-tv-desktop { display: none !important; }
+    .fcc-tv-mobile { display: block !important; }
     
     .fcc-tv-wrapper {
       width: min(95vw, 600px);
@@ -282,8 +282,20 @@
     assign col           = section.settings.collection
     assign products      = col.products
     assign product_count = products.size
-    assign mask_desktop_url = section.settings.mask_desktop | image_url: width: 1200
-    assign mask_mobile_url  = section.settings.mask_mobile  | image_url: width: 800
+
+    if section.settings.mask_svg_desktop != blank
+      assign desktop_svg_encoded = section.settings.mask_svg_desktop | replace: '"', "'" | url_encode | replace: '+', '%20'
+      assign mask_desktop_data = 'data:image/svg+xml,' | append: desktop_svg_encoded
+    else
+      assign mask_desktop_data = 'none'
+    endif
+
+    if section.settings.mask_svg_mobile != blank
+      assign mobile_svg_encoded = section.settings.mask_svg_mobile | replace: '"', "'" | url_encode | replace: '+', '%20'
+      assign mask_mobile_data = 'data:image/svg+xml,' | append: mobile_svg_encoded
+    else
+      assign mask_mobile_data = 'none'
+    endif
   -%}
 
   {%- comment -%} CSS vars for mask-image are set on the stage so .fcc-slide inherits them {%- endcomment -%}
@@ -317,8 +329,8 @@
         class="fcc-mask-stage"
         id="fccMaskStage-{{ section.id }}"
         style="
-          --fcc-mask-desktop: {{ mask_desktop_url | prepend: 'url(' | append: ')' }};
-          --fcc-mask-mobile:  {{ mask_mobile_url  | prepend: 'url(' | append: ')' }};
+          --fcc-mask-desktop: {% if mask_desktop_data != 'none' %}url("{{ mask_desktop_data }}"){% else %}none{% endif %};
+          --fcc-mask-mobile:  {% if mask_mobile_data != 'none' %}url("{{ mask_mobile_data }}"){% else %}none{% endif %};
         "
       >
         {%- comment -%}
@@ -554,16 +566,16 @@
       "content": "SVG Masks"
     },
     {
-      "type": "image_picker",
-      "id": "mask_desktop",
-      "label": "Desktop mask SVG (≥ 769 px)",
-      "info": "Upload the blob-shape SVG used on desktop. Leave blank for the built-in default."
+      "type": "html",
+      "id": "mask_svg_desktop",
+      "label": "Desktop mask SVG code (≥ 769 px)",
+      "info": "Paste the raw SVG code for the mask. Solid shapes show image, transparent hides it."
     },
     {
-      "type": "image_picker",
-      "id": "mask_mobile",
-      "label": "Mobile mask SVG (≤ 768 px)",
-      "info": "Upload the blob-shape SVG used on mobile. Leave blank for the built-in default."
+      "type": "html",
+      "id": "mask_svg_mobile",
+      "label": "Mobile mask SVG code (≤ 768 px)",
+      "info": "Paste the raw SVG code for the mask."
     },
     {
       "type": "header",
