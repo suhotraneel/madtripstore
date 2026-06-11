@@ -178,33 +178,6 @@
     .fcc-tv-next { top: 79.5%; left: 55.32%; width: 10.66%; height: 10.5%; }
   }
 
-  /* =========================================================
-     PROGRESS BAR
-  ========================================================= */
-  .fcc-progress-container {
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50%;
-    height: 4px;
-    z-index: 10;
-  }
-
-  .fcc-progress-bar {
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .fcc-progress-fill {
-    height: 100%;
-    width: 0%;
-    background: #ffffff;
-    border-radius: 2px;
-  }
 
   .fcc-header {
     font-family: 'Krugat', system-ui, sans-serif;
@@ -284,6 +257,61 @@
     height: 100%;
     object-fit: cover;   /* fill the blob — no letterboxing */
     display: block;
+  }
+
+  /* =========================================================
+     TV NOISE OVERLAY
+  ========================================================= */
+  .fcc-tv-noise-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    -webkit-mask-image: var(--fcc-mask-desktop);
+    mask-image: var(--fcc-mask-desktop);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  .fcc-tv-noise {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.12;
+    animation: tvNoise 0.3s step-end infinite;
+    mix-blend-mode: overlay;
+  }
+
+  .is-paused .fcc-tv-noise {
+    animation-play-state: paused;
+  }
+
+  @keyframes tvNoise {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-2%, -2%); }
+    20% { transform: translate(2%, -3%); }
+    30% { transform: translate(-3%, 1%); }
+    40% { transform: translate(1%, 3%); }
+    50% { transform: translate(-1%, -1%); }
+    60% { transform: translate(3%, 1%); }
+    70% { transform: translate(-2%, 2%); }
+    80% { transform: translate(-3%, -2%); }
+    90% { transform: translate(2%, -1%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  @media (max-width: 768px) {
+    .fcc-tv-noise-container {
+      -webkit-mask-image: var(--fcc-mask-mobile);
+      mask-image: var(--fcc-mask-mobile);
+    }
   }
 
   /* =========================================================
@@ -370,13 +398,9 @@
         </div>
       {%- endfor -%}
 
-        {%- if section.settings.autoplay -%}
-          <div class="fcc-progress-container" id="fccProgress-{{ section.id }}">
-            <div class="fcc-progress-bar">
-              <div class="fcc-progress-fill"></div>
-            </div>
-          </div>
-        {%- endif -%}
+        <div class="fcc-tv-noise-container">
+          <div class="fcc-tv-noise"></div>
+        </div>
 
       </div><!-- /.fcc-mask-stage -->
 
@@ -420,8 +444,7 @@
   const prevBtn     = document.getElementById('fccTvPrev-'    + SECTION_ID);
   const pauseBtn    = document.getElementById('fccTvPause-'   + SECTION_ID);
   const nextBtn     = document.getElementById('fccTvNext-'    + SECTION_ID);
-  const progressEl  = document.getElementById('fccProgress-'  + SECTION_ID);
-  const progressFill = progressEl ? progressEl.querySelector('.fcc-progress-fill') : null;
+
 
   if (!stage || PRODUCT_URLS.length === 0) return;
 
@@ -441,7 +464,6 @@
 
   function resetAutoplay() {
     timePassed = 0;
-    if (progressFill) progressFill.style.width = '0%';
   }
 
   function goTo(index, userInitiated) {
@@ -482,13 +504,7 @@
 
       if (timePassed >= AUTOPLAY_DELAY) {
         timePassed = 0;
-        if (progressFill) progressFill.style.width = '100%';
         goTo(current + 1, false);
-      } else {
-        if (progressFill) {
-          var percentage = (timePassed / AUTOPLAY_DELAY) * 100;
-          progressFill.style.width = percentage + '%';
-        }
       }
     }
     rafId = requestAnimationFrame(tick);
@@ -504,6 +520,11 @@
   if (pauseBtn) {
     pauseBtn.addEventListener('click', function () {
       isPaused = !isPaused;
+      if (isPaused) {
+        wrapper.classList.add('is-paused');
+      } else {
+        wrapper.classList.remove('is-paused');
+      }
     });
   }
 
