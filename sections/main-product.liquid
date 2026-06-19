@@ -26,6 +26,23 @@
   {%- endif -%}
 
   {%- style -%}
+    @font-face {
+      font-family: 'PallyVariable';
+      src: url('https://cdn.shopify.com/s/files/1/0655/0667/2825/files/PallyVariable.ttf?v=1732101857') format('truetype');
+      font-display: swap;
+    }
+
+    .product__category-label {
+      font-family: 'PallyVariable', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin: 4px 0 0 0;
+      line-height: 1.4;
+    }
+
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -168,14 +185,20 @@
                   {{- block.settings.text -}}
                 </p>
               {%- when 'title' -%}
+                {%- assign product_child_coll = product.metafields.custom.child_category.value | first | default: product.metafields.custom.child_category.value -%}
                 <div class="product__title" {{ block.shopify_attributes }}>
-                <h1>{{ product.title | split: ' - ' | first | escape }}</h1>
-                <a href="{{ product.url }}" class="product__title">
-                  <h2 class="h1">
-                    {{ product.title | split: ' - ' | first | escape }}
-                  </h2>
-                </a>
-              </div>
+                  <h1>{{ product.title | split: ' - ' | first | escape }}</h1>
+                  {%- if product_child_coll != blank -%}
+                    <p class="product__category-label">{{ product_child_coll.title | escape }}</p>
+                  {%- elsif product.title contains ' - ' -%}
+                    <p class="product__category-label">{{ product.title | split: ' - ' | last | escape }}</p>
+                  {%- endif -%}
+                  <a href="{{ product.url }}" class="product__title">
+                    <h2 class="h1">
+                      {{ product.title | split: ' - ' | first | escape }}
+                    </h2>
+                  </a>
+                </div>
               {%- when 'price' -%}
                 <div class="price-and-share-wrapper" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
