@@ -40,6 +40,15 @@
       opacity: 0.65;
       margin: 4px 0 0 0;
       line-height: 1.4;
+      display: inline-block;
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+
+    .product__category-label:hover {
+      opacity: 1;
+      text-decoration: underline;
     }
 
     @media screen and (min-width: 750px) {
@@ -194,9 +203,9 @@
                 <div class="product__title" {{ block.shopify_attributes }}>
                   <h1>{{ product.title | split: ' - ' | first | escape }}</h1>
                   {%- if product_child_coll != blank -%}
-                    <p class="product__category-label">{{ product_child_coll.title | escape }}</p>
+                    <a href="{{ product_child_coll.url }}" class="product__category-label">{{ product_child_coll.title | escape }}</a>
                   {%- elsif product.title contains ' - ' -%}
-                    <p class="product__category-label">{{ product.title | split: ' - ' | last | escape }}</p>
+                    <a href="{{ routes.collections_url }}/{{ product.title | split: ' - ' | last | handleize }}" class="product__category-label">{{ product.title | split: ' - ' | last | escape }}</a>
                   {%- endif -%}
                   <a href="{{ product.url }}" class="product__title">
                     <h2 class="h1">
