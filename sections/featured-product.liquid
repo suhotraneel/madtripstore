@@ -105,7 +105,7 @@
                 {%- when 'title' -%}
                   <h2 class="product__title {{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
                     {%- if product.title != blank -%}
-                      {{ product.title | escape }}
+                      {{ product.title | split: ' - ' | first | escape }}
                     {%- else -%}
                       {{ 'onboarding.product_title' | t }}
                     {%- endif -%}

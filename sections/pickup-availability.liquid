@@ -60,7 +60,7 @@
   >
     <div class="pickup-availability-header">
       <h2 class="h3 pickup-availability-drawer-title" id="PickupAvailabilityHeading">
-        {{ product_variant.product.title | escape }}
+        {{ product_variant.product.title | split: ' - ' | first | escape }}
       </h2>
       <button class="pickup-availability-drawer-button" type="button" aria-label="{{ 'accessibility.close' | t }}">
         {%- render 'icon-close' -%}

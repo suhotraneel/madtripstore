@@ -136,7 +136,7 @@
 {%- comment -%} Determine Child Collection {%- endcomment -%}
 {%- if current_template == 'product' -%}
   {%- assign child_coll = product.metafields.custom.child_category.value | first | default: product.metafields.custom.child_category.value -%}
-  {%- assign last_label = product.title -%}
+  {%- assign last_label = product.title | split: ' - ' | first -%}
 {%- elsif current_template == 'collection' -%}
   {%- assign child_coll = collection -%}
   {%- assign last_label = collection.title -%}
