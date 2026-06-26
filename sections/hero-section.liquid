@@ -1231,20 +1231,16 @@
   if (loadingSkipBtn) {
     loadingSkipBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      assetsFullyLoaded = true; // Disable loading screen forever
-      hideAssetLoader();
       
       const mainContent = document.getElementById('mainContent');
-      if (mainContent) mainContent.style.opacity = '1';
-
-      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
-      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
-      const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
-      
-      targetScrollX = totalScrollable;
-      if (!isAnimating) {
-        isAnimating = true;
-        requestAnimationFrame(renderLoop);
+      if (mainContent) {
+        // Find the exact pixel where the next section begins and smoothly scroll there natively
+        const nextSectionOffset = mainContent.getBoundingClientRect().bottom + window.scrollY;
+        
+        window.scrollTo({
+          top: nextSectionOffset,
+          behavior: 'smooth'
+        });
       }
     });
   }
