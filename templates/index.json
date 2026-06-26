@@ -38,6 +38,7 @@
         "tv_mobile": "shopify://shop_images/featured-tv-mobile.svg",
         "mask_desktop": "shopify://shop_images/featured-image-desktop.svg",
         "mask_mobile": "shopify://shop_images/featured-image-mobile.svg",
+        "pause_overlay_svg": "shopify://shop_images/pause-icon.svg",
         "enable_top_clip": true,
         "enable_bottom_clip": true,
         "autoplay": true,
