@@ -211,13 +211,16 @@
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    border: 3.5px solid rgba(255, 222, 23, 0.15);
-    border-top-color: #FFDE17;
+    border: 4px solid rgba(255, 222, 23, 0.2);
+    border-top: 4px solid #FFDE17;
     animation: heroSpinnerRotate 0.8s linear infinite;
+    display: block;
+    margin: 0 auto;
   }
 
   @keyframes heroSpinnerRotate {
-    to { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 
   .hero-floating-btn {
@@ -296,13 +299,13 @@
   .mute-btn {
     position: fixed;
     bottom: 24px;
-    z-index: 2;
+    z-index: 10001;
   }
 
   .skip-btn {
     position: absolute;
     bottom: 24px;
-    z-index: 6;
+    z-index: 10002;
   }
 
   @media (max-width: 768px) {
