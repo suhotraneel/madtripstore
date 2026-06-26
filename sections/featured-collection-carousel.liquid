@@ -25,6 +25,8 @@
     --fcc-chevron-size:  44px;
     --svg-cut-height-top: calc(100vw * 56 / 2463);
     --svg-cut-height-bottom: calc(100vw * 56 / 2463);
+    --tv-aspect-desktop: {% if section.settings.tv_desktop != blank %}{{ section.settings.tv_desktop.aspect_ratio }}{% else %}1.112524{% endif %};
+    --tv-aspect-mobile: {% if section.settings.tv_mobile != blank %}{{ section.settings.tv_mobile.aspect_ratio }}{% else %}0.819237{% endif %};
 
     position: relative;
     width: 100%;
@@ -111,6 +113,7 @@
   .fcc-tv-wrapper {
     position: relative;
     width: 90%;
+    max-width: calc(90vh * var(--tv-aspect-desktop));
     margin: 0 auto 16px;
   }
 
@@ -132,6 +135,7 @@
     
     .fcc-tv-wrapper {
       width: 95%;
+      max-width: calc(90vh * var(--tv-aspect-mobile));
     }
   }
 
