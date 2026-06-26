@@ -232,9 +232,10 @@
   }
   .hero-loading-bar-fill {
     width: 0%;
-    height: 100%;
-    background: #FFDE17;
+    height: 100% !important;
+    background-color: #FFDE17 !important;
     transition: width 0.15s ease-out;
+    display: block !important;
   }
 
   .hero-floating-btn {
@@ -885,7 +886,7 @@
     const progressText = document.getElementById('heroLoadingProgressText');
     const progressBar = document.getElementById('heroLoadingProgressBar');
     if (progressText) progressText.innerText = `${percent}%`;
-    if (progressBar) progressBar.style.width = `${percent}%`;
+    if (progressBar) progressBar.style.setProperty('width', `${percent}%`, 'important');
   }
 
   function preloadImages(urls) {
