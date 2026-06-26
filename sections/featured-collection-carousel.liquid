@@ -260,17 +260,20 @@
   }
 
   /* =========================================================
-     TV GRAIN CANVAS
+     PAUSE OVERLAY
   ========================================================= */
-  .fcc-grain-canvas {
+  .fcc-pause-overlay {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
     z-index: 6;
-    opacity: 0.2;
-    mix-blend-mode: overlay;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     /* clip to the same blob shape as the slides */
     -webkit-mask-image: var(--fcc-mask-desktop);
     mask-image: var(--fcc-mask-desktop);
@@ -282,8 +285,12 @@
     mask-position: center;
   }
 
+  .fcc-pause-overlay.is-visible {
+    opacity: 0.5;
+  }
+
   @media (max-width: 768px) {
-    .fcc-grain-canvas {
+    .fcc-pause-overlay {
       -webkit-mask-image: var(--fcc-mask-mobile);
       mask-image: var(--fcc-mask-mobile);
     }
@@ -373,7 +380,11 @@
         </div>
       {%- endfor -%}
 
-        <canvas class="fcc-grain-canvas" id="fccGrain-{{ section.id }}" aria-hidden="true"></canvas>
+        <div class="fcc-pause-overlay" id="fccPauseOverlay-{{ section.id }}" aria-hidden="true">
+          {%- if section.settings.pause_overlay_svg != blank -%}
+            <img src="{{ section.settings.pause_overlay_svg | image_url: width: 200 }}" alt="" draggable="false" style="width: 25%; height: auto; display: block;">
+          {%- endif -%}
+        </div>
 
       </div><!-- /.fcc-mask-stage -->
 
@@ -468,54 +479,9 @@
 
   /* ── animation loop ─────────────────────────────────────── */
 
-  /* ── canvas grain ───────────────────────────────────────── */
-  var grainCanvas = document.getElementById('fccGrain-' + SECTION_ID);
-  var grainCtx    = grainCanvas ? grainCanvas.getContext('2d') : null;
-  var grainFrameSkip = 0; // draw every N frames (0 = every frame)
+  /* ── pause overlay ──────────────────────────────────────── */
+  var pauseOverlay = document.getElementById('fccPauseOverlay-' + SECTION_ID);
 
-  function sizeGrainCanvas() {
-    if (!grainCanvas || !stage) return;
-    var r = stage.getBoundingClientRect();
-    grainCanvas.width  = Math.round(r.width)  || 400;
-    grainCanvas.height = Math.round(r.height) || 300;
-  }
-
-  function drawGrain() {
-    if (!grainCtx || !grainCanvas.width || !grainCanvas.height) return;
-    var w = grainCanvas.width;
-    var h = grainCanvas.height;
-    /* 1px grain on mobile, 2px blocks on desktop */
-    var blockSize = window.innerWidth <= 768 ? 1 : 2;
-    var bw = Math.ceil(w / blockSize);
-    var bh = Math.ceil(h / blockSize);
-    var imageData = grainCtx.createImageData(w, h);
-    var data = imageData.data;
-    for (var by = 0; by < bh; by++) {
-      for (var bx = 0; bx < bw; bx++) {
-        var v = (Math.random() * 255) | 0;
-        /* fill blockSize x blockSize pixels with the same value */
-        for (var dy = 0; dy < blockSize; dy++) {
-          var py = by * blockSize + dy;
-          if (py >= h) continue;
-          for (var dx = 0; dx < blockSize; dx++) {
-            var px = bx * blockSize + dx;
-            if (px >= w) continue;
-            var idx = (py * w + px) * 4;
-            data[idx]     = v;
-            data[idx + 1] = v;
-            data[idx + 2] = v;
-            data[idx + 3] = 255;
-          }
-        }
-      }
-    }
-    grainCtx.putImageData(imageData, 0, 0);
-  }
-
-  sizeGrainCanvas();
-  window.addEventListener('resize', sizeGrainCanvas);
-
-  var grainTick = 0;
   function tick(timestamp) {
     if (!lastTick) lastTick = timestamp;
     var delta = timestamp - lastTick;
@@ -528,12 +494,6 @@
         timePassed = 0;
         goTo(current + 1, false);
       }
-    }
-
-    /* draw grain every other frame (~30fps grain, 60fps carousel) */
-    grainTick++;
-    if (!isPaused && grainTick % 2 === 0) {
-      drawGrain();
     }
 
     rafId = requestAnimationFrame(tick);
@@ -551,8 +511,10 @@
       isPaused = !isPaused;
       if (isPaused) {
         wrapper.classList.add('is-paused');
+        if (pauseOverlay) pauseOverlay.classList.add('is-visible');
       } else {
         wrapper.classList.remove('is-paused');
+        if (pauseOverlay) pauseOverlay.classList.remove('is-visible');
       }
     });
   }
@@ -584,7 +546,6 @@
   /* ── init ───────────────────────────────────────────────── */
   resetAutoplay();
   goTo(0, false);
-  drawGrain(); /* draw first frame immediately */
   rafId = requestAnimationFrame(tick);
 
 })();
@@ -653,6 +614,16 @@
       "type": "image_picker",
       "id": "mask_mobile",
       "label": "Mobile mask SVG (≤ 768 px)"
+    },
+    {
+      "type": "header",
+      "content": "Pause Overlay"
+    },
+    {
+      "type": "image_picker",
+      "id": "pause_overlay_svg",
+      "label": "Pause overlay image",
+      "info": "Shown at 50% opacity over the screen when the carousel is paused. Upload your SVG or PNG here."
     },
     {
       "type": "header",
