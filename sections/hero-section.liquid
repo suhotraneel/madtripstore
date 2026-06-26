@@ -321,22 +321,6 @@
     position: absolute;
     bottom: 24px;
     z-index: 10002;
-    transition: right 1s cubic-bezier(0.25, 1, 0.5, 1), 
-                bottom 1s cubic-bezier(0.25, 1, 0.5, 1), 
-                transform 1s cubic-bezier(0.25, 1, 0.5, 1), 
-                background 0.3s ease, 
-                border-color 0.3s ease, 
-                opacity 0.3s ease;
-  }
-
-  .skip-btn.loading-state {
-    right: 50%;
-    bottom: 50%;
-    transform: translate(50%, 80px);
-  }
-
-  .skip-btn.loading-state:hover {
-    transform: translate(50%, 80px) scale(1.05);
   }
 
   @media (max-width: 768px) {
@@ -428,7 +412,7 @@
     <div id="heroProgressBar"></div>
   </div>
 
-  <button id="skipTripBtn" class="hero-floating-btn skip-btn loading-state">
+  <button id="skipTripBtn" class="hero-floating-btn skip-btn">
     <span class="btn-text">Skip Trip</span>
     <span class="btn-icon">
       {%- if section.settings.skip_button_icon != blank -%}
@@ -446,6 +430,16 @@
       <div class="hero-loading-bar-bg">
         <div class="hero-loading-bar-fill" id="heroLoadingProgressBar"></div>
       </div>
+      <button id="loadingSkipTripBtn" class="hero-floating-btn skip-btn" style="position: static; margin-top: 24px;">
+        <span class="btn-text">Skip Trip</span>
+        <span class="btn-icon">
+          {%- if section.settings.skip_button_icon != blank -%}
+            {{ section.settings.skip_button_icon }}
+          {%- else -%}
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+          {%- endif -%}
+        </span>
+      </button>
     </div>
   </div>
 </div>
@@ -461,6 +455,7 @@
   const heroProgressBar = document.getElementById('heroProgressBar');
   const muteBtn = document.getElementById('muteToggleBtn');
   const skipBtn = document.getElementById('skipTripBtn');
+  const loadingSkipBtn = document.getElementById('loadingSkipTripBtn');
   const heroLoadingOverlay = document.getElementById('heroLoadingOverlay');
 
   // === Deferred Loading State ===
@@ -475,6 +470,7 @@
     if (!assetsFullyLoaded && heroLoadingOverlay) {
       showingLoadingOverlay = true;
       heroLoadingOverlay.classList.add('visible');
+      if (skipBtn) skipBtn.style.display = 'none';
     }
   }
 
@@ -482,6 +478,7 @@
     showingLoadingOverlay = false;
     if (heroLoadingOverlay) {
       heroLoadingOverlay.classList.remove('visible');
+      if (skipBtn) skipBtn.style.display = 'flex';
     }
   }
 
@@ -941,8 +938,6 @@
         hideAssetLoader();
         const mainContent = document.getElementById('mainContent');
         mainContent.style.opacity = '1';
-        const skipBtn = document.getElementById('skipTripBtn');
-        if (skipBtn) skipBtn.classList.remove('loading-state');
         callback();
       }
     }
@@ -1229,6 +1224,27 @@
         iconSpan.innerHTML = `{%- if section.settings.muted_icon != blank -%}{{ section.settings.muted_icon }}{%- else -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>{%- endif -%}`;
       } else {
         iconSpan.innerHTML = `{%- if section.settings.unmuted_icon != blank -%}{{ section.settings.unmuted_icon }}{%- else -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>{%- endif -%}`;
+      }
+    });
+  }
+
+  if (loadingSkipBtn) {
+    loadingSkipBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      assetsFullyLoaded = true; // Disable loading screen forever
+      hideAssetLoader();
+      
+      const mainContent = document.getElementById('mainContent');
+      if (mainContent) mainContent.style.opacity = '1';
+
+      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+      const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+      
+      targetScrollX = totalScrollable;
+      if (!isAnimating) {
+        isAnimating = true;
+        requestAnimationFrame(renderLoop);
       }
     });
   }
