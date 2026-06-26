@@ -110,21 +110,20 @@
   ========================================================= */
   .fcc-tv-wrapper {
     position: relative;
-    width: 90vw;
+    width: fit-content;
+    max-width: 90%;
     max-height: 90vh;
     margin: 0 auto 16px;
   }
 
   .fcc-tv-bg {
-    width: 100%;
-    height: auto;
     display: block;
   }
   .fcc-tv-bg svg,
   .fcc-tv-bg img {
     width: auto;
     height: auto;
-    max-width: 100%;
+    max-width: 90%;
     max-height: 90vh;
     display: block;
   }
@@ -136,7 +135,7 @@
     .fcc-tv-mobile { display: block !important; }
     
     .fcc-tv-wrapper {
-      width: min(95vw, 600px);
+      max-width: 95%;
     }
   }
 
