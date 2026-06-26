@@ -394,19 +394,19 @@
       <p style="font-family:'Pally_Variable:Bold',sans-serif; font-weight:bold; font-size:24px; line-height:32px; color:#fff; text-align:center; margin:0; text-transform:capitalize; white-space:nowrap;">Scroll</p>
     </div>
 
-    <button id="skipTripBtn" class="hero-floating-btn skip-btn">
-      <span class="btn-text">Skip Trip</span>
-      <span class="btn-icon">
-        {%- if section.settings.skip_button_icon != blank -%}
-          {{ section.settings.skip_button_icon }}
-        {%- else -%}
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
-        {%- endif -%}
-      </span>
-    </button>
-
     <div id="heroProgressBar"></div>
   </div>
+
+  <button id="skipTripBtn" class="hero-floating-btn skip-btn">
+    <span class="btn-text">Skip Trip</span>
+    <span class="btn-icon">
+      {%- if section.settings.skip_button_icon != blank -%}
+        {{ section.settings.skip_button_icon }}
+      {%- else -%}
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+      {%- endif -%}
+    </span>
+  </button>
 
   <!-- Circular loader overlay shown when user scrolls before assets are ready -->
   <div id="heroLoadingOverlay">
