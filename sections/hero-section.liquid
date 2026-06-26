@@ -986,8 +986,37 @@
     handleScrollDelta(deltaY, e);
   }, { passive: false });
 
+  // Handle keyboard scrolling (Space, Arrows, Page Up/Down)
+  window.addEventListener('keydown', (e) => {
+    if (window.scrollY > 5) return; // Allow natural scroll if we're scrolled down past the hero content
+
+    const scrollKeys = ['ArrowUp', 'ArrowDown', 'Space', 'PageUp', 'PageDown', ' '];
+    if (scrollKeys.includes(e.code) || scrollKeys.includes(e.key)) {
+      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+      const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+
+      // Only intercept if we haven't finished the animation or are trying to scroll back up
+      if (targetScrollX < totalScrollable || e.code === 'ArrowUp' || e.code === 'PageUp' || (e.code === 'Space' && e.shiftKey)) {
+        e.preventDefault();
+
+        let deltaY = 0;
+        if (e.code === 'ArrowDown') deltaY = 100;
+        else if (e.code === 'ArrowUp') deltaY = -100;
+        else if (e.code === 'Space' && !e.shiftKey || e.key === ' ') deltaY = window.innerHeight * 0.8;
+        else if (e.code === 'Space' && e.shiftKey) deltaY = -window.innerHeight * 0.8;
+        else if (e.code === 'PageDown') deltaY = window.innerHeight * 0.8;
+        else if (e.code === 'PageUp') deltaY = -window.innerHeight * 0.8;
+
+        if (deltaY !== 0) {
+          handleScrollDelta(deltaY, e);
+        }
+      }
+    }
+  });
+
   function handleScrollDelta(rawDeltaY, event) {
-    if (window.scrollY > 0) return; // Allow natural scroll if we're scrolled down past the hero content
+    if (window.scrollY > 5) return; // Allow natural scroll if we're scrolled down past the hero content
 
     // === Deferred Load Guard ===
     // If assets are not yet loaded and the user is scrolling down into the hero,
