@@ -321,6 +321,22 @@
     position: absolute;
     bottom: 24px;
     z-index: 10002;
+    transition: right 1s cubic-bezier(0.25, 1, 0.5, 1), 
+                bottom 1s cubic-bezier(0.25, 1, 0.5, 1), 
+                transform 1s cubic-bezier(0.25, 1, 0.5, 1), 
+                background 0.3s ease, 
+                border-color 0.3s ease, 
+                opacity 0.3s ease;
+  }
+
+  .skip-btn.loading-state {
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%, 80px);
+  }
+
+  .skip-btn.loading-state:hover {
+    transform: translate(50%, 80px) scale(1.05);
   }
 
   @media (max-width: 768px) {
@@ -412,7 +428,7 @@
     <div id="heroProgressBar"></div>
   </div>
 
-  <button id="skipTripBtn" class="hero-floating-btn skip-btn">
+  <button id="skipTripBtn" class="hero-floating-btn skip-btn loading-state">
     <span class="btn-text">Skip Trip</span>
     <span class="btn-icon">
       {%- if section.settings.skip_button_icon != blank -%}
@@ -925,6 +941,8 @@
         hideAssetLoader();
         const mainContent = document.getElementById('mainContent');
         mainContent.style.opacity = '1';
+        const skipBtn = document.getElementById('skipTripBtn');
+        if (skipBtn) skipBtn.classList.remove('loading-state');
         callback();
       }
     }
