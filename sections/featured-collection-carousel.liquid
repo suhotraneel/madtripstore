@@ -110,7 +110,8 @@
   ========================================================= */
   .fcc-tv-wrapper {
     position: relative;
-    width: min(90vw, 800px);
+    width: 90vw;
+    max-height: 90vh;
     margin: 0 auto 16px;
   }
 
@@ -121,8 +122,10 @@
   }
   .fcc-tv-bg svg,
   .fcc-tv-bg img {
-    width: 100%;
+    width: auto;
     height: auto;
+    max-width: 100%;
+    max-height: 90vh;
     display: block;
   }
 
@@ -286,7 +289,7 @@
   }
 
   .fcc-pause-overlay.is-visible {
-    opacity: 0.5;
+    opacity: 0.3;
   }
 
   @media (max-width: 768px) {
