@@ -208,13 +208,22 @@
   }
 
   .hero-loader-spinner {
-    display: inline-block;
-    width: 60px;
-    height: 60px;
-    border: 6px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #FFDE17;
-    border-radius: 50%;
-    animation: customHeroSpin 1s linear infinite;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    margin-top: -30px !important; /* Half of height */
+    margin-left: -30px !important; /* Half of width */
+    width: 60px !important;
+    height: 60px !important;
+    border: 6px solid rgba(255, 255, 255, 0.2) !important;
+    border-top-color: #FFDE17 !important;
+    border-radius: 50% !important;
+    animation: customHeroSpin 1s linear infinite !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 10000 !important;
+    background-color: transparent !important;
   }
 
   @keyframes customHeroSpin {
