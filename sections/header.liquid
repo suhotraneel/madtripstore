@@ -1665,10 +1665,8 @@
         {%- liquid
           if section.settings.svg_icon_cart != blank
             echo section.settings.svg_icon_cart
-          elsif cart == empty
-            render 'icon-cart-empty'
           else
-            render 'icon-cart'
+            render 'icon-cart-empty'
           endif
         -%}
         <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
