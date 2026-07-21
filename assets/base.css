@@ -3673,7 +3673,7 @@ body.loading{
 #preloader{
   position: fixed;
   inset: 0;
-  background: #101010;
+  background: #111111;
   z-index: 9999;
   display: flex;
   align-items: center;
