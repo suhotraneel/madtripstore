@@ -131,7 +131,7 @@
 
   @media (min-width: 768px) {
     .carousel-{{ section.id }} .carousel-container {
-      flex-direction: row;
+      flex-direction: row-reverse;
       align-items: center; /* Center horizontally and vertically align columns */
       justify-content: space-between;
       padding: 0 50px calc(var(--svg-cut-height-bottom, 0px) + {{ section.settings.padding_bottom | default: 64 }}px) 50px;
