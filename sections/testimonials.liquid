@@ -39,23 +39,28 @@
     {%- assign slope_img_h_desktop = img_h1400 | minus: img_h768 | times: 1.0 | divided_by: 632 -%}
 
 
-    height: {{ h360 }}px;
+    min-height: {{ h360 }}px;
+    height: auto;
     display: flex;
     align-items: stretch;
     justify-content: center;
     padding: 0;
 
     @media screen and (min-width: 360px) {
-      height: calc({{ h360 }}px + (100vw - 360px) * {{ slope_h_mobile }});
+      min-height: calc({{ h360 }}px + (100vw - 360px) * {{ slope_h_mobile }});
+      height: auto;
     }
     @media screen and (min-width: 767px) {
-      height: {{ h767 }}px;
+      min-height: {{ h767 }}px;
+      height: auto;
     }
     @media screen and (min-width: 768px) {
-      height: calc({{ h768 }}px + (100vw - 768px) * {{ slope_h_desktop }});
+      min-height: calc({{ h768 }}px + (100vw - 768px) * {{ slope_h_desktop }});
+      height: auto;
     }
     @media screen and (min-width: 1400px) {
-      height: {{ h1400 }}px;
+      min-height: {{ h1400 }}px;
+      height: auto;
     }
 
     {%- if section.settings.enable_top_clip or section.settings.enable_bottom_clip -%}
@@ -129,7 +134,7 @@
       flex-direction: row;
       align-items: center; /* Center horizontally and vertically align columns */
       justify-content: space-between;
-      padding: 0 50px;
+      padding: {{ section.settings.padding_top | default: 36 }}px 50px {{ section.settings.padding_bottom | default: 36 }}px 50px;
       gap: 48px;
     }
   }
@@ -161,7 +166,7 @@
 
   @media (min-width: 768px) {
     .carousel-{{ section.id }} .testimonials-title-wrapper {
-      padding-top: calc(var(--svg-cut-height-top, 0px) + {{ section.settings.desktop_padding_top | default: 0 }}px);
+      padding-top: calc(var(--svg-cut-height-top, 0px) + {{ section.settings.padding_top | default: 36 }}px);
       padding-left: 50px;
       padding-right: 50px;
       max-width: 1400px;
@@ -654,6 +659,30 @@
       "label": "Enable Top Wave Clip",
       "info": "Clips the top of this section to interlock with a wavy section above it.",
       "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
     },
     {
       "type": "header",
