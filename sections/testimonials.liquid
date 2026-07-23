@@ -7,18 +7,6 @@
     {%- endif -%}
   }
 
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-
   .carousel-{{ section.id }} {
     --svg-cut-height-top: calc(100vw * 56 / 2463);
     --svg-cut-height-bottom: calc(100vw * 56 / 2463);
@@ -155,6 +143,7 @@
   }
 
   .carousel-{{ section.id }} .testimonials-title-wrapper {
+    padding-top: calc(var(--svg-cut-height-top, 0px) + 32px);
     text-align: center;
     width: 100%;
     box-sizing: border-box;
@@ -172,6 +161,7 @@
 
   @media (min-width: 768px) {
     .carousel-{{ section.id }} .testimonials-title-wrapper {
+      padding-top: calc(var(--svg-cut-height-top, 0px) + {{ section.settings.desktop_padding_top | default: 0 }}px);
       padding-left: 50px;
       padding-right: 50px;
       max-width: 1400px;
@@ -440,7 +430,7 @@
   }
 {%- endstyle -%}
 
-<testimonial-carousel class="carousel carousel-{{ section.id }} section-{{ section.id }}-padding" data-autoplay="{{ section.settings.autoplay }}" data-delay="{{ section.settings.autoplay_delay | times: 1000 }}" data-section-id="{{ section.id }}">
+<testimonial-carousel class="carousel carousel-{{ section.id }}" data-autoplay="{{ section.settings.autoplay }}" data-delay="{{ section.settings.autoplay_delay | times: 1000 }}" data-section-id="{{ section.id }}">
   <div class="carousel-wrapper">
     {%- if section.settings.title != blank -%}
       <div class="testimonials-title-wrapper page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
@@ -664,30 +654,6 @@
       "label": "Enable Top Wave Clip",
       "info": "Clips the top of this section to interlock with a wavy section above it.",
       "default": false
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 36
     },
     {
       "type": "header",
