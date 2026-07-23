@@ -118,7 +118,8 @@
     margin: 0 auto;
     padding: 56px 20px 0 20px;
     gap: 8px;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     width: 100%;
     box-sizing: border-box;
   }
@@ -130,6 +131,43 @@
       justify-content: space-between;
       padding: {{ section.settings.desktop_padding_top | default: 0 }}px 50px {{ section.settings.desktop_padding_bottom | default: 0 }}px 50px;
       gap: 48px;
+    }
+  }
+
+  .carousel-{{ section.id }} .carousel-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+
+  .carousel-{{ section.id }} .testimonials-title-wrapper {
+    padding-top: calc(var(--svg-cut-height-top, 0px) + 32px);
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .carousel-{{ section.id }} .testimonials-title {
+    margin: 0;
+    text-align: center !important;
+    font-size: 40px !important;
+    line-height: 1.2 !important;
+    width: 100% !important;
+    color: {{ section.settings.quote_color }};
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .testimonials-title-wrapper {
+      padding-top: calc(var(--svg-cut-height-top, 0px) + {{ section.settings.desktop_padding_top | default: 0 }}px);
+      padding-left: 50px;
+      padding-right: 50px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .carousel-{{ section.id }} .testimonials-title {
+      font-size: 64px !important;
     }
   }
 
@@ -393,7 +431,15 @@
 {%- endstyle -%}
 
 <testimonial-carousel class="carousel carousel-{{ section.id }}" data-autoplay="{{ section.settings.autoplay }}" data-delay="{{ section.settings.autoplay_delay | times: 1000 }}" data-section-id="{{ section.id }}">
-  <div class="carousel-container">
+  <div class="carousel-wrapper">
+    {%- if section.settings.title != blank -%}
+      <div class="testimonials-title-wrapper page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        <h2 class="testimonials-title inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {{ section.settings.title }}
+        </h2>
+      </div>
+    {%- endif -%}
+    <div class="carousel-container">
     
     <!-- LEFT SIDE: Text and Controls -->
     <div class="carousel-left">
@@ -596,6 +642,12 @@
 {
   "name": "Testimonial Carousel",
   "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Testimonials",
+      "label": "Heading"
+    },
     {
       "type": "checkbox",
       "id": "enable_top_clip",
