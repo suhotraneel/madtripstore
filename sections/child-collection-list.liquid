@@ -695,47 +695,48 @@
     display: none !important;
   }
 
-  /* Force grid layout for mobile */
+  /* Use flexbox to allow centering of incomplete rows while mimicking grid sizing */
+  #Slider-{{ section.id }} {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  /* Force layout for mobile */
   @media screen and (max-width: 767px) {
     #Slider-{{ section.id }} {
-      display: grid !important;
-      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       column-gap: 16px !important;
       row-gap: 16px !important;
     }
     #Slider-{{ section.id }} .grid__item {
-      width: 100% !important;
-      max-width: 100% !important;
+      width: calc(50% - 8px) !important;
+      max-width: calc(50% - 8px) !important;
       margin: 0 !important;
     }
   }
 
-  /* Force tablet grid layout (768px - 1023px) */
+  /* Force tablet layout (768px - 1023px) */
   @media screen and (min-width: 768px) and (max-width: 1023px) {
     #Slider-{{ section.id }} {
-      display: grid !important;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
       column-gap: var(--grid-desktop-horizontal-spacing, 1.5rem) !important;
       row-gap: 32px !important;
     }
     #Slider-{{ section.id }} .grid__item {
-      width: 100% !important;
-      max-width: 100% !important;
+      width: calc(33.333% - (var(--grid-desktop-horizontal-spacing, 1.5rem) * 2 / 3)) !important;
+      max-width: calc(33.333% - (var(--grid-desktop-horizontal-spacing, 1.5rem) * 2 / 3)) !important;
       margin: 0 !important;
     }
   }
 
-  /* Force desktop grid layout (1024px and up) */
+  /* Force desktop layout (1024px and up) */
   @media screen and (min-width: 1024px) {
     #Slider-{{ section.id }} {
-      display: grid !important;
-      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
       column-gap: var(--grid-desktop-horizontal-spacing, 1.5rem) !important;
       row-gap: 32px !important;
     }
     #Slider-{{ section.id }} .grid__item {
-      width: 100% !important;
-      max-width: 100% !important;
+      width: calc(25% - (var(--grid-desktop-horizontal-spacing, 1.5rem) * 3 / 4)) !important;
+      max-width: calc(25% - (var(--grid-desktop-horizontal-spacing, 1.5rem) * 3 / 4)) !important;
       margin: 0 !important;
     }
   }
