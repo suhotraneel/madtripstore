@@ -695,13 +695,38 @@
     display: none !important;
   }
 
-  /* Set row-gap for mobile */
-  #Slider-{{ section.id }} {
-    row-gap: 16px !important;
+  /* Force grid layout for mobile */
+  @media screen and (max-width: 767px) {
+    #Slider-{{ section.id }} {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      column-gap: 16px !important;
+      row-gap: 16px !important;
+    }
+    #Slider-{{ section.id }} .grid__item {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
   }
 
-  /* Force desktop grid layout starting from 768px (tablet up) instead of theme default (typically 990px or 1024px) */
-  @media screen and (min-width: 768px) {
+  /* Force tablet grid layout (768px - 1023px) */
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    #Slider-{{ section.id }} {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      column-gap: var(--grid-desktop-horizontal-spacing, 1.5rem) !important;
+      row-gap: 32px !important;
+    }
+    #Slider-{{ section.id }} .grid__item {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+
+  /* Force desktop grid layout (1024px and up) */
+  @media screen and (min-width: 1024px) {
     #Slider-{{ section.id }} {
       display: grid !important;
       grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr)) !important;
@@ -986,7 +1011,7 @@
       "min": 1,
       "max": 6,
       "step": 1,
-      "default": 3,
+      "default": 4,
       "label": "Number of columns on desktop"
     },
     {
