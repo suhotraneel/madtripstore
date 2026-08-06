@@ -127,6 +127,7 @@
     min-height: 0;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
   }
 
   @media (min-width: 768px) {
@@ -134,7 +135,7 @@
       flex-direction: row-reverse;
       align-items: center; /* Center horizontally and vertically align columns */
       justify-content: space-between;
-      padding: 0 50px calc(var(--svg-cut-height-bottom, 0px) + {{ section.settings.padding_bottom | default: 64 }}px) 50px;
+      padding: 0 80px calc(var(--svg-cut-height-bottom, 0px) + {{ section.settings.padding_bottom | default: 64 }}px) 80px;
       gap: 48px;
     }
   }
@@ -277,19 +278,6 @@
   }
 
   /* ===== CONTROLS ===== */
-  .carousel-{{ section.id }} .carousel-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;   /* Mobile */
-    gap: 20px;
-  }
-
-  @media (min-width: 768px) {
-    .carousel-{{ section.id }} .carousel-controls {
-      justify-content: flex-start; /* Desktop */
-    }
-  }
-
   .carousel-{{ section.id }} .nav-btn {
     width: 36px;
     height: 36px;
@@ -334,6 +322,48 @@
 
   .carousel-{{ section.id }} .nav-btn:active {
     background: #111111;
+  }
+
+  .carousel-{{ section.id }} .desktop-only { display: none !important; }
+  .carousel-{{ section.id }} .mobile-only { display: flex !important; }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .desktop-only { display: flex !important; }
+    .carousel-{{ section.id }} .mobile-only { display: none !important; }
+
+    .carousel-{{ section.id }} .nav-btn.desktop-only {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+    }
+    .carousel-{{ section.id }} .nav-btn.prev-btn.desktop-only { left: 20px; }
+    .carousel-{{ section.id }} .nav-btn.next-btn.desktop-only { right: 20px; }
+  }
+
+  .carousel-{{ section.id }} .mobile-image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .mobile-image-wrapper {
+      width: auto;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .carousel-{{ section.id }} .nav-btn.mobile-only {
+      flex-shrink: 0;
+    }
+    .carousel-{{ section.id }} .carousel-right {
+      max-width: calc(100vw - 112px);
+      flex-shrink: 1;
+    }
   }
 
   /* ===== RIGHT SIDE: IMAGE ===== */
@@ -424,31 +454,39 @@
     {%- endif -%}
     <div class="carousel-container">
     
-    <!-- LEFT SIDE: Text and Controls -->
-    <div class="carousel-left">
-      <div class="carousel-text">
-        <p id="quote-{{ section.id }}" class="carousel-quote fade-slide show"></p>
-        <p id="author-{{ section.id }}" class="carousel-author fade-slide show"></p>
+      <button class="nav-btn prev-btn desktop-only prev-btn-{{ section.id }}" aria-label="Previous slide">
+        <div class="chevron-icon chevron-left"></div>
+      </button>
+
+      <!-- LEFT SIDE: Text -->
+      <div class="carousel-left">
+        <div class="carousel-text">
+          <p id="quote-{{ section.id }}" class="carousel-quote fade-slide show"></p>
+          <p id="author-{{ section.id }}" class="carousel-author fade-slide show"></p>
+        </div>
       </div>
 
-      <div class="carousel-controls">
-        <button id="prev-{{ section.id }}" class="nav-btn" aria-label="Previous slide">
+      <!-- RIGHT SIDE: Masked Image -->
+      <div class="mobile-image-wrapper">
+        <button class="nav-btn prev-btn mobile-only prev-btn-{{ section.id }}" aria-label="Previous slide">
           <div class="chevron-icon chevron-left"></div>
         </button>
 
-        <button id="next-{{ section.id }}" class="nav-btn" aria-label="Next slide">
+        <div class="carousel-right">
+          <img id="bg1-{{ section.id }}" class="carousel-bg" src="" alt="" />
+          <img id="bg2-{{ section.id }}" class="carousel-bg" src="" alt="" style="opacity: 0;" />
+        </div>
+
+        <button class="nav-btn next-btn mobile-only next-btn-{{ section.id }}" aria-label="Next slide">
           <div class="chevron-icon chevron-right"></div>
         </button>
       </div>
-    </div>
 
-    <!-- RIGHT SIDE: Masked Image -->
-    <div class="carousel-right">
-      <img id="bg1-{{ section.id }}" class="carousel-bg" src="" alt="" />
-      <img id="bg2-{{ section.id }}" class="carousel-bg" src="" alt="" style="opacity: 0;" />
-    </div>
+      <button class="nav-btn next-btn desktop-only next-btn-{{ section.id }}" aria-label="Next slide">
+        <div class="chevron-icon chevron-right"></div>
+      </button>
 
-  </div>
+    </div>
 
   <script type="application/json" id="slidesData-{{ section.id }}">
     [
@@ -479,8 +517,8 @@
 
         this.quote = this.querySelector(`#quote-${this.sectionId}`);
         this.author = this.querySelector(`#author-${this.sectionId}`);
-        this.prevBtn = this.querySelector(`#prev-${this.sectionId}`);
-        this.nextBtn = this.querySelector(`#next-${this.sectionId}`);
+        this.prevBtns = this.querySelectorAll(`.prev-btn-${this.sectionId}`);
+        this.nextBtns = this.querySelectorAll(`.next-btn-${this.sectionId}`);
 
         this.index = 0;
         this.autoPlayTimer = null;
@@ -498,21 +536,25 @@
         this.render();
         if (this.isAutoplay) this.startAutoPlay();
 
-        if (this.nextBtn) {
-          this.nextBtn.addEventListener('click', () => {
-            this.stopAutoPlay();
-            this.index = (this.index + 1) % this.slides.length;
-            this.render();
-            if (this.isAutoplay) this.startAutoPlay();
+        if (this.nextBtns.length > 0) {
+          this.nextBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              this.stopAutoPlay();
+              this.index = (this.index + 1) % this.slides.length;
+              this.render();
+              if (this.isAutoplay) this.startAutoPlay();
+            });
           });
         }
 
-        if (this.prevBtn) {
-          this.prevBtn.addEventListener('click', () => {
-            this.stopAutoPlay();
-            this.index = (this.index - 1 + this.slides.length) % this.slides.length;
-            this.render();
-            if (this.isAutoplay) this.startAutoPlay();
+        if (this.prevBtns.length > 0) {
+          this.prevBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              this.stopAutoPlay();
+              this.index = (this.index - 1 + this.slides.length) % this.slides.length;
+              this.render();
+              if (this.isAutoplay) this.startAutoPlay();
+            });
           });
         }
       }
