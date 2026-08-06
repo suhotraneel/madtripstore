@@ -289,8 +289,8 @@
   }
 
   .carousel-{{ section.id }} .nav-btn .chevron-icon {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     display: block;
     background-color: #000000;
     -webkit-mask-size: contain;
@@ -300,6 +300,13 @@
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     transition: opacity 0.2s ease;
+  }
+  
+  @media (min-width: 768px) {
+    .carousel-{{ section.id }} .nav-btn .chevron-icon {
+      width: 32px;
+      height: 32px;
+    }
   }
   
   .carousel-{{ section.id }} .nav-btn .chevron-left {
