@@ -221,7 +221,10 @@
       ],
       "name": "Testimonial Carousel",
       "settings": {
+        "title": "TESTIMONIALS",
         "enable_top_clip": true,
+        "padding_top": 64,
+        "padding_bottom": 64,
         "image_aspect_ratio": "1 / 1",
         "img_w_360": 240,
         "img_w_767": 277,
