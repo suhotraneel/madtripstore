@@ -336,28 +336,6 @@
     background: #111111;
   }
 
-  .carousel-{{ section.id }} .dots {
-    display: flex;
-    gap: 10px;
-  }
-
-  .carousel-{{ section.id }} .dots button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-
-  .carousel-{{ section.id }} .dots img {
-    opacity: 0.8;
-    transition: opacity 1s ease;
-  }
-
-  .carousel-{{ section.id }} .dots img.active {
-    opacity: 1;
-    transition: opacity 1s ease;
-  }
-
   /* ===== RIGHT SIDE: IMAGE ===== */
   .carousel-{{ section.id }} .carousel-right {
     margin: 0 auto;
@@ -458,8 +436,6 @@
           <div class="chevron-icon chevron-left"></div>
         </button>
 
-        <div id="dots-{{ section.id }}" class="dots"></div>
-
         <button id="next-{{ section.id }}" class="nav-btn" aria-label="Next slide">
           <div class="chevron-icon chevron-right"></div>
         </button>
@@ -503,13 +479,11 @@
 
         this.quote = this.querySelector(`#quote-${this.sectionId}`);
         this.author = this.querySelector(`#author-${this.sectionId}`);
-        this.dots = this.querySelector(`#dots-${this.sectionId}`);
         this.prevBtn = this.querySelector(`#prev-${this.sectionId}`);
         this.nextBtn = this.querySelector(`#next-${this.sectionId}`);
 
         this.index = 0;
         this.autoPlayTimer = null;
-        this.dotImgs = [];
         
         try {
           const slidesData = this.querySelector(`#slidesData-${this.sectionId}`).textContent;
@@ -521,7 +495,6 @@
 
       connectedCallback() {
         if (this.slides.length === 0) return;
-        this.createDots();
         this.render();
         if (this.isAutoplay) this.startAutoPlay();
 
@@ -546,40 +519,6 @@
 
       disconnectedCallback() {
         this.stopAutoPlay();
-      }
-
-      createDots() {
-        if (!this.dots) return;
-        this.dots.innerHTML = "";
-        this.dotImgs.length = 0;
-
-        this.slides.forEach((_, i) => {
-          const btn = document.createElement("button");
-          btn.setAttribute("aria-label", `Go to slide ${i + 1}`);
-          const img = document.createElement("img");
-          img.src = "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/inactive_carousel.svg?v=1769011901";
-          
-          btn.appendChild(img);
-          btn.onclick = () => {
-            this.stopAutoPlay();
-            this.index = i;
-            this.render();
-            if (this.isAutoplay) this.startAutoPlay();
-          };
-
-          this.dots.appendChild(btn);
-          this.dotImgs.push(img);
-        });
-      }
-
-      updateDots() {
-        this.dotImgs.forEach((img, i) => {
-          const isActive = (i === this.index);
-          img.src = isActive
-            ? "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/active_carousel.svg?v=1769011901"
-            : "https://cdn.shopify.com/s/files/1/0655/0667/2825/files/inactive_carousel.svg?v=1769011901";
-          img.classList.toggle("active", isActive);
-        });
       }
 
       render() {
@@ -617,8 +556,6 @@
             this.author.classList.add("show");
           }
         }, 100);
-
-        this.updateDots();
       }
 
       startAutoPlay() {
