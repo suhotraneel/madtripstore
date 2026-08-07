@@ -268,8 +268,8 @@
         this.scene.style.width = `${itemWidth}px`;
         
         this.anglePerItem = this.isMobile ? 45 : 30;
-        const maxAngle = this.isMobile ? 45 : 60;
-        const maxAngleRad = maxAngle * Math.PI / 180;
+        this.maxAngle = this.isMobile ? 45 : 60;
+        const maxAngleRad = this.maxAngle * Math.PI / 180;
         
         const availableHalfWidth = (containerWidth / 2) * 0.95 - (itemWidth / 2);
         this.visualRadiusX = availableHalfWidth / Math.sin(maxAngleRad);
@@ -370,8 +370,8 @@
           let alpha = 1;
           const absAngle = Math.abs(angleDeg);
           // Fade out immediately after maxAngle so extra side items are completely hidden
-          if (absAngle > maxAngle) {
-            alpha = Math.max(0, 1 - (absAngle - maxAngle) / 15);
+          if (absAngle > this.maxAngle) {
+            alpha = Math.max(0, 1 - (absAngle - this.maxAngle) / 15);
           }
           item.style.opacity = alpha;
           item.style.visibility = alpha > 0 ? 'visible' : 'hidden';
