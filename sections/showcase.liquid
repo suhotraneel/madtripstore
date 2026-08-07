@@ -314,7 +314,7 @@
         const scaleAtMaxAngle = perspective / (perspective - zAtMaxAngle);
         
         const availableHalfWidth = (containerWidth / 2) - (itemWidth / 2) * scaleAtMaxAngle;
-        this.visualRadiusX = availableHalfWidth / Math.sin(maxAngleRad);
+        this.visualRadiusX = availableHalfWidth;
         
         this.updateActiveItem();
       }
@@ -398,8 +398,20 @@
 
           const angleDeg = relPos * this.anglePerItem;
           const angleRad = angleDeg * Math.PI / 180;
+          const absAngle = Math.abs(angleDeg);
           
-          const visual_x = Math.sin(angleRad) * this.visualRadiusX;
+          let x_factor;
+          if (absAngle <= this.maxAngle) {
+            // Normal outward sweep until the max visible angle
+            x_factor = Math.sin((absAngle / this.maxAngle) * (Math.PI / 2));
+          } else {
+            // Dive sharply inwards over the next 60 degrees to tuck extra items behind the front items!
+            let progress = (absAngle - this.maxAngle) / 60;
+            if (progress > 1) progress = 1;
+            x_factor = Math.cos(progress * (Math.PI / 2));
+          }
+          const visual_x = (angleDeg >= 0 ? 1 : -1) * x_factor * this.visualRadiusX;
+          
           const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
           const scale = perspective / (perspective - z);
           const local_x = visual_x / scale;
