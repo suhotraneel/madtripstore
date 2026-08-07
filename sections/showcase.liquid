@@ -399,7 +399,18 @@
           const angleDeg = relPos * this.anglePerItem;
           const angleRad = angleDeg * Math.PI / 180;
           
-          const visual_x = Math.sin(angleRad) * this.visualRadiusX;
+          let sinValue = Math.sin(angleRad);
+          const maxSin = Math.sin(this.maxAngle * Math.PI / 180);
+          
+          // Push the extra leftmost and rightmost items a bit inside so they hide beautifully 
+          // directly behind the outer visible items, without breaking the main circular system!
+          if (Math.abs(sinValue) > maxSin) {
+             const excess = Math.abs(sinValue) - maxSin;
+             const sign = Math.sign(sinValue);
+             sinValue = sign * (maxSin - (excess * 0.2)); 
+          }
+          
+          const visual_x = sinValue * this.visualRadiusX;
           const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
           const scale = perspective / (perspective - z);
           const local_x = visual_x / scale;
