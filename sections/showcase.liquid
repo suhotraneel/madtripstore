@@ -74,6 +74,19 @@
     margin: 0;
   }
 
+  .showcase-wrapper {
+    max-width: 1400px;
+    padding: 0 50px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .showcase-wrapper {
+      padding: 0 20px; /* Standard mobile padding */
+    }
+  }
+
   .showcase-container {
     position: relative;
     width: 100%;
@@ -176,7 +189,8 @@
     </div>
   {%- endif -%}
 
-  <showcase-carousel class="showcase-container">
+  <div class="showcase-wrapper">
+    <showcase-carousel class="showcase-container">
     <div class="showcase-scene">
       {%- for block in section.blocks -%}
         <div class="showcase-item" {{ block.shopify_attributes }}>
@@ -202,6 +216,7 @@
       {%- endfor -%}
     </div>
   </showcase-carousel>
+  </div>
 </div>
 
 <script>
