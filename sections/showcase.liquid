@@ -314,7 +314,7 @@
         const scaleAtMaxAngle = perspective / (perspective - zAtMaxAngle);
         
         const availableHalfWidth = (containerWidth / 2) - (itemWidth / 2) * scaleAtMaxAngle;
-        this.baseRadiusX = availableHalfWidth;
+        this.visualRadiusX = availableHalfWidth / Math.sin(maxAngleRad);
         
         this.updateActiveItem();
       }
@@ -399,11 +399,7 @@
           const angleDeg = relPos * this.anglePerItem;
           const angleRad = angleDeg * Math.PI / 180;
           
-          // Exponential spread to push extra items completely off-screen, maintaining 100% solidity!
-          const normalizedAngle = Math.abs(angleDeg) / this.maxAngle;
-          const visual_x_mag = Math.pow(normalizedAngle, 1.1) * this.baseRadiusX;
-          const visual_x = angleDeg >= 0 ? visual_x_mag : -visual_x_mag;
-          
+          const visual_x = Math.sin(angleRad) * this.visualRadiusX;
           const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
           const scale = perspective / (perspective - z);
           const local_x = visual_x / scale;
