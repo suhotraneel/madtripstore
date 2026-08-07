@@ -291,6 +291,7 @@
         this.numItems = this.items.length;
         this.progress = 0;
         this.targetProgress = 0;
+        this.spinVelocity = 0;
         this.isDragging = false;
         this.startX = 0;
         this.progressAtStart = 0;
@@ -357,13 +358,16 @@
           const normalizedX = (e.clientX - centerX) / (rect.width / 2);
           const clampedX = Math.max(-1, Math.min(1, normalizedX));
           
-          const maxProgress = this.numItems / 2;
-          this.targetProgress = clampedX * maxProgress;
+          // Determine the continuous spinning speed based on cursor distance from center.
+          // Max speed of 0.05 items per frame.
+          this.spinVelocity = clampedX * 0.06;
         });
 
         this.addEventListener('mouseleave', () => {
           if (!this.isMobile) {
-            this.targetProgress = 0;
+            this.spinVelocity = 0;
+            // Optionally, we could snap to the nearest item here:
+            // this.targetProgress = Math.round(this.targetProgress);
           }
         });
 
@@ -402,6 +406,17 @@
       }
 
       animate() {
+        if (!this.isMobile && !this.isDragging) {
+          // If spinVelocity is active, continuously adjust targetProgress for endless rotation
+          if (Math.abs(this.spinVelocity) > 0.001) {
+            this.targetProgress += this.spinVelocity;
+          } else {
+            // Optional: gently snap to nearest item if the cursor is perfectly in the center 
+            // and the velocity has completely stopped. (Smooth snap)
+            // this.targetProgress = this.targetProgress * 0.95 + Math.round(this.targetProgress) * 0.05;
+          }
+        }
+
         const ease = 0.08;
         const diff = this.targetProgress - this.progress;
         
