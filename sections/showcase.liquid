@@ -99,6 +99,7 @@
     padding: 0 50px;
     margin: 0 auto;
     width: 100%;
+    overflow: hidden;
   }
 
   @media screen and (max-width: 768px) {
@@ -313,7 +314,7 @@
         const scaleAtMaxAngle = perspective / (perspective - zAtMaxAngle);
         
         const availableHalfWidth = (containerWidth / 2) - (itemWidth / 2) * scaleAtMaxAngle;
-        this.visualRadiusX = availableHalfWidth / Math.sin(maxAngleRad);
+        this.baseRadiusX = availableHalfWidth;
         
         this.updateActiveItem();
       }
@@ -398,23 +399,20 @@
           const angleDeg = relPos * this.anglePerItem;
           const angleRad = angleDeg * Math.PI / 180;
           
-          const visual_x = Math.sin(angleRad) * this.visualRadiusX;
-          const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
+          // Exponential spread to push extra items completely off-screen, maintaining 100% solidity!
+          const normalizedAngle = Math.abs(angleDeg) / this.maxAngle;
+          const visual_x_mag = Math.pow(normalizedAngle, 1.1) * this.baseRadiusX;
+          const visual_x = angleDeg >= 0 ? visual_x_mag : -visual_x_mag;
           
+          const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
           const scale = perspective / (perspective - z);
           const local_x = visual_x / scale;
           
           item.style.transform = `translate3d(${local_x}px, 0, ${z}px)`;
           
-          let alpha = 1;
-          const absAngle = Math.abs(angleDeg);
-          // Push fade-out deep into the background so items stay completely solid 
-          // while sliding out of the main view, maintaining a realistic 3D path.
-          if (absAngle > 110) {
-            alpha = Math.max(0, 1 - (absAngle - 110) / 15);
-          }
-          item.style.opacity = alpha;
-          item.style.visibility = alpha > 0 ? 'visible' : 'hidden';
+          // Items remain 100% solid at all times!
+          item.style.opacity = 1;
+          item.style.visibility = 'visible';
         });
 
         requestAnimationFrame(this.animate);
