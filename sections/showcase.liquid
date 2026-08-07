@@ -15,6 +15,26 @@
       "id": "svg_mask",
       "label": "SVG Mask Image",
       "info": "Upload an SVG image. Its aspect ratio will automatically size the carousel items."
+    },
+    {
+      "type": "range",
+      "id": "overlap_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Desktop Overlap",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "overlap_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Mobile Overlap",
+      "default": 30
     }
   ],
   "blocks": [
@@ -190,8 +210,10 @@
   {%- endif -%}
 
   <div class="showcase-wrapper">
-    <showcase-carousel class="showcase-container">
-    <div class="showcase-scene">
+    <showcase-carousel class="showcase-container"
+      data-overlap-desktop="{{ section.settings.overlap_desktop }}"
+      data-overlap-mobile="{{ section.settings.overlap_mobile }}">
+      <div class="showcase-scene">
       {%- for block in section.blocks -%}
         <div class="showcase-item" {{ block.shopify_attributes }}>
           <div class="showcase-media-container">
@@ -259,11 +281,22 @@
 
       init() {
         this.isMobile = window.innerWidth <= 768;
+        const containerWidth = this.offsetWidth || this.getBoundingClientRect().width; 
         
-        const containerWidth = this.offsetWidth; 
+        const overlapDesktop = parseFloat(this.getAttribute('data-overlap-desktop')) || 30;
+        const overlapMobile = parseFloat(this.getAttribute('data-overlap-mobile')) || 30;
         
-        // Increased item width ratio to intentionally introduce a slight overlap
-        const itemWidthRatio = this.isMobile ? 0.50 : 0.30;
+        // Base size mapping: 0% overlap = smaller items (gaps), 100% = large items (heavy overlap)
+        const minDesktop = 0.15, maxDesktop = 0.50;
+        const minMobile = 0.30, maxMobile = 0.80;
+        
+        let itemWidthRatio;
+        if (this.isMobile) {
+          itemWidthRatio = minMobile + (overlapMobile / 100) * (maxMobile - minMobile);
+        } else {
+          itemWidthRatio = minDesktop + (overlapDesktop / 100) * (maxDesktop - minDesktop);
+        }
+
         const itemWidth = containerWidth * itemWidthRatio;
         this.scene.style.width = `${itemWidth}px`;
         
@@ -271,10 +304,16 @@
         this.maxAngle = this.isMobile ? 45 : 60;
         const maxAngleRad = this.maxAngle * Math.PI / 180;
         
-        const availableHalfWidth = (containerWidth / 2) * 0.95 - (itemWidth / 2);
-        this.visualRadiusX = availableHalfWidth / Math.sin(maxAngleRad);
-        
+        // Deep Z depth for aggressive perspective shrinking
         this.radiusZ = containerWidth * (this.isMobile ? 1.5 : 0.8);
+        
+        // Calculate EXACT visual scale of the outermost item so we can snap its edge perfectly to the container bounds
+        const perspective = 600;
+        const zAtMaxAngle = Math.cos(maxAngleRad) * this.radiusZ - this.radiusZ;
+        const scaleAtMaxAngle = perspective / (perspective - zAtMaxAngle);
+        
+        const availableHalfWidth = (containerWidth / 2) - (itemWidth / 2) * scaleAtMaxAngle;
+        this.visualRadiusX = availableHalfWidth / Math.sin(maxAngleRad);
         
         this.updateActiveItem();
       }
