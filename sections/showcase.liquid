@@ -293,6 +293,7 @@
         this.targetProgress = 0;
         this.spinVelocity = 0;
         this.isDragging = false;
+        this.isHovering = false;
         this.startX = 0;
         this.progressAtStart = 0;
         this.isMobile = window.innerWidth <= 768;
@@ -363,11 +364,14 @@
           this.spinVelocity = clampedX * 0.06;
         });
 
+        this.addEventListener('mouseenter', () => {
+          this.isHovering = true;
+        });
+
         this.addEventListener('mouseleave', () => {
+          this.isHovering = false;
           if (!this.isMobile) {
             this.spinVelocity = 0;
-            // Optionally, we could snap to the nearest item here:
-            // this.targetProgress = Math.round(this.targetProgress);
           }
         });
 
@@ -406,15 +410,16 @@
       }
 
       animate() {
-        if (!this.isMobile && !this.isDragging) {
+        if (this.isDragging) {
+          // Let touchmove handle targetProgress
+        } else if (this.isHovering && !this.isMobile) {
           // If spinVelocity is active, continuously adjust targetProgress for endless rotation
           if (Math.abs(this.spinVelocity) > 0.001) {
             this.targetProgress += this.spinVelocity;
-          } else {
-            // Optional: gently snap to nearest item if the cursor is perfectly in the center 
-            // and the velocity has completely stopped. (Smooth snap)
-            // this.targetProgress = this.targetProgress * 0.95 + Math.round(this.targetProgress) * 0.05;
           }
+        } else {
+          // Auto-spin from right to left when not hovering or dragging
+          this.targetProgress += 0.003; // Slow continuous spin
         }
 
         const ease = 0.08;
