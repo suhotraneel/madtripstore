@@ -35,15 +35,9 @@
         },
         {
           "type": "text",
-          "id": "caption_title",
-          "label": "Caption Title",
-          "default": "Title"
-        },
-        {
-          "type": "text",
-          "id": "caption_subtitle",
-          "label": "Caption Subtitle",
-          "default": "Subtitle"
+          "id": "caption",
+          "label": "Caption Text",
+          "default": "Caption text"
         }
       ]
     }
@@ -86,7 +80,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    perspective: 1500px;
+    perspective: 800px; /* Stronger perspective for more depth on side items */
   }
 
   .showcase-scene {
@@ -115,7 +109,6 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    transition: filter 0.4s ease;
     
     {% if section.settings.svg_mask != blank %}
       -webkit-mask-image: url('{{ section.settings.svg_mask | image_url }}');
@@ -152,24 +145,15 @@
 
   .showcase-caption h3 {
     margin: 0;
-    font-size: 1.2rem;
+    font-family: 'Pally Variable', sans-serif;
+    font-size: 20px;
     font-weight: 600;
     color: #000;
-  }
-
-  .showcase-caption p {
-    margin: 4px 0 0;
-    font-size: 0.9rem;
-    color: #666;
   }
 
   .showcase-item.active .showcase-caption {
     opacity: 1;
     transform: translateY(0);
-  }
-
-  .showcase-item:not(.active) .showcase-media-container {
-    filter: brightness(0.6);
   }
 
   @media screen and (max-width: 768px) {
@@ -178,6 +162,9 @@
     }
     .showcase-scene {
       width: 55vw;
+    }
+    .showcase-caption h3 {
+      font-size: 16px;
     }
   }
 {%- endstyle -%}
@@ -207,11 +194,8 @@
           </div>
           
           <div class="showcase-caption">
-            {%- if block.settings.caption_title != blank -%}
-              <h3>{{ block.settings.caption_title | escape }}</h3>
-            {%- endif -%}
-            {%- if block.settings.caption_subtitle != blank -%}
-              <p>{{ block.settings.caption_subtitle | escape }}</p>
+            {%- if block.settings.caption != blank -%}
+              <h3>{{ block.settings.caption | escape }}</h3>
             {%- endif -%}
           </div>
         </div>
@@ -252,7 +236,7 @@
         const itemWidth = this.scene.offsetWidth;
         
         this.radius = Math.round((itemWidth / 2) / Math.tan(Math.PI / this.numItems));
-        this.radius += this.isMobile ? 20 : 60;
+        // Removed extra spacing to allow slight overlap, enhancing depth along with perspective
 
         // Push scene back to anchor the front item at Z=0
         this.scene.style.transform = `translateZ(-${this.radius}px)`;
