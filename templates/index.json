@@ -150,40 +150,35 @@
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/f_1.webp",
-            "caption_title": "Multicellular Beings",
-            "caption_subtitle": "Switch Swipe Zie"
+            "caption": "Multicellular Beings"
           }
         },
         "slide_CwUG9z": {
           "type": "slide",
           "settings": {
             "video": "shopify://files/videos/sutta-wala-mug-b.webm",
-            "caption_title": "Title",
-            "caption_subtitle": "Subtitle"
+            "caption": "Caption text"
           }
         },
         "slide_EWDPMF": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/mumbai-bug-tank-top-b.webp",
-            "caption_title": "Title",
-            "caption_subtitle": "Subtitle"
+            "caption": "Caption text"
           }
         },
         "slide_kGXLVp": {
           "type": "slide",
           "settings": {
             "video": "shopify://files/videos/paise-wala-mug-b.webm",
-            "caption_title": "Title",
-            "caption_subtitle": "Subtitle"
+            "caption": "Caption text"
           }
         },
         "slide_UAcpjC": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
-            "caption_title": "Title",
-            "caption_subtitle": "Subtitle"
+            "caption": "Caption text"
           }
         }
       },
