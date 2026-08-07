@@ -246,7 +246,8 @@
               <img src="{{ block.settings.image | image_url: width: 800 }}" 
                    alt="{{ block.settings.image.alt | escape }}" 
                    class="showcase-media"
-                   loading="lazy">
+                   loading="eager"
+                   fetchpriority="high">
             {%- else -%}
               {{ 'image' | placeholder_svg_tag: 'showcase-media placeholder-svg' }}
             {%- endif -%}
@@ -425,29 +426,39 @@
           const maxSin = Math.sin(this.maxAngle * Math.PI / 180);
           
           // Push the extra leftmost and rightmost items a bit inside so they hide beautifully 
-          // directly behind the outer visible items, without breaking the main circular system!
-          if (Math.abs(sinValue) > maxSin) {
-             const excess = Math.abs(sinValue) - maxSin;
-             const sign = Math.sign(sinValue);
-             sinValue = sign * (maxSin - (excess * 0.2)); 
+          // directly behind the outer visible items.
+          // By using absAngle instead of sinValue, we ensure items at the very back (e.g. 180deg) 
+          // are correctly identified as being outside the bounds!
+          const absAngle = Math.abs(angleDeg);
+          if (absAngle > this.maxAngle) {
+             const excessRad = (absAngle - this.maxAngle) * Math.PI / 180;
+             const tuckedSin = maxSin - (excessRad * 0.5); 
+             sinValue = angleDeg > 0 ? tuckedSin : -tuckedSin;
           }
-          
+
           const visual_x = sinValue * this.visualRadiusX;
           const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
           const scale = perspective / (perspective - z);
           const local_x = visual_x / scale;
-          
+
           item.style.transform = `translate3d(${local_x}px, 0, ${z}px)`;
           
-          // Items remain 100% solid at all times!
-          item.style.opacity = 1;
-          item.style.visibility = 'visible';
+          // Fix for Safari iOS masking + preserve-3d bug: explicitly set z-index
+          item.style.zIndex = Math.round(Math.cos(angleRad) * 1000);
+          
+          // Hide items that are fully tucked away at the back to prevent weird rendering overlaps
+          if (absAngle > this.maxAngle + 30) {
+            item.style.opacity = 0;
+            item.style.visibility = 'hidden';
+          } else {
+            item.style.opacity = 1;
+            item.style.visibility = 'visible';
+          }
           
           // Fade captions gradually from 1 at the center to 0.1 at the edge, then 0 as it tucks away
           const caption = item.querySelector('.showcase-caption');
           if (caption) {
             let captionOpacity = 1;
-            const absAngle = Math.abs(angleDeg);
             
             if (absAngle <= this.maxAngle) {
               captionOpacity = 1 - (absAngle / this.maxAngle) * 0.9;
