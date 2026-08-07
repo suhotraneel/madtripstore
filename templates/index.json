@@ -149,57 +149,50 @@
         "slide_6dN3YH": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/f_1.webp",
-            "caption": "Multicellular Beings"
+            "image": "shopify://shop_images/showcase-a.webp",
+            "caption": ""
           }
         },
         "slide_CwUG9z": {
           "type": "slide",
           "settings": {
-            "video": "shopify://files/videos/sutta-wala-mug-b.webm",
-            "caption": "Multicellular Beings"
+            "image": "shopify://shop_images/showcase-b.webp",
+            "caption": ""
           }
         },
         "slide_EWDPMF": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/mumbai-bug-tank-top-b.webp",
-            "caption": "Multicellular Beings"
+            "image": "shopify://shop_images/showcase-c.webp",
+            "caption": ""
           }
         },
         "slide_kGXLVp": {
           "type": "slide",
           "settings": {
-            "video": "shopify://files/videos/paise-wala-mug-b.webm",
-            "caption": "Multicellular Beings"
+            "image": "shopify://shop_images/showcase-d.webp",
+            "caption": ""
           }
         },
         "slide_UAcpjC": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
-            "caption": "Multicellular Beings"
+            "image": "shopify://shop_images/showcase-e.webp",
+            "caption": ""
           }
         },
         "slide_zt3TAR": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/mumbai-bug-tank-top-b.webp",
-            "caption": "Multicellular Beings"
+            "image": "shopify://shop_images/showcase-f.webp",
+            "caption": ""
           }
         },
         "slide_ieX3BK": {
           "type": "slide",
           "settings": {
-            "video": "shopify://files/videos/paise-wala-mug-b.webm",
-            "caption": "Multicellular Beings"
-          }
-        },
-        "slide_DFQekR": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
-            "caption": "Multicellular Beings"
+            "image": "shopify://shop_images/showcase-g.webp",
+            "caption": ""
           }
         }
       },
@@ -210,8 +203,7 @@
         "slide_kGXLVp",
         "slide_UAcpjC",
         "slide_zt3TAR",
-        "slide_ieX3BK",
-        "slide_DFQekR"
+        "slide_ieX3BK"
       ],
       "name": "Showcase Carousel",
       "settings": {
