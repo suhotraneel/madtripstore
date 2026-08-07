@@ -170,24 +170,19 @@
     left: 0;
     width: 100%;
     text-align: center;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
     pointer-events: none;
+    will-change: opacity;
   }
 
   .showcase-caption h3 {
     margin: 0;
     font-family: 'PallyVariable', sans-serif;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     color: #fff;
   }
 
-  .showcase-item.active .showcase-caption {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
 
   @media screen and (max-width: 768px) {
     .showcase-header h2 {
@@ -197,7 +192,7 @@
       width: 40vw; 
     }
     .showcase-caption h3 {
-      font-size: 16px;
+      font-size: 12px;
     }
   }
 {%- endstyle -%}
@@ -419,6 +414,13 @@
           // Items remain 100% solid at all times!
           item.style.opacity = 1;
           item.style.visibility = 'visible';
+          
+          // Fade captions gradually from 1 at the center to 0 at the edge
+          const caption = item.querySelector('.showcase-caption');
+          if (caption) {
+            let captionOpacity = 1 - (Math.abs(angleDeg) / this.maxAngle);
+            caption.style.opacity = Math.max(0, captionOpacity);
+          }
         });
 
         requestAnimationFrame(this.animate);
