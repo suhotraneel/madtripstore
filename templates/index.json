@@ -143,6 +143,63 @@
         "padding_bottom": 100
       }
     },
+    "showcase_6LRKJd": {
+      "type": "showcase",
+      "blocks": {
+        "slide_6dN3YH": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/f_1.webp",
+            "caption_title": "Title",
+            "caption_subtitle": "Subtitle"
+          }
+        },
+        "slide_CwUG9z": {
+          "type": "slide",
+          "settings": {
+            "video": "shopify://files/videos/sutta-wala-mug-b.webm",
+            "caption_title": "Title",
+            "caption_subtitle": "Subtitle"
+          }
+        },
+        "slide_EWDPMF": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/mumbai-bug-tank-top-b.webp",
+            "caption_title": "Title",
+            "caption_subtitle": "Subtitle"
+          }
+        },
+        "slide_kGXLVp": {
+          "type": "slide",
+          "settings": {
+            "video": "shopify://files/videos/paise-wala-mug-b.webm",
+            "caption_title": "Title",
+            "caption_subtitle": "Subtitle"
+          }
+        },
+        "slide_UAcpjC": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
+            "caption_title": "Title",
+            "caption_subtitle": "Subtitle"
+          }
+        }
+      },
+      "block_order": [
+        "slide_6dN3YH",
+        "slide_CwUG9z",
+        "slide_EWDPMF",
+        "slide_kGXLVp",
+        "slide_UAcpjC"
+      ],
+      "name": "Showcase Carousel",
+      "settings": {
+        "title": "Spin & See",
+        "svg_mask": "shopify://shop_images/card_vertical.svg"
+      }
+    },
     "testimonials_XAyF96": {
       "type": "testimonials",
       "blocks": {
@@ -198,6 +255,8 @@
       "settings": {
         "title": "TESTIMONIALS",
         "enable_top_clip": true,
+        "padding_top": 64,
+        "padding_bottom": 64,
         "image_aspect_ratio": "1 / 1",
         "img_w_360": 240,
         "img_w_767": 277,
@@ -207,7 +266,7 @@
         "height_767": 620,
         "height_768": 400,
         "height_1400": 640,
-        "vertical_offset": 20,
+        "vertical_offset": -20,
         "enable_bottom_clip": true,
         "bg_color": "#00aeef",
         "quote_color": "#111111",
@@ -224,6 +283,7 @@
     "featured_collection_carousel_QG6e43",
     "featured_collection_KrUea7",
     "home_collection_list_Fhpdcy",
+    "showcase_6LRKJd",
     "testimonials_XAyF96"
   ]
 }
