@@ -80,12 +80,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    perspective: 600px; /* Reduced for much stronger perspective shrinking */
+    /* CSS perspective MUST MATCH the JS perspective variable exactly */
+    perspective: 600px; 
   }
 
   .showcase-scene {
     position: relative;
-    width: 22vw; /* Fallback width until JS takes over */
+    width: 22vw;
     aspect-ratio: {{ section.settings.svg_mask.aspect_ratio | default: 0.75 }};
     transform-style: preserve-3d;
     will-change: transform;
@@ -161,7 +162,7 @@
       font-size: 2rem;
     }
     .showcase-scene {
-      width: 45vw; /* Fallback width for mobile */
+      width: 45vw;
     }
     .showcase-caption h3 {
       font-size: 16px;
@@ -213,7 +214,6 @@
         this.items = this.querySelectorAll('.showcase-item');
         if (!this.scene || this.items.length === 0) return;
 
-        // Ensure we have enough items for a continuous loop without visible popping.
         let minItems = 10;
         if (this.items.length > 0 && this.items.length < minItems) {
           let cloneCount = Math.ceil(minItems / this.items.length);
@@ -229,10 +229,8 @@
         }
         
         this.numItems = this.items.length;
-        
         this.progress = 0;
         this.targetProgress = 0;
-        
         this.isDragging = false;
         this.startX = 0;
         this.progressAtStart = 0;
@@ -248,29 +246,23 @@
       init() {
         this.isMobile = window.innerWidth <= 768;
         
-        // Use exact fluid math to guarantee the carousel takes the full width 
-        // of the container and perfectly fits the 5 (or 3) items without breaking layout.
         const containerWidth = this.offsetWidth; 
-        
-        // Item width dynamically locked to viewport size
         const itemWidthRatio = this.isMobile ? 0.45 : 0.22;
         const itemWidth = containerWidth * itemWidthRatio;
         this.scene.style.width = `${itemWidth}px`;
         
         this.anglePerItem = this.isMobile ? 45 : 30;
         
-        // The angle of the outermost visible item
         const maxAngle = this.isMobile ? 45 : 60;
         const maxAngleRad = maxAngle * Math.PI / 180;
         
-        // Calculate an elliptical radiusX to perfectly stretch the outermost items to the screen edges
-        // (Leaving a comfortable 5% margin on the edges)
+        // Calculate raw visual radiusX for outermost items to fit screen bounds
         const availableHalfWidth = (containerWidth / 2) * 0.95 - (itemWidth / 2);
-        this.radiusX = availableHalfWidth / Math.sin(maxAngleRad);
+        this.visualRadiusX = availableHalfWidth / Math.sin(maxAngleRad);
         
-        // Increase radiusZ relative to X to aggressively push side items backward in space,
-        // shrinking them down significantly for maximum depth perspective.
-        this.radiusZ = this.radiusX * 1.3;
+        // Massive Z-radius ensures side items push far back and scale down aggressively
+        // We use a larger multiplier for mobile to guarantee the side items shrink enough
+        this.radiusZ = containerWidth * (this.isMobile ? 2.5 : 1.2);
         
         this.updateActiveItem();
       }
@@ -343,6 +335,8 @@
           this.updateActiveItem();
         }
 
+        const perspective = 600; // Must exactly match CSS perspective
+
         this.items.forEach((item, index) => {
           let relPos = index - this.progress;
           
@@ -353,13 +347,19 @@
           const angleDeg = relPos * this.anglePerItem;
           const angleRad = angleDeg * Math.PI / 180;
           
-          // Elliptical Ferris Wheel Math for perfect visual gaps and depth
-          const x = Math.sin(angleRad) * this.radiusX;
+          // Pure visual X we want on the screen
+          const visual_x = Math.sin(angleRad) * this.visualRadiusX;
+          // Deep Z for scaling
           const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
           
-          item.style.transform = `translate3d(${x}px, 0, ${z}px)`;
+          // CSS perspective shrinks the X position along with the width.
+          // We pre-compensate the X translation by dividing by the scale factor,
+          // guaranteeing the item lands EXACTLY at visual_x on screen regardless of its depth!
+          const scale = perspective / (perspective - z);
+          const local_x = visual_x / scale;
           
-          // Fade out seamlessly in the back
+          item.style.transform = `translate3d(${local_x}px, 0, ${z}px)`;
+          
           let alpha = 1;
           const absAngle = Math.abs(angleDeg);
           if (absAngle > 70) {
