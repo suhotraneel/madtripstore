@@ -408,9 +408,10 @@
           
           let alpha = 1;
           const absAngle = Math.abs(angleDeg);
-          // Fade out immediately after maxAngle so extra side items are completely hidden
-          if (absAngle > this.maxAngle) {
-            alpha = Math.max(0, 1 - (absAngle - this.maxAngle) / 15);
+          // Push fade-out deep into the background so items stay completely solid 
+          // while sliding out of the main view, maintaining a realistic 3D path.
+          if (absAngle > 110) {
+            alpha = Math.max(0, 1 - (absAngle - 110) / 15);
           }
           item.style.opacity = alpha;
           item.style.visibility = alpha > 0 ? 'visible' : 'hidden';
