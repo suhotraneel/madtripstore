@@ -103,10 +103,16 @@
 
 {%- style -%}
   .section-{{ section.id }}-padding {
-    /* Fluid customized scaling: Anchors exactly at 100% on 1400px desktops, interpolates to exactly 75% at 768px tablet, settling smoothly around ~60% across mobile. */
-    padding-top: clamp(12px, calc({{ section.settings.padding_top | times: 0.4463 }}px + {{ section.settings.padding_top | times: 0.03955 }}vw), {{ section.settings.padding_top }}px);
-    padding-bottom: clamp(12px, calc({{ section.settings.padding_bottom | times: 0.4463 }}px + {{ section.settings.padding_bottom | times: 0.03955 }}vw), {{ section.settings.padding_bottom }}px);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
     overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
   }
   
   .showcase-header {
