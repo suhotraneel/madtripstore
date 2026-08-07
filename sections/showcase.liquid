@@ -80,15 +80,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    perspective: 1000px; /* Strong perspective for depth */
+    perspective: 600px; /* Reduced for much stronger perspective shrinking */
   }
 
   .showcase-scene {
     position: relative;
-    width: min(30vw, 350px);
+    width: 22vw; /* Fallback width until JS takes over */
     aspect-ratio: {{ section.settings.svg_mask.aspect_ratio | default: 0.75 }};
     transform-style: preserve-3d;
     will-change: transform;
+    margin: 0 auto;
   }
 
   .showcase-item {
@@ -160,7 +161,7 @@
       font-size: 2rem;
     }
     .showcase-scene {
-      width: 55vw;
+      width: 45vw; /* Fallback width for mobile */
     }
     .showcase-caption h3 {
       font-size: 16px;
@@ -213,7 +214,6 @@
         if (!this.scene || this.items.length === 0) return;
 
         // Ensure we have enough items for a continuous loop without visible popping.
-        // We clone items dynamically if there are fewer than 10.
         let minItems = 10;
         if (this.items.length > 0 && this.items.length < minItems) {
           let cloneCount = Math.ceil(minItems / this.items.length);
@@ -247,13 +247,30 @@
 
       init() {
         this.isMobile = window.innerWidth <= 768;
-        const itemWidth = this.scene.offsetWidth;
         
-        // Exact control over how many items are visible
-        // Desktop: 30 deg means 5 items visible (0, 30, 60)
-        // Mobile: 45 deg means 3 items visible (0, 45)
+        // Use exact fluid math to guarantee the carousel takes the full width 
+        // of the container and perfectly fits the 5 (or 3) items without breaking layout.
+        const containerWidth = this.offsetWidth; 
+        
+        // Item width dynamically locked to viewport size
+        const itemWidthRatio = this.isMobile ? 0.45 : 0.22;
+        const itemWidth = containerWidth * itemWidthRatio;
+        this.scene.style.width = `${itemWidth}px`;
+        
         this.anglePerItem = this.isMobile ? 45 : 30;
-        this.radius = this.isMobile ? itemWidth * 1.3 : itemWidth * 1.5;
+        
+        // The angle of the outermost visible item
+        const maxAngle = this.isMobile ? 45 : 60;
+        const maxAngleRad = maxAngle * Math.PI / 180;
+        
+        // Calculate an elliptical radiusX to perfectly stretch the outermost items to the screen edges
+        // (Leaving a comfortable 5% margin on the edges)
+        const availableHalfWidth = (containerWidth / 2) * 0.95 - (itemWidth / 2);
+        this.radiusX = availableHalfWidth / Math.sin(maxAngleRad);
+        
+        // Increase radiusZ relative to X to aggressively push side items backward in space,
+        // shrinking them down significantly for maximum depth perspective.
+        this.radiusZ = this.radiusX * 1.3;
         
         this.updateActiveItem();
       }
@@ -273,7 +290,6 @@
           const normalizedX = (e.clientX - centerX) / (rect.width / 2);
           const clampedX = Math.max(-1, Math.min(1, normalizedX));
           
-          // Map screen width to the entire carousel loop
           const maxProgress = this.numItems / 2;
           this.targetProgress = clampedX * maxProgress;
         });
@@ -328,10 +344,8 @@
         }
 
         this.items.forEach((item, index) => {
-          // Calculate relative position to active item
           let relPos = index - this.progress;
           
-          // Wrap infinitely around the circle
           const half = this.numItems / 2;
           while (relPos > half) relPos -= this.numItems;
           while (relPos < -half) relPos += this.numItems;
@@ -339,12 +353,13 @@
           const angleDeg = relPos * this.anglePerItem;
           const angleRad = angleDeg * Math.PI / 180;
           
-          const x = Math.sin(angleRad) * this.radius;
-          const z = Math.cos(angleRad) * this.radius - this.radius;
+          // Elliptical Ferris Wheel Math for perfect visual gaps and depth
+          const x = Math.sin(angleRad) * this.radiusX;
+          const z = Math.cos(angleRad) * this.radiusZ - this.radiusZ;
           
           item.style.transform = `translate3d(${x}px, 0, ${z}px)`;
           
-          // Fade out items rotating into the background to hide the wrapping "pop"
+          // Fade out seamlessly in the back
           let alpha = 1;
           const absAngle = Math.abs(angleDeg);
           if (absAngle > 70) {
