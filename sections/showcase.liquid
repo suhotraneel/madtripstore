@@ -35,6 +35,30 @@
       "unit": "%",
       "label": "Mobile Overlap",
       "default": 30
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 120
     }
   ],
   "blocks": [
@@ -79,8 +103,9 @@
 
 {%- style -%}
   .section-{{ section.id }}-padding {
-    padding-top: 60px;
-    padding-bottom: 120px;
+    /* Fluid customized scaling: Anchors exactly at 100% on 1400px desktops, interpolates to exactly 75% at 768px tablet, settling smoothly around ~60% across mobile. */
+    padding-top: clamp(12px, calc({{ section.settings.padding_top | times: 0.4463 }}px + {{ section.settings.padding_top | times: 0.03955 }}vw), {{ section.settings.padding_top }}px);
+    padding-bottom: clamp(12px, calc({{ section.settings.padding_bottom | times: 0.4463 }}px + {{ section.settings.padding_bottom | times: 0.03955 }}vw), {{ section.settings.padding_bottom }}px);
     overflow: hidden;
   }
   
@@ -190,6 +215,9 @@
     }
     .showcase-scene {
       width: 40vw; 
+    }
+    .showcase-caption {
+      bottom: -32px;
     }
     .showcase-caption h3 {
       font-size: 12px;
@@ -415,10 +443,18 @@
           item.style.opacity = 1;
           item.style.visibility = 'visible';
           
-          // Fade captions gradually from 1 at the center to 0 at the edge
+          // Fade captions gradually from 1 at the center to 0.1 at the edge, then 0 as it tucks away
           const caption = item.querySelector('.showcase-caption');
           if (caption) {
-            let captionOpacity = 1 - (Math.abs(angleDeg) / this.maxAngle);
+            let captionOpacity = 1;
+            const absAngle = Math.abs(angleDeg);
+            
+            if (absAngle <= this.maxAngle) {
+              captionOpacity = 1 - (absAngle / this.maxAngle) * 0.9;
+            } else {
+              captionOpacity = 0.1 - ((absAngle - this.maxAngle) / 15) * 0.1;
+            }
+            
             caption.style.opacity = Math.max(0, captionOpacity);
           }
         });
