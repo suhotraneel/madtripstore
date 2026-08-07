@@ -11,40 +11,10 @@
       "default": "Spin & See"
     },
     {
-      "type": "textarea",
+      "type": "image_picker",
       "id": "svg_mask",
-      "label": "SVG Mask Code",
-      "info": "Paste raw SVG code. It will be applied as a CSS mask (e.g. <svg><path d=\"...\"/></svg>). Base64 encoding is used to apply it safely."
-    },
-    {
-      "type": "range",
-      "id": "item_width",
-      "min": 200,
-      "max": 800,
-      "step": 10,
-      "unit": "px",
-      "label": "Desktop Item Width",
-      "default": 350
-    },
-    {
-      "type": "range",
-      "id": "item_height",
-      "min": 300,
-      "max": 1000,
-      "step": 10,
-      "unit": "px",
-      "label": "Desktop Item Height",
-      "default": 450
-    },
-    {
-      "type": "range",
-      "id": "mobile_item_width",
-      "min": 150,
-      "max": 400,
-      "step": 10,
-      "unit": "px",
-      "label": "Mobile Item Width",
-      "default": 250
+      "label": "SVG Mask Image",
+      "info": "Upload an SVG image. Its aspect ratio will automatically size the carousel items."
     }
   ],
   "blocks": [
@@ -96,7 +66,7 @@
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: 60px;
-    padding-bottom: 120px; /* Extra bottom padding for captions */
+    padding-bottom: 120px;
     overflow: hidden;
   }
   
@@ -116,16 +86,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    perspective: 1500px; /* Higher perspective for a flatter 3D effect */
+    perspective: 1500px;
   }
 
   .showcase-scene {
     position: relative;
-    width: {{ section.settings.item_width }}px;
-    height: {{ section.settings.item_height }}px;
+    /* Responsive widths, height is derived from aspect-ratio */
+    width: min(30vw, 350px);
+    aspect-ratio: {{ section.settings.svg_mask.aspect_ratio | default: 0.75 }};
     transform-style: preserve-3d;
     will-change: transform;
-    /* We handle rotation via JS inline styles */
   }
 
   .showcase-item {
@@ -135,41 +105,29 @@
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    /* Item specific rotation will be set by JS based on index */
   }
 
   .showcase-media-container {
     width: 100%;
     height: 100%;
     position: relative;
-    background: #f4f4f4; /* placeholder bg */
+    background: #f4f4f4;
     border-radius: 12px;
     overflow: hidden;
-    /* Fallback shadow if no mask */
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    transition: filter 0.4s ease;
     
     {% if section.settings.svg_mask != blank %}
-      -webkit-mask-image: url('data:image/svg+xml;base64,{{ section.settings.svg_mask | base64_encode }}');
-      mask-image: url('data:image/svg+xml;base64,{{ section.settings.svg_mask | base64_encode }}');
+      -webkit-mask-image: url('{{ section.settings.svg_mask | image_url }}');
+      mask-image: url('{{ section.settings.svg_mask | image_url }}');
       -webkit-mask-size: 100% 100%;
       mask-size: 100% 100%;
       -webkit-mask-repeat: no-repeat;
       mask-repeat: no-repeat;
       -webkit-mask-position: center;
       mask-position: center;
-      /* Remove border radius and shadow if masked, as masks cut off shadows. We'd need a wrapper for drop-shadow if needed. */
       border-radius: 0;
       box-shadow: none;
-    {% endif %}
-  }
-
-  /* Optional wrapper for drop-shadow if masking is used */
-  .showcase-item-wrapper {
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    {% if section.settings.svg_mask != blank %}
-      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.15));
     {% endif %}
   }
 
@@ -189,7 +147,7 @@
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
-    pointer-events: none; /* Let clicks pass through to the image */
+    pointer-events: none;
   }
 
   .showcase-caption h3 {
@@ -205,16 +163,11 @@
     color: #666;
   }
 
-  /* Active state driven by JS */
   .showcase-item.active .showcase-caption {
     opacity: 1;
     transform: translateY(0);
   }
 
-  /* Add slight dimming to inactive items for better depth */
-  .showcase-media-container {
-    transition: filter 0.4s ease;
-  }
   .showcase-item:not(.active) .showcase-media-container {
     filter: brightness(0.6);
   }
@@ -224,8 +177,7 @@
       font-size: 2rem;
     }
     .showcase-scene {
-      width: {{ section.settings.mobile_item_width }}px;
-      height: calc({{ section.settings.mobile_item_width }}px * 1.3); /* maintain roughly same aspect ratio */
+      width: 55vw;
     }
   }
 {%- endstyle -%}
@@ -241,28 +193,26 @@
     <div class="showcase-scene">
       {%- for block in section.blocks -%}
         <div class="showcase-item" {{ block.shopify_attributes }}>
-          <div class="showcase-item-wrapper">
-            <div class="showcase-media-container">
-              {%- if block.settings.video != blank -%}
-                {{ block.settings.video | video_tag: image_size: '800x', autoplay: true, loop: true, muted: true, class: 'showcase-media' }}
-              {%- elsif block.settings.image != blank -%}
-                <img src="{{ block.settings.image | image_url: width: 800 }}" 
-                     alt="{{ block.settings.image.alt | escape }}" 
-                     class="showcase-media"
-                     loading="lazy">
-              {%- else -%}
-                {{ 'image' | placeholder_svg_tag: 'showcase-media placeholder-svg' }}
-              {%- endif -%}
-            </div>
-            
-            <div class="showcase-caption">
-              {%- if block.settings.caption_title != blank -%}
-                <h3>{{ block.settings.caption_title | escape }}</h3>
-              {%- endif -%}
-              {%- if block.settings.caption_subtitle != blank -%}
-                <p>{{ block.settings.caption_subtitle | escape }}</p>
-              {%- endif -%}
-            </div>
+          <div class="showcase-media-container">
+            {%- if block.settings.video != blank -%}
+              {{ block.settings.video | video_tag: image_size: '800x', autoplay: true, loop: true, muted: true, class: 'showcase-media' }}
+            {%- elsif block.settings.image != blank -%}
+              <img src="{{ block.settings.image | image_url: width: 800 }}" 
+                   alt="{{ block.settings.image.alt | escape }}" 
+                   class="showcase-media"
+                   loading="lazy">
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'showcase-media placeholder-svg' }}
+            {%- endif -%}
+          </div>
+          
+          <div class="showcase-caption">
+            {%- if block.settings.caption_title != blank -%}
+              <h3>{{ block.settings.caption_title | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.caption_subtitle != blank -%}
+              <p>{{ block.settings.caption_subtitle | escape }}</p>
+            {%- endif -%}
           </div>
         </div>
       {%- endfor -%}
@@ -293,7 +243,6 @@
         this.init();
         this.setupEvents();
         
-        // Start animation loop
         this.animate = this.animate.bind(this);
         requestAnimationFrame(this.animate);
       }
@@ -302,19 +251,11 @@
         this.isMobile = window.innerWidth <= 768;
         const itemWidth = this.scene.offsetWidth;
         
-        // Calculate radius to form a circle
-        // Math.tan expects radians. Math.PI / numItems is half the angle.
         this.radius = Math.round((itemWidth / 2) / Math.tan(Math.PI / this.numItems));
-        // Add a bit of padding to the radius so items don't overlap tightly if desired
         this.radius += this.isMobile ? 20 : 60;
 
-        this.items.forEach((item, index) => {
-          const angle = this.theta * index;
-          item.style.transform = `rotateY(${angle}deg) translateZ(${this.radius}px)`;
-        });
-
-        // Initial setup for the scene to push it back
-        this.scene.style.transform = `translateZ(-${this.radius}px) rotateY(${this.currentRotation}deg)`;
+        // Push scene back to anchor the front item at Z=0
+        this.scene.style.transform = `translateZ(-${this.radius}px)`;
         
         this.updateActiveItem();
       }
@@ -326,36 +267,24 @@
           resizeTimer = setTimeout(() => this.init(), 100);
         });
 
-        // Desktop Interaction
         this.addEventListener('mousemove', (e) => {
           if (this.isDragging || this.isMobile) return;
           
           const rect = this.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
-          
-          // Normalized position from -1 (left) to 1 (right)
           const normalizedX = (e.clientX - centerX) / (rect.width / 2);
-          
-          // Limit normalizedX between -1 and 1
           const clampedX = Math.max(-1, Math.min(1, normalizedX));
           
-          // Map mouse position to rotation. 
-          // If mouse is at far right (+1), we want items from the right to come to front.
-          // This means rotating the scene negatively.
-          // maxRotation defines how far we spin. 180 degrees means viewing half the carousel.
           const maxRotation = this.theta * Math.floor(this.numItems / 2);
-          
           this.targetRotation = -clampedX * maxRotation;
         });
 
         this.addEventListener('mouseleave', () => {
           if (!this.isMobile) {
-            // Optional: return to 0 when mouse leaves, or stay where it is.
             this.targetRotation = 0;
           }
         });
 
-        // Mobile Interaction (Touch)
         this.addEventListener('touchstart', (e) => {
           this.isDragging = true;
           this.startX = e.touches[0].clientX;
@@ -366,31 +295,22 @@
           if (!this.isDragging) return;
           const currentX = e.touches[0].clientX;
           const diff = currentX - this.startX;
-          
-          // Adjust sensitivity
           const degreesPerPixel = 0.6;
           this.targetRotation = this.rotationAtStart + (diff * degreesPerPixel);
         }, { passive: true });
 
         this.addEventListener('touchend', () => {
           this.isDragging = false;
-          // Snap to the nearest slide
           this.targetRotation = Math.round(this.targetRotation / this.theta) * this.theta;
         });
       }
 
       updateActiveItem() {
-        // Find which item is closest to the front (0deg relative to camera)
-        // Since we rotate the scene by `currentRotation`, an item at index `i` 
-        // with local angle `theta * i` will have world angle `theta * i + currentRotation`.
-        // We want the item where this world angle % 360 is closest to 0.
-        
-        // Let's normalize currentRotation to a positive index
         let normRot = (-this.currentRotation % 360);
         if (normRot < 0) normRot += 360;
         
         let activeIndex = Math.round(normRot / this.theta) % this.numItems;
-        if (activeIndex === this.numItems) activeIndex = 0; // Handle edge case
+        if (activeIndex === this.numItems) activeIndex = 0;
 
         this.items.forEach((item, index) => {
           if (index === activeIndex) {
@@ -402,15 +322,26 @@
       }
 
       animate() {
-        // LERP for smooth rotation
         const ease = 0.08;
         const diff = this.targetRotation - this.currentRotation;
         
         if (Math.abs(diff) > 0.01) {
           this.currentRotation += diff * ease;
-          this.scene.style.transform = `translateZ(-${this.radius}px) rotateY(${this.currentRotation}deg)`;
           this.updateActiveItem();
         }
+
+        // Ferris wheel math: Items always face forward (0deg rotateY)
+        // while orbiting in a circle via pure translations.
+        this.items.forEach((item, index) => {
+          const itemAngle = this.theta * index;
+          const absAngle = itemAngle + this.currentRotation;
+          const angleRad = absAngle * Math.PI / 180;
+          
+          const x = Math.sin(angleRad) * this.radius;
+          const z = Math.cos(angleRad) * this.radius;
+          
+          item.style.transform = `translate3d(${x}px, 0, ${z}px)`;
+        });
 
         requestAnimationFrame(this.animate);
       }
