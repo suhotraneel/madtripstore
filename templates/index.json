@@ -180,6 +180,27 @@
             "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
             "caption": "Caption text"
           }
+        },
+        "slide_zt3TAR": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/mumbai-bug-tank-top-b.webp",
+            "caption": "Caption text"
+          }
+        },
+        "slide_ieX3BK": {
+          "type": "slide",
+          "settings": {
+            "video": "shopify://files/videos/paise-wala-mug-b.webm",
+            "caption": "Caption text"
+          }
+        },
+        "slide_DFQekR": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
+            "caption": "Caption text"
+          }
         }
       },
       "block_order": [
@@ -187,7 +208,10 @@
         "slide_CwUG9z",
         "slide_EWDPMF",
         "slide_kGXLVp",
-        "slide_UAcpjC"
+        "slide_UAcpjC",
+        "slide_zt3TAR",
+        "slide_ieX3BK",
+        "slide_DFQekR"
       ],
       "name": "Showcase Carousel",
       "settings": {
