@@ -83,7 +83,7 @@
 
   @media screen and (max-width: 768px) {
     .showcase-wrapper {
-      padding: 0 20px; /* Standard mobile padding */
+      padding: 0 16px;
     }
   }
 
@@ -263,7 +263,7 @@
         const containerWidth = this.offsetWidth; 
         
         // Increased item width ratio to intentionally introduce a slight overlap
-        const itemWidthRatio = this.isMobile ? 0.40 : 0.25;
+        const itemWidthRatio = this.isMobile ? 0.50 : 0.30;
         const itemWidth = containerWidth * itemWidthRatio;
         this.scene.style.width = `${itemWidth}px`;
         
@@ -369,10 +369,9 @@
           
           let alpha = 1;
           const absAngle = Math.abs(angleDeg);
-          // Pushed fade-out much deeper (110 degrees) so items look like 
-          // a solid 3D elliptical loop and don't dissolve on the sides.
-          if (absAngle > 110) {
-            alpha = Math.max(0, 1 - (absAngle - 110) / 20);
+          // Fade out immediately after maxAngle so extra side items are completely hidden
+          if (absAngle > maxAngle) {
+            alpha = Math.max(0, 1 - (absAngle - maxAngle) / 15);
           }
           item.style.opacity = alpha;
           item.style.visibility = alpha > 0 ? 'visible' : 'hidden';
