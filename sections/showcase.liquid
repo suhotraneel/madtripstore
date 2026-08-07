@@ -498,12 +498,12 @@
             caption.style.opacity = Math.max(0, captionOpacity);
           }
           
-          // Dynamic image zooming: 1x at the center, 1.2x at the edge (and beyond)
+          // Dynamic image zooming: 1x at the center, 1.4x at the edge (and beyond)
           // Scales the image inside the mask, not the mask itself
           const media = item.querySelector('.showcase-media');
           if (media) {
             const zoomRatio = Math.min(1, absAngle / this.maxAngle);
-            const mediaScale = 1 + (zoomRatio * 0.2); // 1.0 to 1.2
+            const mediaScale = 1 + (zoomRatio * 0.4); // 1.0 to 1.4
             media.style.transform = `scale(${mediaScale})`;
           }
         });
