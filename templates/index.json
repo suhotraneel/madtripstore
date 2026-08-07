@@ -157,49 +157,49 @@
           "type": "slide",
           "settings": {
             "video": "shopify://files/videos/sutta-wala-mug-b.webm",
-            "caption": "Caption text"
+            "caption": "Multicellular Beings"
           }
         },
         "slide_EWDPMF": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/mumbai-bug-tank-top-b.webp",
-            "caption": "Caption text"
+            "caption": "Multicellular Beings"
           }
         },
         "slide_kGXLVp": {
           "type": "slide",
           "settings": {
             "video": "shopify://files/videos/paise-wala-mug-b.webm",
-            "caption": "Caption text"
+            "caption": "Multicellular Beings"
           }
         },
         "slide_UAcpjC": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
-            "caption": "Caption text"
+            "caption": "Multicellular Beings"
           }
         },
         "slide_zt3TAR": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/mumbai-bug-tank-top-b.webp",
-            "caption": "Caption text"
+            "caption": "Multicellular Beings"
           }
         },
         "slide_ieX3BK": {
           "type": "slide",
           "settings": {
             "video": "shopify://files/videos/paise-wala-mug-b.webm",
-            "caption": "Caption text"
+            "caption": "Multicellular Beings"
           }
         },
         "slide_DFQekR": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/energy-freaks-t-shirt-b.webp",
-            "caption": "Caption text"
+            "caption": "Multicellular Beings"
           }
         }
       },
@@ -215,7 +215,7 @@
       ],
       "name": "Showcase Carousel",
       "settings": {
-        "title": "Spin & See",
+        "title": "SHOWCASE",
         "svg_mask": "shopify://shop_images/card_vertical.svg",
         "overlap_desktop": 40,
         "overlap_mobile": 32
@@ -287,7 +287,7 @@
         "height_767": 620,
         "height_768": 400,
         "height_1400": 640,
-        "vertical_offset": -20,
+        "vertical_offset": 20,
         "enable_bottom_clip": true,
         "bg_color": "#00aeef",
         "quote_color": "#111111",
