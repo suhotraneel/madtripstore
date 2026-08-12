@@ -1042,8 +1042,12 @@ a.product__text {
   background-color: transparent;
 }
 
-.thumbnail:hover {
+.thumbnail:not([aria-current]):hover {
   opacity: 0.7;
+}
+
+.thumbnail[aria-current]:hover {
+  opacity: 1;
 }
 
 .thumbnail.global-media-settings img {
