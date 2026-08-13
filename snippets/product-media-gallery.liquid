@@ -265,10 +265,6 @@
                 <span class="thumbnail__badge" aria-hidden="true">
                   {%- render 'icon-3d-model' -%}
                 </span>
-              {%- elsif media.media_type == 'video' or media.media_type == 'external_video' -%}
-                <span class="thumbnail__badge" aria-hidden="true">
-                  {%- render 'icon-play' -%}
-                </span>
               {%- endif -%}
               {%- capture thumbnail_id -%}
                 Thumbnail-{{ section.id }}-{{ forloop.index }}

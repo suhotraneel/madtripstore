@@ -1161,6 +1161,10 @@ a.product__text {
   top: calc(0.4rem + var(--media-border-width));
 }
 
+.thumbnail__badge:has(.icon-play) {
+  display: none !important;
+}
+
 @media screen and (min-width: 750px) {
   .product:not(.product--small) .thumbnail__badge {
     height: 3rem;
