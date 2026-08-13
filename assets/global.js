@@ -827,22 +827,73 @@ class DeferredMedia extends HTMLElement {
   constructor() {
     super();
     const poster = this.querySelector('[id^="Deferred-Poster-"]');
-    if (!poster) return;
-    poster.addEventListener('click', this.loadContent.bind(this));
+    if (poster) {
+      poster.addEventListener('click', this.loadContent.bind(this));
+    }
+  }
+
+  connectedCallback() {
+    const template = this.querySelector('template');
+    if (template && template.content && template.content.querySelector('video')) {
+      // Auto-load video on page load so it autoplays by default
+      this.loadContent(false);
+    }
   }
 
   loadContent(focus = true) {
     window.pauseAllMedia();
     if (!this.getAttribute('loaded')) {
+      const template = this.querySelector('template');
+      if (!template || !template.content) return;
       const content = document.createElement('div');
-      content.appendChild(this.querySelector('template').content.firstElementChild.cloneNode(true));
+      content.appendChild(template.content.firstElementChild.cloneNode(true));
 
       this.setAttribute('loaded', true);
       const deferredElement = this.appendChild(content.querySelector('video, model-viewer, iframe'));
-      if (focus) deferredElement.focus();
-      if (deferredElement.nodeName == 'VIDEO' && deferredElement.getAttribute('autoplay')) {
-        // force autoplay for safari
-        deferredElement.play();
+      if (focus && deferredElement) deferredElement.focus();
+
+      if (deferredElement && deferredElement.nodeName === 'VIDEO') {
+        deferredElement.controls = false;
+        deferredElement.muted = true;
+        deferredElement.loop = true;
+        deferredElement.playsInline = true;
+        deferredElement.setAttribute('playsinline', '');
+        deferredElement.style.cursor = 'pointer';
+
+        if (!this.querySelector('.deferred-media__play-overlay')) {
+          const playOverlay = document.createElement('span');
+          playOverlay.className = 'deferred-media__poster-button deferred-media__play-overlay motion-reduce';
+          playOverlay.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="icon icon-play" fill="none" viewBox="0 0 10 14">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M1.48177 0.814643C0.81532 0.448245 0 0.930414 0 1.69094V12.2081C0 12.991 0.858787 13.4702 1.52503 13.0592L10.5398 7.49813C11.1918 7.09588 11.1679 6.13985 10.4965 5.77075L1.48177 0.814643Z" fill="currentColor"/>
+            </svg>
+          `;
+          this.appendChild(playOverlay);
+        }
+
+        const togglePlay = (e) => {
+          if (e) e.stopPropagation();
+          if (deferredElement.paused) {
+            deferredElement.play().then(() => {
+              this.classList.remove('is-paused');
+            }).catch(() => {});
+          } else {
+            deferredElement.pause();
+            this.classList.add('is-paused');
+          }
+        };
+
+        deferredElement.addEventListener('click', togglePlay);
+        const playOverlay = this.querySelector('.deferred-media__play-overlay');
+        if (playOverlay) {
+          playOverlay.addEventListener('click', togglePlay);
+        }
+
+        deferredElement.play().then(() => {
+          this.classList.remove('is-paused');
+        }).catch(() => {
+          this.classList.add('is-paused');
+        });
       }
     }
   }
