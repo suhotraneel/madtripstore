@@ -19,8 +19,9 @@
   </h1>
   {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
   {% render 'button-component',
-    url: routes.root_url | append: '#continue-shopping-target',
+    url: shop.url | append: '/#continue-shopping-target',
     label: continue_shopping_label,
-    size: 'medium'
+    size: 'medium',
+    onclick: "window.location.href = this.href; return false;"
   %}
 </div>

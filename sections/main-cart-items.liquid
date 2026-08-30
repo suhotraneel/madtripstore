@@ -31,7 +31,7 @@
       <h1 class="title title--primary">{{ 'sections.cart.title' | t }}</h1>
       {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
       {% render 'button-component',
-        url: routes.root_url | append: '#continue-shopping-target',
+        url: shop.url | append: '/#continue-shopping-target',
         label: continue_shopping_label,
         variant: 'secondary',
         size: 'small',
@@ -43,7 +43,7 @@
       <h1 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h1>
       {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
       {% render 'button-component',
-        url: routes.root_url | append: '#continue-shopping-target',
+        url: shop.url | append: '/#continue-shopping-target',
         label: continue_shopping_label,
         size: 'medium',
         onclick: "window.location.href = this.href; return false;"
