@@ -19,7 +19,7 @@
   </h1>
   {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
   {% render 'button-component',
-    url: routes.root_url,
+    url: routes.root_url | append: '#continue-shopping-target',
     label: continue_shopping_label,
     size: 'medium'
   %}

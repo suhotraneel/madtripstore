@@ -319,9 +319,11 @@
   assign product_count = products.size
 -%}
 
+<div id="continue-shopping-target" style="position: absolute; top: 0; left: 0; margin-top: -100px;"></div>
 <section
   id="fcc-{{ section.id }}"
   aria-label="{{ section.settings.section_aria_label | default: 'Featured products carousel' }}"
+  style="position: relative;"
 >
 
   {%- liquid
