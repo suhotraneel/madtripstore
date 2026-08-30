@@ -748,6 +748,19 @@
 
     // Clamp target
     const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+    
+    // Fast forward animation immediately if skipped
+    if (window.skipHeroAnimation) {
+      targetScrollX = 9999999;
+      scrollX = 9999999;
+      
+      // Only turn off the force-skip once final layout dimensions are locked in
+      if (typeof assetsFullyLoaded !== 'undefined' && assetsFullyLoaded) {
+        window.skipHeroAnimation = false;
+      }
+    }
+
+    if (targetScrollX < 0) targetScrollX = 0;
     targetScrollX = Math.max(0, Math.min(targetScrollX, totalScrollable));
 
     // Fade TAKE / TRIP words and Scroll to Trip out as scroll progresses, fade back in when returning to start
@@ -1017,6 +1030,11 @@
     // Apply a best-effort layout so the frame appears correctly positioned
     initialViewportHeight = calculateTargetHeight();
     scrollContainer.style.height = `${initialViewportHeight}px`;
+
+    if (window.location.hash.includes('continue-shopping-target')) {
+      window.skipHeroAnimation = true;
+    }
+
     // video1 (sky) starts at opacity 0 per CSS — scroll animation controls it.
     // video2 (background) is hidden off-screen via CSS transform — no opacity change needed.
     applyScrollOutput();
