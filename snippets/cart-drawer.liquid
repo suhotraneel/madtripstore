@@ -45,7 +45,7 @@
                 url: routes.root_url | append: '#continue-shopping-target',
                 label: continue_shopping_label,
                 size: 'medium',
-                onclick: "this.closest('cart-drawer').close()"
+                onclick: "this.closest('cart-drawer').close(); window.location.href = this.href; return false;"
               %}
 
               {%- if shop.customer_accounts_enabled and customer == null -%}

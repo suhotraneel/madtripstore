@@ -34,7 +34,8 @@
         url: routes.root_url | append: '#continue-shopping-target',
         label: continue_shopping_label,
         variant: 'secondary',
-        size: 'small'
+        size: 'small',
+        onclick: "window.location.href = this.href; return false;"
       %}
     </div>
 
@@ -44,7 +45,8 @@
       {% render 'button-component',
         url: routes.root_url | append: '#continue-shopping-target',
         label: continue_shopping_label,
-        size: 'medium'
+        size: 'medium',
+        onclick: "window.location.href = this.href; return false;"
       %}
 
       {%- if shop.customer_accounts_enabled and customer == null -%}
