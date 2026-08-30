@@ -31,11 +31,10 @@
       <h1 class="title title--primary">{{ 'sections.cart.title' | t }}</h1>
       {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
       {% render 'button-component',
-        url: shop.url | append: '/#continue-shopping-target',
+        url: 'https://madtripstore.com/#continue-shopping-target',
         label: continue_shopping_label,
         variant: 'secondary',
-        size: 'small',
-        onclick: "window.location.href = this.href; return false;"
+        size: 'small'
       %}
     </div>
 
@@ -43,10 +42,9 @@
       <h1 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h1>
       {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
       {% render 'button-component',
-        url: shop.url | append: '/#continue-shopping-target',
+        url: 'https://madtripstore.com/#continue-shopping-target',
         label: continue_shopping_label,
-        size: 'medium',
-        onclick: "window.location.href = this.href; return false;"
+        size: 'medium'
       %}
 
       {%- if shop.customer_accounts_enabled and customer == null -%}

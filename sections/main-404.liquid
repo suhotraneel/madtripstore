@@ -19,9 +19,8 @@
   </h1>
   {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
   {% render 'button-component',
-    url: shop.url | append: '/#continue-shopping-target',
+    url: 'https://madtripstore.com/#continue-shopping-target',
     label: continue_shopping_label,
-    size: 'medium',
-    onclick: "window.location.href = this.href; return false;"
+    size: 'medium'
   %}
 </div>
