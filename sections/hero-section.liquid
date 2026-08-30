@@ -671,6 +671,14 @@
     maxScrollableDistance = Math.max(0, scroll1, scroll2);
     scrollSpeed1 = (scroll1 / maxScrollableDistance);
     scrollSpeed2 = (scroll2 / maxScrollableDistance);
+
+    if (window.location.hash.includes('continue-shopping-target')) {
+      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+      const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+      targetScrollX = totalScrollable;
+      scrollX = totalScrollable;
+    }
   }
 
   function updateFramesFromScroll() {
@@ -1022,6 +1030,14 @@
 
     // video1 (sky) starts at opacity 0 per CSS — scroll animation controls it.
     // video2 (background) is hidden off-screen via CSS transform — no opacity change needed.
+    if (window.location.hash.includes('continue-shopping-target')) {
+      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+      const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+      targetScrollX = totalScrollable;
+      scrollX = totalScrollable;
+    }
+
     applyScrollOutput();
   })();
 
@@ -1280,21 +1296,38 @@
     });
   }
 
-  // Force click skip button if we land with continue shopping hash
+  // Direct Skip Trip and Scroll to Featured Section on Continue Shopping
   function handleContinueShoppingSkip() {
     if (window.location.hash.includes('continue-shopping-target')) {
-      if (skipBtn) {
-        skipBtn.click();
-      } else if (loadingSkipBtn) {
-        loadingSkipBtn.click();
+      const bgStartScroll = TRANSFORM_SCROLL_RANGE - (TRANSFORM_SCROLL_RANGE / 18) * 2;
+      const combinedEntrance = bgStartScroll + BACKGROUND_ENTRANCE_RANGE;
+      const totalScrollable = combinedEntrance + maxScrollableDistance + REVERSE_TRANSFORM_RANGE + PAUSE_AT_END_RANGE;
+
+      // 1. Immediately fast-forward hero animation to complete state
+      targetScrollX = totalScrollable;
+      scrollX = totalScrollable;
+      applyScrollOutput();
+
+      // 2. Scroll directly to the next section (featured section)
+      const mainContent = document.getElementById('mainContent');
+      if (mainContent) {
+        const nextSectionOffset = mainContent.getBoundingClientRect().bottom + window.scrollY;
+        window.scrollTo({
+          top: nextSectionOffset,
+          behavior: 'instant'
+        });
       }
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', handleContinueShoppingSkip);
+    document.addEventListener('DOMContentLoaded', () => {
+      handleContinueShoppingSkip();
+      setTimeout(handleContinueShoppingSkip, 50);
+    });
   } else {
     handleContinueShoppingSkip();
+    setTimeout(handleContinueShoppingSkip, 50);
   }
   window.addEventListener('load', handleContinueShoppingSkip);
   window.addEventListener('hashchange', handleContinueShoppingSkip);
