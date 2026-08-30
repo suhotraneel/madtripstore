@@ -1,1 +1,112 @@
-{"sections":{"cart-items":{"type":"main-cart-items","settings":{"color_scheme":"scheme-1","padding_top":0,"padding_bottom":36}},"cart-footer":{"type":"main-cart-footer","blocks":{"subtotal":{"type":"subtotal","settings":{}},"buttons":{"type":"buttons","settings":{}}},"block_order":["subtotal","buttons"],"settings":{"color_scheme":"scheme-1","padding_top":20,"padding_bottom":40}}},"order":["cart-items","cart-footer"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "cart-items": {
+      "type": "main-cart-items",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "padding_top": 0,
+        "padding_bottom": 36
+      }
+    },
+    "cart-footer": {
+      "type": "main-cart-footer",
+      "blocks": {
+        "subtotal": {
+          "type": "subtotal",
+          "settings": {}
+        },
+        "buttons": {
+          "type": "buttons",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "subtotal",
+        "buttons"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "padding_top": 20,
+        "padding_bottom": 40
+      }
+    },
+    "home_collection_list_hBMUqg": {
+      "type": "home-collection-list",
+      "blocks": {
+        "featured_collection_hDMCU4": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "sleep"
+          }
+        },
+        "featured_collection_LzFBeC": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "apparel"
+          }
+        },
+        "featured_collection_r6fCg6": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "wall-art"
+          }
+        },
+        "featured_collection_bkxWY6": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "zines"
+          }
+        },
+        "featured_collection_aLJLHC": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "collectibles"
+          }
+        },
+        "featured_collection_tCExqH": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "home-living"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_hDMCU4",
+        "featured_collection_LzFBeC",
+        "featured_collection_r6fCg6",
+        "featured_collection_bkxWY6",
+        "featured_collection_aLJLHC",
+        "featured_collection_tCExqH"
+      ],
+      "name": "Home Collection List",
+      "settings": {
+        "title": "CATEGORIES",
+        "heading_size": "h1",
+        "columns_desktop": 3,
+        "color_scheme": "",
+        "card_text_color": "#111111",
+        "section_bg_color": "#FFDE17",
+        "svg_mask": "shopify://shop_images/card_horizontal.svg",
+        "stroke_width": 0.5,
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 100,
+        "padding_bottom": 100
+      }
+    }
+  },
+  "order": [
+    "cart-items",
+    "cart-footer",
+    "home_collection_list_hBMUqg"
+  ]
+}
