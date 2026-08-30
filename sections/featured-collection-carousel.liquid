@@ -560,6 +560,22 @@
 })();
 </script>
 
+<script>
+  function scrollToFeaturedSection() {
+    if (window.location.hash === '#continue-shopping-target') {
+      // Small delay to allow images and layouts to settle, or for the drawer to close
+      setTimeout(function() {
+        var target = document.getElementById('continue-shopping-target');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', scrollToFeaturedSection);
+  window.addEventListener('hashchange', scrollToFeaturedSection);
+</script>
 {% comment %}
   ================================================================
   SECTION SCHEMA

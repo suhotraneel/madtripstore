@@ -284,6 +284,8 @@
     {% if aria_label != blank %}
       aria-label="{{ aria_label }}"
     {% endif %}
+    {% if id %}id="{{ id }}"{% endif %}
+    {% if onclick %}onclick="{{ onclick }}"{% endif %}
   >
     <span class="button-component__body">
       <span class="button-component__label">{{ button_label }}</span>

@@ -44,7 +44,8 @@
               {% render 'button-component',
                 url: routes.root_url | append: '#continue-shopping-target',
                 label: continue_shopping_label,
-                size: 'medium'
+                size: 'medium',
+                onclick: "this.closest('cart-drawer').close()"
               %}
 
               {%- if shop.customer_accounts_enabled and customer == null -%}
