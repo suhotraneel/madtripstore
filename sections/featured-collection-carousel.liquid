@@ -324,8 +324,6 @@
   aria-label="{{ section.settings.section_aria_label | default: 'Featured products carousel' }}"
   style="position: relative;"
 >
-  <div id="continue-shopping-target" style="position: absolute; top: -100px; left: 0; visibility: hidden; pointer-events: none;"></div>
-
   {%- liquid
     assign col           = section.settings.collection
     assign products      = col.products
@@ -562,18 +560,29 @@
 
 <script>
   function scrollToFeaturedSection() {
-    if (window.location.hash === '#continue-shopping-target') {
-      // Small delay to allow images and layouts to settle, or for the drawer to close
-      setTimeout(function() {
-        var target = document.getElementById('continue-shopping-target');
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 300);
+    if (window.location.hash.includes('continue-shopping-target')) {
+      var section = document.getElementById('fcc-{{ section.id }}');
+      if (section) {
+        // Try immediately
+        var y = section.getBoundingClientRect().top + window.pageYOffset - 100;
+        window.scrollTo({ top: y, behavior: 'instant' });
+        
+        // And try again after a delay to override any conflicting scripts (like hero section or layout shifts)
+        setTimeout(function() {
+          var yDelayed = section.getBoundingClientRect().top + window.pageYOffset - 100;
+          window.scrollTo({ top: yDelayed, behavior: 'smooth' });
+        }, 500);
+
+        setTimeout(function() {
+          var yDelayed2 = section.getBoundingClientRect().top + window.pageYOffset - 100;
+          window.scrollTo({ top: yDelayed2, behavior: 'smooth' });
+        }, 1200);
+      }
     }
   }
 
   document.addEventListener('DOMContentLoaded', scrollToFeaturedSection);
+  window.addEventListener('load', scrollToFeaturedSection);
   window.addEventListener('hashchange', scrollToFeaturedSection);
 </script>
 {% comment %}
