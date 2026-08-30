@@ -29,16 +29,21 @@
   <div class="page-width">
     <div class="title-wrapper-with-link">
       <h1 class="title title--primary">{{ 'sections.cart.title' | t }}</h1>
-      <a href="{{ routes.root_url }}" class="underlined-link">
-        {{- 'general.continue_shopping' | t -}}
-      </a>
+      {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
+      {% render 'button-component',
+        url: routes.root_url,
+        label: continue_shopping_label,
+        custom_class: 'underlined-link'
+      %}
     </div>
 
     <div class="cart__warnings">
       <h1 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h1>
-      <a href="{{ routes.root_url }}" class="button">
-        {{ 'general.continue_shopping' | t }}
-      </a>
+      {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
+      {% render 'button-component',
+        url: routes.root_url,
+        label: continue_shopping_label
+      %}
 
       {%- if shop.customer_accounts_enabled and customer == null -%}
         <h2 class="cart__login-title">{{ 'sections.cart.login.title' | t }}</h2>

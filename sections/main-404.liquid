@@ -17,7 +17,9 @@
   <h1 class="title">
     {{ 'templates.404.title' | t }}
   </h1>
-  <a href="{{ routes.root_url }}" class="button">
-    {{ 'general.continue_shopping' | t }}
-  </a>
+  {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
+  {% render 'button-component',
+    url: routes.root_url,
+    label: continue_shopping_label
+  %}
 </div>

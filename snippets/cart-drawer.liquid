@@ -40,9 +40,11 @@
               >
                 {% render 'icon-close' %}
               </button>
-              <a href="{{ routes.root_url }}" class="button">
-                {{ 'general.continue_shopping' | t }}
-              </a>
+              {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
+              {% render 'button-component',
+                url: routes.root_url,
+                label: continue_shopping_label
+              %}
 
               {%- if shop.customer_accounts_enabled and customer == null -%}
                 <p class="cart__login-title h3">{{ 'sections.cart.login.title' | t }}</p>
