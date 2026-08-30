@@ -558,33 +558,6 @@
 })();
 </script>
 
-<script>
-  function scrollToFeaturedSection() {
-    if (window.location.hash.includes('continue-shopping-target')) {
-      var section = document.getElementById('fcc-{{ section.id }}');
-      if (section) {
-        // Try immediately
-        var y = section.getBoundingClientRect().top + window.pageYOffset - 100;
-        window.scrollTo({ top: y, behavior: 'instant' });
-        
-        // And try again after a delay to override any conflicting scripts (like hero section or layout shifts)
-        setTimeout(function() {
-          var yDelayed = section.getBoundingClientRect().top + window.pageYOffset - 100;
-          window.scrollTo({ top: yDelayed, behavior: 'smooth' });
-        }, 500);
-
-        setTimeout(function() {
-          var yDelayed2 = section.getBoundingClientRect().top + window.pageYOffset - 100;
-          window.scrollTo({ top: yDelayed2, behavior: 'smooth' });
-        }, 1200);
-      }
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', scrollToFeaturedSection);
-  window.addEventListener('load', scrollToFeaturedSection);
-  window.addEventListener('hashchange', scrollToFeaturedSection);
-</script>
 {% comment %}
   ================================================================
   SECTION SCHEMA

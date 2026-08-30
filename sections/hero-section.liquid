@@ -1281,15 +1281,23 @@
   }
 
   // Force click skip button if we land with continue shopping hash
-  window.addEventListener('load', () => {
+  function handleContinueShoppingSkip() {
     if (window.location.hash.includes('continue-shopping-target')) {
-      if (skipBtn && skipBtn.style.display !== 'none') {
+      if (skipBtn) {
         skipBtn.click();
       } else if (loadingSkipBtn) {
         loadingSkipBtn.click();
       }
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', handleContinueShoppingSkip);
+  } else {
+    handleContinueShoppingSkip();
+  }
+  window.addEventListener('load', handleContinueShoppingSkip);
+  window.addEventListener('hashchange', handleContinueShoppingSkip);
 </script>
 
 {% schema %}
