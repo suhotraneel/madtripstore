@@ -33,7 +33,8 @@
       {% render 'button-component',
         url: routes.root_url,
         label: continue_shopping_label,
-        custom_class: 'underlined-link'
+        custom_class: 'underlined-link',
+        size: 'medium'
       %}
     </div>
 
@@ -42,7 +43,8 @@
       {%- assign continue_shopping_label = 'general.continue_shopping' | t -%}
       {% render 'button-component',
         url: routes.root_url,
-        label: continue_shopping_label
+        label: continue_shopping_label,
+        size: 'medium'
       %}
 
       {%- if shop.customer_accounts_enabled and customer == null -%}
