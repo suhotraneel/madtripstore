@@ -190,15 +190,7 @@
             assign view_all_label = 'sections.featured_collection.view_all' | t
           endif
         -%}
-        {% render 'button-component',
-          url: section.settings.collection.url,
-          label: view_all_label,
-          variant: section.settings.view_all_button_variant,
-          size: section.settings.view_all_button_size,
-          mobile_size: section.settings.view_all_button_mobile_size,
-          full_width: section.settings.view_all_button_full_width,
-          aria_label: 'sections.featured_collection.view_all_label' | t: collection_name: section.settings.collection.title | escape
-        %}
+        {% render 'button-component', url: section.settings.collection.url, label: view_all_label, variant: section.settings.view_all_button_variant, size: section.settings.view_all_button_size, mobile_size: section.settings.view_all_button_mobile_size, full_width: section.settings.view_all_button_full_width, aria_label: 'sections.featured_collection.view_all_label', t: collection_name %}
       </div>
     {%- endif -%}
     {% if section.settings.image_shape == 'arch' %}
@@ -540,3 +532,26 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {% render 'button-component',
+              url: section.settings.collection.url,
+              label: view_all_label,
+              variant: section.settings.view_all_button_variant,
+              size: section.settings.view_all_button_size,
+              mobile_size: section.settings.view_all_button_mobile_size,
+              full_width: section.settings.view_all_button_full_width,
+              aria_label: 'sections.featured_collection.view_all_label' | t: collection_name: section.settings.collection.title | escape
+            %}
+  to: "{% render 'button-component', url: section.settings.collection.url, label:
+    view_all_label, variant: section.settings.view_all_button_variant, size: section.settings.view_all_button_size,
+    mobile_size: section.settings.view_all_button_mobile_size, full_width: section.settings.view_all_button_full_width,
+    aria_label: 'sections.featured_collection.view_all_label', t: collection_name
+    %}"
+  position: 8987..9370
+{% endcomment %}
